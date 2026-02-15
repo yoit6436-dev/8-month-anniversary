@@ -3,307 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8 Months 💖</title>
-
+<title>8 Month Anniversary Surprise</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{overflow:hidden;background:#000}
-
-.page{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  background:linear-gradient(180deg,#ffd6e8,#fff1f7);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity 1s ease;
-}
-.page.active{
-  opacity:1;
-  pointer-events:auto;
-  animation:zoom 12s ease-in-out forwards;
-}
-@keyframes zoom{from{transform:scale(1)}to{transform:scale(1.05)}}
-
-h2{margin-bottom:15px}
-p{opacity:.75}
-
-video,img{
-  max-width:90%;
-  max-height:60vh;
-  border-radius:18px;
-  margin-top:15px;
-}
-
-button{
-  padding:12px 28px;
-  border:none;
-  border-radius:30px;
-  background:#ff6fae;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.btns{display:flex;gap:20px;margin-top:20px}
-
-/* Hearts */
-#hearts{position:fixed;inset:0;pointer-events:none;z-index:5}
-.heart{
-  position:absolute;
-  bottom:-20px;
-  animation:float 6s linear infinite;
-}
-@keyframes float{
-  from{transform:translateY(0);opacity:0}
-  to{transform:translateY(-120vh);opacity:.8}
-}
-
-/* Puzzle */
-#puzzle{
-  width:300px;height:300px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:2px;
-}
-.tile{
-  background-image:url('image4.jpg');
-  background-size:300px 300px;
-  cursor:pointer;
-}
-
-/* Countdown */
-#finalDate{
-  font-size:40px;
-  animation:floatDate 2s ease-in-out infinite;
-}
-@keyframes floatDate{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-10px)}
-}
+  body, html { margin:0; padding:0; width:100%; height:100%; font-family:sans-serif; overflow:hidden; background:#f8e3d2; color:#fff; }
+  .page { display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; }
+  .page.active { display:block; }
+  .title { font-size:2em; margin-bottom:20px; }
+  .next { margin-top:20px; padding:10px 20px; font-size:1em; cursor:pointer; border:none; border-radius:8px; background:#ff6b81; color:white; }
+  input[type=date]{ padding:10px; font-size:1em; border-radius:5px; border:none; }
+  .bubble, .heart{position:absolute; border-radius:50%; opacity:0.7; animation:float linear infinite; pointer-events:none;}
+  @keyframes float { 0% {transform:translateY(0) rotate(0deg);} 100% {transform:translateY(-120vh) rotate(360deg);} }
+  .typing { display:inline; border-right:2px solid #fff; padding-right:2px; }
+  .yes, .no { padding:10px 20px; font-size:1em; margin:10px; cursor:pointer; border:none; border-radius:5px; position:relative; }
+  .yes { background: #ff6b81; color:#fff; }
+  .no { background:#ffcb77; color:#000; }
+  #puzzle img{max-width:80%; margin-top:20px; cursor:pointer; }
+  canvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%;}
+  video{max-width:80%; border-radius:10px;}
+  .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate; }
+  @keyframes move { 0%{transform:translateX(-10px);}100%{transform:translateX(10px);} }
+  #gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:10px; overflow:hidden;}
+  .gameHeart{position:absolute;width:50px;height:50px;background:red;border-radius:50%;cursor:pointer; background-image: url('heart.png'); background-size:cover;}
+  .score{font-size:1.5em;margin-top:10px;}
 </style>
 </head>
-
 <body>
 
-<audio id="bgm" src="song.mp3" loop playsinline></audio>
-<div id="hearts"></div>
+<!-- Background Music -->
+<audio id="bgSong" src="Sitaare-KoshalWorld.Com-mc.mp3" autoplay loop></audio>
 
-<!-- PAGE 0 PASSWORD -->
-<div class="page active" id="page0">
-  <h2>Enter our date 💌</h2>
-  <input type="date" id="pass" style="padding:10px">
-  <button onclick="unlock()">Enter</button>
+<!-- Heart bubbles script -->
+<script>
+function createHearts(){
+  for(let i=0;i<100;i++){
+    const h = document.createElement('div');
+    h.classList.add('heart');
+    const size = Math.random()*25+15;
+    h.style.width = h.style.height = size+'px';
+    h.style.left = Math.random()*100+'vw';
+    h.style.top = Math.random()*100+'vh';
+    h.style.background = `rgba(255,${Math.floor(Math.random()*200+50)},${Math.floor(Math.random()*200+50)},${Math.random()*0.6+0.3})`;
+    h.style.animationDuration = Math.random()*15+10+'s';
+    h.style.animationDelay = Math.random()*5+'s';
+    document.body.appendChild(h);
+  }
+}
+createHearts();
+</script>
+
+<!-- Canvas for confetti -->
+<canvas id="confettiCanvas"></canvas>
+
+<!-- Pages -->
+<div class="page active" id="passwordPage">
+  <div class="title">Enter Date Password:</div>
+  <input type="date" id="passInput">
+  <button class="next" onclick="checkPassword()">Unlock</button>
 </div>
 
-<!-- PAGE 1 TYPING -->
 <div class="page" id="page1">
-  <p id="typing"></p>
+  <div class="title typing" id="typeText1"></div>
+  <video src="From-Main-Klickpin-CF-Love-Letters-6sfnj1iz8.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(2)">Next</button>
 </div>
 
-<!-- VIDEO 1 -->
-<div class="page" id="page2" onclick="next()">
-  <h2>This is how it all feels 💕</h2>
-  <video src="video1.mp4" autoplay muted loop></video>
+<div class="page" id="page2">
+  <div class="title">First and foremost</div>
+  <video src="InShot_20260216_014300027.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(3)">Next</button>
 </div>
 
-<!-- VIDEO 2 -->
-<div class="page" id="page3" onclick="next()">
-  <h2>First & foremost… you ❤️</h2>
-  <video src="video2.mp4" autoplay muted loop></video>
+<div class="page" id="page3">
+  <div class="title">Please press to open</div>
+  <img src="87ba7265a3278eb26ac53a916bba7585.jpg" alt="Image 1">
+  <button class="next" onclick="nextPage(4)">Next</button>
 </div>
 
-<!-- IMAGE OPEN -->
 <div class="page" id="page4">
-  <h2>Please press to open 🫶</h2>
-  <img src="image1.jpg">
-  <button onclick="next()">Open</button>
+  <img src="Picsart_26-02-16_02-00-23-833.jpg" alt="Image 2">
+  <button class="next" onclick="nextPage(5)">Next</button>
 </div>
 
-<div class="page" id="page5" onclick="next()">
-  <h2>Look at this 🥹</h2>
-  <img src="image2.jpg">
+<div class="page" id="page5">
+  <div class="title">Do you wanna see something cute?</div>
+  <button class="yes" id="yes1">Yes</button>
+  <button class="no" id="no1">No</button>
 </div>
 
-<!-- YES GROWS -->
 <div class="page" id="page6">
-  <h2>Do you wanna see something cute?</h2>
-  <div class="btns">
-    <button id="yesGrow" onclick="growYes()">Yes</button>
-    <button onclick="growYes()">No</button>
-  </div>
+  <div class="title">I have something to say click to view</div>
+  <video src="From-Main-Klickpin-CF-Cute-videos-4OpY22JDS.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(7)">Next</button>
 </div>
 
-<div class="page" id="page7" onclick="next()">
-  <h2>Us 🫶</h2>
-  <img src="image3.jpg">
+<div class="page" id="page7">
+  <div class="title">You wanna know how you fix my heart?</div>
+  <button class="yes" onclick="nextPage(8)">Yes</button>
+  <button class="no" onclick="runAway(this)">No</button>
 </div>
 
-<!-- VIDEO 3 -->
-<div class="page" id="page8" onclick="next()">
-  <h2>I have something to say…</h2>
-  <video src="video3.mp4" autoplay muted loop></video>
+<div class="page" id="page8">
+  <video src="From-Main-Klickpin-CF-Video-Pinterest-6sl5pQwZf.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(9)">Next</button>
 </div>
 
-<!-- YES / NO MOVE -->
 <div class="page" id="page9">
-  <h2>You wanna know how you fix my heart?</h2>
-  <div class="btns">
-    <button onclick="next()">Yes</button>
-    <button onmouseover="this.style.position='absolute';this.style.left=Math.random()*80+'%';this.style.top=Math.random()*80+'%'">No</button>
-  </div>
+  <div class="title">This is how I feel when I'm near u</div>
+  <video src="From-Main-Klickpin-CF-Video-Pinterest-5B8SIpTed.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(10)">Next</button>
 </div>
 
-<div class="page" id="page10" onclick="next()">
-  <h2>This is how 💗</h2>
-  <video src="video4.mp4" autoplay muted loop></video>
+<div class="page" id="page10">
+  <div class="title">Will you hold my hands forever?</div>
+  <video src="From-Main-Klickpin-CF-Video-Pinterest-7MQLY1I01.mp4" autoplay muted></video>
+  <button class="yes" onclick="startConfetti();nextPage(11)">Yes</button>
+  <button class="no" onclick="runAway(this)">No</button>
 </div>
 
-<div class="page" id="page11" onclick="next()">
-  <h2>This is how I feel near you</h2>
-  <video src="video5.mp4" autoplay muted loop></video>
+<div class="page" id="page11">
+  <div class="title">Solve this puzzle to see how cute we look together</div>
+  <div id="puzzle"><img src="IMG_20260216_012519.png" alt="Puzzle Image"></div>
+  <button class="next" onclick="nextPage(12)">Next</button>
 </div>
 
+<!-- Mini-Game Page -->
 <div class="page" id="page12">
-  <h2>Will you hold my hand forever?</h2>
-  <video src="video6.mp4" autoplay muted loop></video>
-  <div class="btns">
-    <button onclick="confetti();next()">Yes</button>
-    <button>No</button>
-  </div>
+  <div class="title">Catch the hearts game!</div>
+  <div class="score">Score: <span id="score">0</span></div>
+  <div id="gameArea"></div>
+  <button class="next" onclick="nextPage(13)">Next</button>
 </div>
 
-<!-- PUZZLE -->
 <div class="page" id="page13">
-  <h2>Solve this to see us together 🧩</h2>
-  <div id="puzzle"></div>
+  <div class="title">You wanna know what's in my heart?</div>
+  <video src="f14d48423244e4275d5eb1ae5d598030.gif" autoplay muted loop></video>
+  <img src="Picsart_26-02-16_01-22-35-151.jpg" alt="Image 5">
+  <button class="next" onclick="nextPage(14)">Next</button>
 </div>
 
-<div class="page" id="page14" onclick="next()">
-  <h2>Wanna know what’s in my heart?</h2>
-  <video src="video7.mp4" autoplay muted loop></video>
+<div class="page" id="page14">
+  <div class="title">A lot of kisses for you</div>
+  <video src="From-Main-Klickpin-CF-Video-Pinterest-5nTAnx1fk.mp4" autoplay muted></video>
+  <div class="title">Hugs</div>
+  <video src="From-Main-Klickpin-CF-Pinterest-Video-6w4DmnP94.mp4" autoplay muted></video>
+  <button class="next" onclick="nextPage(15)">Next</button>
 </div>
 
-<div class="page" id="page15" onclick="next()">
-  <h2>It’s you 💖</h2>
-  <img src="image5.jpg">
+<div class="page" id="page15">
+  <div class="title">You wanna see a memory?</div>
+  <img src="IMG_20260216_012450.png" alt="Image 6">
+  <button class="next" onclick="nextPage(16)">Next</button>
 </div>
 
-<div class="page" id="page16" onclick="next()">
-  <h2>A lot of kisses for you 😘</h2>
-  <video src="video8.mp4" autoplay muted loop></video>
-</div>
-
-<div class="page" id="page17" onclick="next()">
-  <h2>And hugs 🫂</h2>
-  <video src="video9.mp4" autoplay muted loop></video>
-</div>
-
-<div class="page" id="page18" onclick="next()">
-  <h2>A memory 🤍</h2>
-  <img src="image6.jpg">
-</div>
-
-<!-- FINAL -->
-<div class="page" id="page19">
-  <h1 id="finalDate">18/02/2026</h1>
-  <p>Happy 8 months my love 💞</p>
+<!-- Final Page with aesthetic mover -->
+<div class="page" id="page16">
+  <div class="title">Happy 8 month's my love</div>
+  <div class="countdown" id="animatedCountdown"></div>
 </div>
 
 <script>
-let current=0,yesScale=1;
-
-/* unlock */
-function unlock(){
-  if(pass.value==="2025-06-18"){
-    bgm.play();
-    next();
-    typeText();
-  }
+// Page navigation
+let currentPage=0;
+function nextPage(num){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+num).classList.add('active');
+  currentPage=num;
 }
 
-/* typing */
-function typeText(){
-  const text="Hi my fattu, this is your cutie and this is something for you that I made with all my love ❤️";
+// Password page
+function checkPassword(){
+  const input=document.getElementById('passInput').value;
+  if(input==="2025-06-18"){
+    nextPage(1);
+    startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1");
+  } else alert("Incorrect password!");
+}
+
+// Typing effect
+function startTyping(text,id){
   let i=0;
-  const el=document.getElementById("typing");
-  const t=setInterval(()=>{
-    el.innerHTML+=text[i++];
-    if(i>=text.length) clearInterval(t);
-  },60);
+  const el=document.getElementById(id);
+  const interval=setInterval(()=>{
+    el.innerHTML=text.slice(0,i);
+    i++;
+    if(i>text.length) clearInterval(interval);
+  },50);
 }
 
-/* navigation */
-function next(){
-  document.getElementById("page"+current).classList.remove("active");
-  current++;
-  document.getElementById("page"+current).classList.add("active");
+// First Yes enlarges on No click
+document.getElementById('no1').addEventListener('click',()=>{
+  const btn=document.getElementById('yes1');
+  let scale=1;
+  const interval=setInterval(()=>{
+    scale+=0.1;
+    btn.style.transform=`scale(${scale})`;
+    if(scale>4) clearInterval(interval);
+  },100);
+});
+document.getElementById('yes1').addEventListener('click',()=>nextPage(6));
+
+// Other No buttons run away
+function runAway(el){
+  const x=Math.random()*(window.innerWidth-100);
+  const y=Math.random()*(window.innerHeight-50);
+  el.style.position='absolute';
+  el.style.left=x+'px';
+  el.style.top=y+'px';
 }
 
-/* yes grows */
-function growYes(){
-  yesScale+=0.4;
-  document.getElementById("yesGrow").style.transform=`scale(${yesScale})`;
-  if(yesScale>2.5) next();
-}
-
-/* hearts */
-setInterval(()=>{
-  const h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="❤";
-  h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=14+Math.random()*20+"px";
-  document.getElementById("hearts").appendChild(h);
-  setTimeout(()=>h.remove(),8000);
-},400);
-
-/* confetti */
-function confetti(){
-  for(let i=0;i<60;i++){
-    const c=document.createElement("div");
-    c.style.position="fixed";
-    c.style.left=Math.random()*100+"vw";
-    c.style.top="-10px";
-    c.style.width="6px";
-    c.style.height="10px";
-    c.style.background=`hsl(${Math.random()*360},100%,70%)`;
-    c.style.animation="fall 4s linear";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),4000);
+// Confetti
+const canvas=document.getElementById('confettiCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let confettiParticles=[];
+function startConfetti(){
+  for(let i=0;i<200;i++){
+    confettiParticles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height-500,
+      r:Math.random()*6+2,
+      d:Math.random()*50+2,
+      color:`hsl(${Math.random()*360},100%,50%)`,
+      tilt:Math.random()*10-10,
+      tiltAngleIncrement:Math.random()*0.07+0.05
+    });
   }
+  requestAnimationFrame(drawConfetti);
+}
+function drawConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach(p=>{
+    ctx.beginPath();
+    ctx.lineWidth=p.r;
+    ctx.strokeStyle=p.color;
+    ctx.moveTo(p.x+p.tilt+p.r/2,p.y);
+    ctx.lineTo(p.x+p.tilt,p.y+p.tilt+p.r/2);
+    ctx.stroke();
+    p.tilt+=p.tiltAngleIncrement;
+    p.y+=(Math.cos(p.d)+3+p.r/2)/2;
+    if(p.y>canvas.height) p.y=-10;
+  });
+  requestAnimationFrame(drawConfetti);
 }
 
-/* puzzle */
-const puzzle=document.getElementById("puzzle");
-let empty=8;
-for(let i=0;i<9;i++){
-  const d=document.createElement("div");
-  d.className="tile";
-  d.style.backgroundPosition=`${-(i%3)*100}px ${-Math.floor(i/3)*100}px`;
-  if(i===8)d.style.visibility="hidden";
-  d.onclick=()=>move(i);
-  puzzle.appendChild(d);
+// Mini-game
+let score=0;
+function createHeart(){
+  const heart=document.createElement('div');
+  heart.classList.add('gameHeart');
+  heart.style.left=Math.random()*(window.innerWidth-50)+'px';
+  heart.style.top='-50px';
+  document.getElementById('gameArea').appendChild(heart);
+  let fall=setInterval(()=>{
+    let top=parseInt(heart.style.top);
+    heart.style.top=(top+5)+'px';
+    if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createHeart();}
+  },30);
+  heart.addEventListener('click',()=>{
+    score++;
+    document.getElementById('score').textContent=score;
+    heart.remove(); clearInterval(fall); createHeart();
+  });
 }
-function move(i){
-  const dx=Math.abs((i%3)-(empty%3));
-  const dy=Math.abs(Math.floor(i/3)-Math.floor(empty/3));
-  if(dx+dy===1){
-    [puzzle.children[i].style.backgroundPosition,
-     puzzle.children[empty].style.backgroundPosition]=
-    [puzzle.children[empty].style.backgroundPosition,
-     puzzle.children[i].style.backgroundPosition];
-    puzzle.children[empty].style.visibility="visible";
-    puzzle.children[i].style.visibility="hidden";
-    empty=i;
-    if(empty===8) next();
-  }
+function startGame(){
+  score=0;
+  document.getElementById('score').textContent=score;
+  document.getElementById('gameArea').innerHTML='';
+  for(let i=0;i<5;i++) createHeart();
 }
+document.getElementById('page12').addEventListener('click',startGame);
+
+// Countdown aesthetic mover
+const countdownEl=document.getElementById('animatedCountdown');
+function animateCountdown(){
+  const text="18/02/2026";
+  let i=0;
+  setInterval(()=>{
+    countdownEl.textContent=text.slice(0,i+1);
+    i=(i+1)%text.length;
+  },400);
+}
+animateCountdown();
 </script>
-
 </body>
 </html>
