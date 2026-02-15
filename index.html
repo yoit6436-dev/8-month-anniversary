@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy 8 Months ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#ffe5ec,#fff1f5,#fde2e4);
+  overflow:hidden;
+  color:#5a2a2a;
+}
+.page{
+  display:none;
+  width:100vw;
+  height:100vh;
+  padding:24px;
+  text-align:center;
+}
+.page.active{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+h1,h2,p{
+  font-family:'Playfair Display',serif;
+}
+p{
+  font-size:20px;
+  margin-bottom:20px;
+}
+button{
+  padding:14px 32px;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(135deg,#ff8fab,#ffb3c6);
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  margin:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  transition:all .3s ease;
+}
+button:hover{
+  transform:scale(1.05);
+}
+video,img{
+  max-width:90%;
+  max-height:65vh;
+  border-radius:24px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+  margin-bottom:20px;
+}
+input{
+  padding:12px;
+  font-size:18px;
+  border-radius:14px;
+  border:none;
+  box-shadow:0 6px 15px rgba(0,0,0,0.15);
+}
+.typing{
+  font-size:22px;
+  max-width:90%;
+  line-height:1.6;
+}
+.heart{
+  position:fixed;
+  bottom:-30px;
+  font-size:22px;
+  animation:float 8s linear infinite;
+  opacity:.8;
+}
+@keyframes float{
+  to{
+    transform:translateY(-120vh) scale(1.3);
+    opacity:0;
+  }
+}
+.no-btn{
+  position:absolute;
+}
+.confetti{
+  position:fixed;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  animation:fall 3s linear infinite;
+}
+@keyframes fall{
+  to{
+    transform:translateY(120vh) rotate(360deg);
+    opacity:0;
+  }
+}
+#puzzle{
+  display:grid;
+  grid-template-columns:repeat(3,100px);
+  gap:6px;
+}
+.piece{
+  width:100px;
+  height:100px;
+  background-image:url('image4.jpg');
+  background-size:300px 300px;
+  border-radius:12px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="song" src="song.mp3" autoplay loop></audio>
+
+<div class="page active" id="page0">
+  <h2>Enter the Date 💌</h2>
+  <input type="date" id="pwd">
+  <button onclick="checkPwd()">Unlock</button>
+</div>
+
+<div class="page" id="page1">
+  <div class="typing" id="typeText"></div>
+</div>
+
+<div class="page" id="page2">
+  <video src="video1.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Tap 💗</button>
+</div>
+
+<div class="page" id="page3">
+  <video src="video2.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Tap 💗</button>
+</div>
+
+<div class="page" id="page4">
+  <img src="image1.jpg">
+  <p>Please press to open ✨</p>
+  <button onclick="next()">Open</button>
+</div>
+
+<div class="page" id="page5">
+  <img src="image2.jpg">
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page6">
+  <p>Do you wanna see something cute? 🥹</p>
+  <button onclick="next()">Yes 💕</button>
+  <button onclick="this.style.transform='scale(0)'">No</button>
+</div>
+
+<div class="page" id="page7">
+  <img src="image3.jpg">
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page8">
+  <p>I have something to say 💞</p>
+  <button onclick="next()">Click to view</button>
+</div>
+
+<div class="page" id="page9">
+  <video src="video3.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page10">
+  <p>You wanna know how you fix my heart? ❤️</p>
+  <button onclick="next()">Yes</button>
+  <button class="no-btn" onmouseover="moveNo(this)">No</button>
+</div>
+
+<div class="page" id="page11">
+  <video src="video4.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page12">
+  <p>This is how I feel when I'm near u 🫶</p>
+  <video src="video5.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page13">
+  <p>Will you hold my hands forever? 💍</p>
+  <video src="video6.mp4" autoplay muted playsinline></video>
+  <button onclick="celebrate()">Yes 💖</button>
+  <button onclick="celebrate()">Always</button>
+</div>
+
+<div class="page" id="page14">
+  <p>Solve this puzzle 🧩</p>
+  <div id="puzzle"></div>
+  <button onclick="next()">Done</button>
+</div>
+
+<div class="page" id="page15">
+  <p>You wanna know what's in my heart? 💓</p>
+  <video src="video7.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page16">
+  <img src="image5.jpg">
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page17">
+  <p>A lot of kisses for you 💋</p>
+  <video src="video8.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page18">
+  <p>Hugs for you 🤍</p>
+  <video src="video9.mp4" autoplay muted playsinline></video>
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page19">
+  <img src="image6.jpg">
+  <button onclick="next()">Next</button>
+</div>
+
+<div class="page" id="page20">
+  <h2 id="countdown"></h2>
+  <h1>Happy 8 Months My Love ❤️</h1>
+</div>
+
+<script>
+let current=0;
+function next(){
+  document.getElementById('page'+current).classList.remove('active');
+  current++;
+  document.getElementById('page'+current).classList.add('active');
+}
+function checkPwd(){
+  if(document.getElementById('pwd').value==="2025-06-18"){
+    next();
+    typeEffect();
+  }else alert("Wrong date 💔");
+}
+function typeEffect(){
+  const text="Hi my fattu, this is your cutie and this is something for you that I made with all my love ❤️";
+  let i=0;
+  const el=document.getElementById('typeText');
+  const t=setInterval(()=>{
+    el.innerHTML+=text[i++];
+    if(i>=text.length) clearInterval(t);
+  },60);
+}
+function moveNo(btn){
+  btn.style.left=Math.random()*300-150+"px";
+  btn.style.top=Math.random()*300-150+"px";
+}
+function celebrate(){
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=`hsl(${Math.random()*360},100%,75%)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+  next();
+}
+function hearts(){
+  const h=document.createElement('div');
+  h.className='heart';
+  h.innerHTML='❤️';
+  h.style.left=Math.random()*100+'vw';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),8000);
+}
+setInterval(hearts,450);
+
+// puzzle
+const puzzle=document.getElementById('puzzle');
+for(let y=0;y<3;y++){
+  for(let x=0;x<3;x++){
+    const p=document.createElement('div');
+    p.className='piece';
+    p.style.backgroundPosition=`-${x*100}px -${y*100}px`;
+    puzzle.appendChild(p);
+  }
+}
+
+// countdown
+setInterval(()=>{
+  const d=new Date("2026-02-18")-new Date();
+  const days=Math.floor(d/86400000);
+  document.getElementById('countdown').innerText=days+" days to forever 💞";
+},1000);
+</script>
+
+</body>
+</html>
