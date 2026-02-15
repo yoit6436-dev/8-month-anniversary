@@ -6,10 +6,9 @@
 <title>8 Month Anniversary Surprise</title>
 <style>
   body, html { margin:0; padding:0; width:100%; height:100%; font-family:sans-serif; overflow:hidden; background:#f8e3d2; color:#fff; }
-  .page { display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; }
+  .page { display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer; }
   .page.active { display:block; }
   .title { font-size:2em; margin-bottom:20px; }
-  .next { margin-top:20px; padding:10px 20px; font-size:1em; cursor:pointer; border:none; border-radius:8px; background:#ff6b81; color:white; }
   input[type=date]{ padding:10px; font-size:1em; border-radius:5px; border:none; }
   .bubble, .heart{position:absolute; border-radius:50%; opacity:0.7; animation:float linear infinite; pointer-events:none;}
   @keyframes float { 0% {transform:translateY(0) rotate(0deg);} 100% {transform:translateY(-120vh) rotate(360deg);} }
@@ -17,7 +16,6 @@
   .yes, .no { padding:10px 20px; font-size:1em; margin:10px; cursor:pointer; border:none; border-radius:5px; position:relative; }
   .yes { background: #ff6b81; color:#fff; }
   .no { background:#ffcb77; color:#000; }
-  #puzzle img{max-width:80%; margin-top:20px; cursor:pointer; }
   canvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%;}
   video{max-width:80%; border-radius:10px;}
   .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate; }
@@ -25,14 +23,16 @@
   #gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:10px; overflow:hidden;}
   .gameHeart{position:absolute;width:50px;height:50px;background:red;border-radius:50%;cursor:pointer; background-image: url('heart.png'); background-size:cover;}
   .score{font-size:1.5em;margin-top:10px;}
+  #puzzleGame{position:relative; margin:20px auto; border:2px solid #fff; width:320px; height:320px;}
+  #puzzleGame canvas{position:absolute; cursor:pointer;}
 </style>
 </head>
 <body>
 
-<!-- Background Music -->
 <audio id="bgSong" src="Sitaare-KoshalWorld.Com-mc.mp3" autoplay loop></audio>
+<canvas id="confettiCanvas"></canvas>
 
-<!-- Heart bubbles script -->
+<!-- Heart bubbles -->
 <script>
 function createHearts(){
   for(let i=0;i<100;i++){
@@ -51,37 +51,30 @@ function createHearts(){
 createHearts();
 </script>
 
-<!-- Canvas for confetti -->
-<canvas id="confettiCanvas"></canvas>
-
 <!-- Pages -->
 <div class="page active" id="passwordPage">
   <div class="title">Enter Date Password:</div>
   <input type="date" id="passInput">
-  <button class="next" onclick="checkPassword()">Unlock</button>
+  <button onclick="checkPassword()">Unlock</button>
 </div>
 
 <div class="page" id="page1">
   <div class="title typing" id="typeText1"></div>
   <video src="From-Main-Klickpin-CF-Love-Letters-6sfnj1iz8.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(2)">Next</button>
 </div>
 
 <div class="page" id="page2">
   <div class="title">First and foremost</div>
   <video src="InShot_20260216_014300027.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(3)">Next</button>
 </div>
 
 <div class="page" id="page3">
   <div class="title">Please press to open</div>
   <img src="87ba7265a3278eb26ac53a916bba7585.jpg" alt="Image 1">
-  <button class="next" onclick="nextPage(4)">Next</button>
 </div>
 
 <div class="page" id="page4">
   <img src="Picsart_26-02-16_02-00-23-833.jpg" alt="Image 2">
-  <button class="next" onclick="nextPage(5)">Next</button>
 </div>
 
 <div class="page" id="page5">
@@ -93,7 +86,6 @@ createHearts();
 <div class="page" id="page6">
   <div class="title">I have something to say click to view</div>
   <video src="From-Main-Klickpin-CF-Cute-videos-4OpY22JDS.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(7)">Next</button>
 </div>
 
 <div class="page" id="page7">
@@ -104,41 +96,36 @@ createHearts();
 
 <div class="page" id="page8">
   <video src="From-Main-Klickpin-CF-Video-Pinterest-6sl5pQwZf.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(9)">Next</button>
 </div>
 
 <div class="page" id="page9">
   <div class="title">This is how I feel when I'm near u</div>
   <video src="From-Main-Klickpin-CF-Video-Pinterest-5B8SIpTed.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(10)">Next</button>
 </div>
 
 <div class="page" id="page10">
   <div class="title">Will you hold my hands forever?</div>
   <video src="From-Main-Klickpin-CF-Video-Pinterest-7MQLY1I01.mp4" autoplay muted></video>
-  <button class="yes" onclick="startConfetti();nextPage(11)">Yes</button>
+  <button class="yes" onclick="startConfetti()">Yes</button>
   <button class="no" onclick="runAway(this)">No</button>
 </div>
 
+<!-- Playable Puzzle -->
 <div class="page" id="page11">
   <div class="title">Solve this puzzle to see how cute we look together</div>
-  <div id="puzzle"><img src="IMG_20260216_012519.png" alt="Puzzle Image"></div>
-  <button class="next" onclick="nextPage(12)">Next</button>
+  <div id="puzzleGame"></div>
 </div>
 
-<!-- Mini-Game Page -->
 <div class="page" id="page12">
   <div class="title">Catch the hearts game!</div>
   <div class="score">Score: <span id="score">0</span></div>
   <div id="gameArea"></div>
-  <button class="next" onclick="nextPage(13)">Next</button>
 </div>
 
 <div class="page" id="page13">
   <div class="title">You wanna know what's in my heart?</div>
   <video src="f14d48423244e4275d5eb1ae5d598030.gif" autoplay muted loop></video>
   <img src="Picsart_26-02-16_01-22-35-151.jpg" alt="Image 5">
-  <button class="next" onclick="nextPage(14)">Next</button>
 </div>
 
 <div class="page" id="page14">
@@ -146,16 +133,13 @@ createHearts();
   <video src="From-Main-Klickpin-CF-Video-Pinterest-5nTAnx1fk.mp4" autoplay muted></video>
   <div class="title">Hugs</div>
   <video src="From-Main-Klickpin-CF-Pinterest-Video-6w4DmnP94.mp4" autoplay muted></video>
-  <button class="next" onclick="nextPage(15)">Next</button>
 </div>
 
 <div class="page" id="page15">
   <div class="title">You wanna see a memory?</div>
   <img src="IMG_20260216_012450.png" alt="Image 6">
-  <button class="next" onclick="nextPage(16)">Next</button>
 </div>
 
-<!-- Final Page with aesthetic mover -->
 <div class="page" id="page16">
   <div class="title">Happy 8 month's my love</div>
   <div class="countdown" id="animatedCountdown"></div>
@@ -190,7 +174,7 @@ function startTyping(text,id){
   },50);
 }
 
-// First Yes enlarges on No click
+// Yes/No buttons
 document.getElementById('no1').addEventListener('click',()=>{
   const btn=document.getElementById('yes1');
   let scale=1;
@@ -202,7 +186,6 @@ document.getElementById('no1').addEventListener('click',()=>{
 });
 document.getElementById('yes1').addEventListener('click',()=>nextPage(6));
 
-// Other No buttons run away
 function runAway(el){
   const x=Math.random()*(window.innerWidth-100);
   const y=Math.random()*(window.innerHeight-50);
@@ -274,7 +257,7 @@ function startGame(){
 }
 document.getElementById('page12').addEventListener('click',startGame);
 
-// Countdown aesthetic mover
+// Countdown
 const countdownEl=document.getElementById('animatedCountdown');
 function animateCountdown(){
   const text="18/02/2026";
@@ -285,6 +268,90 @@ function animateCountdown(){
   },400);
 }
 animateCountdown();
+
+// Tap anywhere navigation (disabled on puzzle)
+document.querySelectorAll('.page').forEach((p,index)=>{
+  p.addEventListener('click',function(e){
+    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && p.id!=='page11'){
+      if(index<16) nextPage(index+1);
+    }
+  });
+});
+
+// Playable Puzzle 3x3
+function initPuzzle() {
+  const rows = 3;
+  const cols = 3;
+  const size = 320 / cols;
+  const puzzleDiv = document.getElementById('puzzleGame');
+  const tiles = [];
+  const img = new Image();
+  img.src = "IMG_20260216_012519.png";
+  img.onload = function() {
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        canvas.style.position = "absolute";
+        canvas.style.top = (r*size)+'px';
+        canvas.style.left = (c*size)+'px';
+        canvas.dataset.row = r;
+        canvas.dataset.col = c;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, c*size, r*size, size, size, 0, 0, size, size);
+        tiles.push(canvas);
+      }
+    }
+    // Shuffle tiles
+    for(let i=tiles.length-1;i>0;i--){
+      const j = Math.floor(Math.random()* (i+1));
+      const tempTop = tiles[i].style.top;
+      const tempLeft = tiles[i].style.left;
+      tiles[i].style.top = tiles[j].style.top;
+      tiles[i].style.left = tiles[j].style.left;
+      tiles[j].style.top = tempTop;
+      tiles[j].style.left = tempLeft;
+    }
+    tiles.forEach(t=>{
+      puzzleDiv.appendChild(t);
+      t.addEventListener('click', function(){
+        // Simple swap with adjacent tile logic
+        const empty = tiles.find(tile=>tile.dataset.empty==="true");
+        if(!empty) return;
+        const tr=parseInt(t.dataset.row), tc=parseInt(t.dataset.col);
+        const er=parseInt(empty.dataset.row), ec=parseInt(empty.dataset.col);
+        if((Math.abs(tr-er)+Math.abs(tc-ec))===1){
+          const tempTop=t.style.top;
+          const tempLeft=t.style.left;
+          t.style.top=empty.style.top;
+          t.style.left=empty.style.left;
+          empty.style.top=tempTop;
+          empty.style.left=tempLeft;
+          empty.dataset.row=tr; empty.dataset.col=tc;
+          t.dataset.row=er; t.dataset.col=ec;
+          checkPuzzleSolved();
+        }
+      });
+    });
+    // Make last tile empty
+    const last=tiles[tiles.length-1];
+    last.dataset.empty="true";
+    last.style.opacity=0;
+  }
+}
+function checkPuzzleSolved(){
+  const tiles = document.querySelectorAll('#puzzleGame canvas');
+  let solved=true;
+  tiles.forEach(t=>{
+    const top=parseInt(t.style.top);
+    const left=parseInt(t.style.left);
+    const row=parseInt(t.dataset.row);
+    const col=parseInt(t.dataset.col);
+    if(top!==row*320/3 || left!==col*320/3) solved=false;
+  });
+  if(solved) nextPage(12);
+}
+initPuzzle();
 </script>
 </body>
 </html>
