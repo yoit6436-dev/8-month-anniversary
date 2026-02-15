@@ -4,206 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8 Month Anniversary Surprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
-  html, body {margin:0; padding:0; width:100%; height:100%; font-family:sans-serif; overflow:hidden; background: linear-gradient(135deg, #ffdfba, #ffb6b9); color:#fff;}
-  .page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer;}
-  .page.active {display:block;}
-  .title {font-size:2em; margin-bottom:20px;}
-  input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
-  .bubble, .heart{position:absolute; border-radius:50%; opacity:0.7; animation:float linear infinite; pointer-events:none;}
-  @keyframes float {0% {transform:translateY(0) rotate(0deg);} 100% {transform:translateY(-120vh) rotate(360deg);}}
-  .typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
-  .yes, .no {padding:10px 20px; font-size:1em; margin:10px; cursor:pointer; border:none; border-radius:5px; position:relative;}
-  .yes {background: #ff6b81; color:#fff;}
-  .no {background:#ffcb77; color:#000;}
-  canvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%;}
-  video{max-width:80%; border-radius:10px;}
-  .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
-  @keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
-  #gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:10px; overflow:hidden;}
-  .gameHeart{position:absolute;width:50px;height:50px;background:red;border-radius:50%;cursor:pointer; background-image: url('heart.png'); background-size:cover;}
-  .score{font-size:1.5em;margin-top:10px;}
-  #puzzleGame{position:relative; margin:20px auto; border:2px solid #fff; width:320px; height:320px;}
-  #puzzleGame canvas{position:absolute; cursor:pointer;}
+html, body {margin:0; padding:0; width:100%; height:100%; font-family: 'Dancing Script', cursive; overflow:hidden; background: linear-gradient(135deg, #ffdfba, #ffb6b9);}
+.page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer;}
+.page.active {display:block;}
+.title {font-size:2.5em; margin-bottom:20px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);}
+input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
+.typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
+.yes, .no {padding:12px 25px; font-size:1.2em; margin:15px; cursor:pointer; border:none; border-radius:8px; position:relative; z-index:10;}
+.yes {background: #ff6b81; color:#fff;}
+.no {background:#ffcb77; color:#000;}
+video,img{max-width:80%; border-radius:15px; z-index:5; position:relative;}
+canvas#heartsCanvas, canvas#confettiCanvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:1;}
+.countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
+@keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
+#gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:15px; overflow:hidden;}
+.gameHeart{position:absolute;width:50px;height:50px; cursor:pointer; background-image: url('heart.png'); background-size:cover;}
+.score{font-size:1.8em;margin-top:10px; transition: transform 0.2s;}
+#puzzleGame{position:relative; margin:20px auto; width:320px; height:320px; border-radius:15px; overflow:hidden; touch-action:none;}
+#puzzleGame canvas{position:absolute; cursor:pointer; user-select:none;}
 </style>
 </head>
 <body>
 
 <audio id="bgSong" src="song.mp3" autoplay loop></audio>
+<canvas id="heartsCanvas"></canvas>
 <canvas id="confettiCanvas"></canvas>
 
 <script>
-// Floating heart bubbles
-function createHearts(){
-  for(let i=0;i<50;i++){
-    const h = document.createElement('div');
-    h.classList.add('heart');
-    const size = Math.random()*25+15;
-    h.style.width = h.style.height = size+'px';
-    h.style.left = Math.random()*100+'vw';
-    h.style.top = Math.random()*100+'vh';
-    h.style.background = `rgba(255,${Math.floor(Math.random()*200+50)},${Math.floor(Math.random()*200+50)},${Math.random()*0.6+0.3})`;
-    h.style.animationDuration = Math.random()*15+10+'s';
-    h.style.animationDelay = Math.random()*5+'s';
-    document.body.appendChild(h);
-  }
+// Heart bubbles as images
+const heartsCanvas = document.getElementById('heartsCanvas');
+const hctx = heartsCanvas.getContext('2d');
+heartsCanvas.width = window.innerWidth;
+heartsCanvas.height = window.innerHeight;
+const heartImg = new Image();
+heartImg.src = 'heart.png';
+let hearts = [];
+for(let i=0;i<60;i++){
+  hearts.push({
+    x: Math.random()*heartsCanvas.width,
+    y: Math.random()*heartsCanvas.height,
+    size: Math.random()*20+20,
+    speedX: (Math.random()-0.5)*1,
+    speedY: Math.random()*1+0.5,
+    rotation: Math.random()*360,
+    rotationSpeed: (Math.random()-0.5)*2
+  });
 }
-createHearts();
-</script>
-
-<!-- Pages -->
-<div class="page active" id="passwordPage">
-  <div class="title">Enter Date Password:</div>
-  <input type="date" id="passInput">
-  <button onclick="checkPassword()">Unlock</button>
-</div>
-
-<div class="page" id="page1">
-  <div class="title typing" id="typeText1"></div>
-  <video src="video1.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page2">
-  <div class="title">First and foremost</div>
-  <video src="video2.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page3">
-  <div class="title">Please press to open</div>
-  <img src="image1.jpg" alt="Image 1">
-</div>
-
-<div class="page" id="page4">
-  <img src="image2.jpg" alt="Image 2">
-</div>
-
-<div class="page" id="page5">
-  <div class="title">Do you wanna see something cute?</div>
-  <button class="yes" id="yes1">Yes</button>
-  <button class="no" id="no1">No</button>
-</div>
-
-<div class="page" id="page6">
-  <div class="title">I have something to say click to view</div>
-  <video src="video3.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page7">
-  <div class="title">You wanna know how you fix my heart?</div>
-  <button class="yes" onclick="nextPage(8)">Yes</button>
-  <button class="no" onclick="runAway(this)">No</button>
-</div>
-
-<div class="page" id="page8">
-  <video src="video4.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page9">
-  <div class="title">This is how I feel when I'm near u</div>
-  <video src="video5.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page10">
-  <div class="title">Will you hold my hands forever?</div>
-  <video src="video6.mp4" autoplay muted></video>
-  <button class="yes" onclick="startConfetti()">Yes</button>
-  <button class="no" onclick="runAway(this)">No</button>
-</div>
-
-<div class="page" id="page11">
-  <div class="title">Solve this puzzle to see how cute we look together</div>
-  <div id="puzzleGame"></div>
-</div>
-
-<div class="page" id="page12">
-  <div class="title">Catch the hearts game!</div>
-  <div class="score">Score: <span id="score">0</span></div>
-  <div id="gameArea"></div>
-</div>
-
-<div class="page" id="page13">
-  <div class="title">You wanna know what's in my heart?</div>
-  <video src="video7.mp4" autoplay muted></video>
-  <img src="image5.jpg" alt="Image 5">
-</div>
-
-<div class="page" id="page14">
-  <div class="title">A lot of kisses for you</div>
-  <video src="video8.mp4" autoplay muted></video>
-  <div class="title">Hugs</div>
-  <video src="video9.mp4" autoplay muted></video>
-</div>
-
-<div class="page" id="page15">
-  <div class="title">You wanna see a memory?</div>
-  <img src="image6.jpg" alt="Image 6">
-</div>
-
-<div class="page" id="page16">
-  <div class="title">Happy 8 month's my love</div>
-  <div class="countdown" id="animatedCountdown"></div>
-</div>
-
-<script>
-// Navigation
-let currentPage=0;
-function nextPage(num){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page'+num).classList.add('active');
-  currentPage=num;
+function drawHearts(){
+  hctx.clearRect(0,0,heartsCanvas.width,heartsCanvas.height);
+  hearts.forEach(h=>{
+    hctx.save();
+    hctx.translate(h.x,h.y);
+    hctx.rotate(h.rotation*Math.PI/180);
+    hctx.drawImage(heartImg,-h.size/2,-h.size/2,h.size,h.size);
+    hctx.restore();
+    h.x += h.speedX;
+    h.y -= h.speedY;
+    h.rotation += h.rotationSpeed;
+    if(h.y<-50) h.y=heartsCanvas.height+50;
+    if(h.x<-50) h.x=heartsCanvas.width+50;
+    if(h.x>heartsCanvas.width+50) h.x=-50;
+  });
+  requestAnimationFrame(drawHearts);
 }
-
-// Password
-function checkPassword(){
-  const input=document.getElementById('passInput').value;
-  if(input==="2025-06-18"){
-    nextPage(1);
-    startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1");
-  } else alert("Incorrect password!");
-}
-
-// Typing effect
-function startTyping(text,id){
-  let i=0;
-  const el=document.getElementById(id);
-  const interval=setInterval(()=>{
-    el.innerHTML=text.slice(0,i);
-    i++;
-    if(i>text.length) clearInterval(interval);
-  },50);
-}
-
-// Yes/No buttons
-document.getElementById('no1').addEventListener('click',()=>{
-  const btn=document.getElementById('yes1');
-  let scale=1;
-  const interval=setInterval(()=>{
-    scale+=0.1;
-    btn.style.transform=`scale(${scale})`;
-    if(scale>4) clearInterval(interval);
-  },100);
-});
-document.getElementById('yes1').addEventListener('click',()=>nextPage(6));
-
-function runAway(el){
-  const x=Math.random()*(window.innerWidth-100);
-  const y=Math.random()*(window.innerHeight-50);
-  el.style.position='absolute';
-  el.style.left=x+'px';
-  el.style.top=y+'px';
-}
+heartImg.onload = drawHearts;
 
 // Confetti
-const canvas=document.getElementById('confettiCanvas');
-const ctx=canvas.getContext('2d');
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+const confCanvas=document.getElementById('confettiCanvas');
+const cctx=confCanvas.getContext('2d');
+confCanvas.width=window.innerWidth;
+confCanvas.height=window.innerHeight;
 let confettiParticles=[];
 function startConfetti(){
   for(let i=0;i<200;i++){
     confettiParticles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height-500,
+      x:Math.random()*confCanvas.width,
+      y:Math.random()*confCanvas.height-500,
       r:Math.random()*6+2,
       d:Math.random()*50+2,
       color:`hsl(${Math.random()*360},100%,50%)`,
@@ -214,47 +92,66 @@ function startConfetti(){
   requestAnimationFrame(drawConfetti);
 }
 function drawConfetti(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  cctx.clearRect(0,0,confCanvas.width,confCanvas.height);
   confettiParticles.forEach(p=>{
-    ctx.beginPath();
-    ctx.lineWidth=p.r;
-    ctx.strokeStyle=p.color;
-    ctx.moveTo(p.x+p.tilt+p.r/2,p.y);
-    ctx.lineTo(p.x+p.tilt,p.y+p.tilt+p.r/2);
-    ctx.stroke();
+    cctx.beginPath();
+    cctx.lineWidth=p.r;
+    cctx.strokeStyle=p.color;
+    cctx.moveTo(p.x+p.tilt+p.r/2,p.y);
+    cctx.lineTo(p.x+p.tilt,p.y+p.tilt+p.r/2);
+    cctx.stroke();
     p.tilt+=p.tiltAngleIncrement;
     p.y+=(Math.cos(p.d)+3+p.r/2)/2;
-    if(p.y>canvas.height) p.y=-10;
+    if(p.y>confCanvas.height) p.y=-10;
   });
   requestAnimationFrame(drawConfetti);
 }
 
-// Mini-game
-let score=0;
-function createHeart(){
-  const heart=document.createElement('div');
-  heart.classList.add('gameHeart');
-  heart.style.left=Math.random()*(window.innerWidth-50)+'px';
-  heart.style.top='-50px';
-  document.getElementById('gameArea').appendChild(heart);
-  let fall=setInterval(()=>{
-    let top=parseInt(heart.style.top);
-    heart.style.top=(top+5)+'px';
-    if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createHeart();}
-  },30);
-  heart.addEventListener('click',()=>{
-    score++;
-    document.getElementById('score').textContent=score;
-    heart.remove(); clearInterval(fall); createHeart();
-  });
+// Navigation & typing
+let currentPage=0;
+function showPage(num){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+num).classList.add('active');
+  currentPage=num;
 }
-function startGame(){
-  score=0;
-  document.getElementById('score').textContent=score;
-  document.getElementById('gameArea').innerHTML='';
-  for(let i=0;i<5;i++) createHeart();
+function startTyping(text,id){
+  let i=0;
+  const el=document.getElementById(id);
+  const interval=setInterval(()=>{
+    el.innerHTML=text.slice(0,i);
+    i++;
+    if(i>text.length) clearInterval(interval);
+  },50);
 }
-document.getElementById('page12').addEventListener('click',startGame);
+
+// Password
+function checkPassword(){
+  const input=document.getElementById('passInput').value;
+  if(input==="2025-06-18"){
+    showPage(1);
+    startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1");
+  } else alert("Incorrect password!");
+}
+
+// Yes/No buttons
+document.getElementById('no1').addEventListener('click',()=>{
+  const btn=document.getElementById('yes1');
+  let scale=1;
+  const interval=setInterval(()=>{
+    scale+=0.1;
+    btn.style.transform=`scale(${scale})`;
+    if(scale>5) clearInterval(interval);
+  },100);
+});
+document.getElementById('yes1').addEventListener('click',()=>showPage(6));
+
+function runAway(el){
+  const x=Math.random()*(window.innerWidth-100);
+  const y=Math.random()*(window.innerHeight-50);
+  el.style.position='absolute';
+  el.style.left=x+'px';
+  el.style.top=y+'px';
+}
 
 // Countdown
 const countdownEl=document.getElementById('animatedCountdown');
@@ -268,86 +165,121 @@ function animateCountdown(){
 }
 animateCountdown();
 
-// Tap anywhere navigation
+// Tap anywhere
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && p.id!=='page11'){
-      if(index<16) nextPage(index+1);
+    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && p.id!=='page11' && p.id!=='page12'){
+      if(index<16) showPage(index+1);
     }
   });
 });
 
-// Playable Puzzle 3x3
-function initPuzzle() {
-  const rows = 3;
-  const cols = 3;
-  const size = 320 / cols;
+// Mini-game
+let score=0;
+function createGameHeart(){
+  const heart=document.createElement('div');
+  heart.classList.add('gameHeart');
+  heart.style.left=Math.random()*(window.innerWidth-50)+'px';
+  heart.style.top='-50px';
+  document.getElementById('gameArea').appendChild(heart);
+  let fall=setInterval(()=>{
+    let top=parseInt(heart.style.top);
+    heart.style.top=(top+5)+'px';
+    if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createGameHeart();}
+  },30);
+  heart.addEventListener('click',()=>{
+    score++;
+    const scoreEl=document.getElementById('score');
+    scoreEl.textContent=score;
+    scoreEl.style.transform='scale(1.5)';
+    setTimeout(()=>{scoreEl.style.transform='scale(1)';},200);
+    heart.remove(); clearInterval(fall); createGameHeart();
+  });
+}
+document.getElementById('page12').addEventListener('click',()=>{
+  score=0;
+  document.getElementById('score').textContent=score;
+  document.getElementById('gameArea').innerHTML='';
+  for(let i=0;i<5;i++) createGameHeart();
+});
+
+// Draggable puzzle
+function initDraggablePuzzle(){
   const puzzleDiv = document.getElementById('puzzleGame');
-  const tiles = [];
+  const rows = 3, cols =3;
+  const size = 320/cols;
+  const tiles=[];
   const img = new Image();
-  img.src = "image4.jpg";
-  img.onload = function() {
+  img.src='image4.jpg';
+  img.onload=function(){
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
-        const canvas = document.createElement('canvas');
-        canvas.width = size; canvas.height = size;
-        canvas.style.position = "absolute";
-        canvas.style.top = (r*size)+'px';
-        canvas.style.left = (c*size)+'px';
-        canvas.dataset.row = r;
-        canvas.dataset.col = c;
-        const ctx = canvas.getContext('2d');
+        const canvas=document.createElement('canvas');
+        canvas.width=size; canvas.height=size;
+        canvas.style.top = r*size+'px';
+        canvas.style.left = c*size+'px';
+        canvas.dataset.row=r;
+        canvas.dataset.col=c;
+        canvas.dataset.correctRow=r;
+        canvas.dataset.correctCol=c;
+        const ctx=canvas.getContext('2d');
         ctx.drawImage(img, c*size, r*size, size, size, 0, 0, size, size);
         tiles.push(canvas);
       }
     }
     for(let i=tiles.length-1;i>0;i--){
-      const j = Math.floor(Math.random()* (i+1));
-      const tempTop = tiles[i].style.top;
-      const tempLeft = tiles[i].style.left;
-      tiles[i].style.top = tiles[j].style.top;
-      tiles[i].style.left = tiles[j].style.left;
-      tiles[j].style.top = tempTop;
-      tiles[j].style.left = tempLeft;
+      const j=Math.floor(Math.random()*(i+1));
+      const tTop=tiles[i].style.top, tLeft=tiles[i].style.left;
+      tiles[i].style.top=tiles[j].style.top;
+      tiles[i].style.left=tiles[j].style.left;
+      tiles[j].style.top=tTop;
+      tiles[j].style.left=tLeft;
     }
-    tiles.forEach(t=>{
-      puzzleDiv.appendChild(t);
-      t.addEventListener('click', function(){
-        const empty = tiles.find(tile=>tile.dataset.empty==="true");
-        if(!empty) return;
-        const tr=parseInt(t.dataset.row), tc=parseInt(t.dataset.col);
-        const er=parseInt(empty.dataset.row), ec=parseInt(empty.dataset.col);
-        if((Math.abs(tr-er)+Math.abs(tc-ec))===1){
-          const tempTop=t.style.top;
-          const tempLeft=t.style.left;
-          t.style.top=empty.style.top;
-          t.style.left=empty.style.left;
-          empty.style.top=tempTop;
-          empty.style.left=tempLeft;
-          empty.dataset.row=tr; empty.dataset.col=tc;
-          t.dataset.row=er; t.dataset.col=ec;
-          checkPuzzleSolved();
-        }
-      });
+    tiles.forEach(c=>{
+      puzzleDiv.appendChild(c);
+      dragElement(c);
     });
-    const last=tiles[tiles.length-1];
-    last.dataset.empty="true";
-    last.style.opacity=0;
+  }
+  function dragElement(el){
+    let offsetX=0,offsetY=0,startX=0,startY=0;
+    el.onpointerdown=function(e){
+      e.preventDefault();
+      startX=e.clientX;
+      startY=e.clientY;
+      document.onpointermove=drag;
+      document.onpointerup=drop;
+    }
+    function drag(e){
+      offsetX=e.clientX-startX;
+      offsetY=e.clientY-startY;
+      el.style.top=(parseInt(el.style.top)+offsetY)+'px';
+      el.style.left=(parseInt(el.style.left)+offsetX)+'px';
+      startX=e.clientX;
+      startY=e.clientY;
+    }
+    function drop(){
+      document.onpointermove=null;
+      document.onpointerup=null;
+      checkPuzzle();
+    }
+  }
+  function checkPuzzle(){
+    const tiles = document.querySelectorAll('#puzzleGame canvas');
+    let solved=true;
+    tiles.forEach(t=>{
+      const top=parseInt(t.style.top);
+      const left=parseInt(t.style.left);
+      if(Math.abs(top - t.dataset.correctRow*size)>15 || Math.abs(left - t.dataset.correctCol*size)>15){
+        solved=false;
+      }
+    });
+    if(solved) showPage(12);
   }
 }
-function checkPuzzleSolved(){
-  const tiles = document.querySelectorAll('#puzzleGame canvas');
-  let solved=true;
-  tiles.forEach(t=>{
-    const top=parseInt(t.style.top);
-    const left=parseInt(t.style.left);
-    const row=parseInt(t.dataset.row);
-    const col=parseInt(t.dataset.col);
-    if(top!==row*320/3 || left!==col*320/3) solved=false;
-  });
-  if(solved) nextPage(12);
-}
-initPuzzle();
+initDraggablePuzzle();
 </script>
+
+<!-- Include all pages HTML here (password page → last countdown) same as previously defined -->
+
 </body>
 </html>
