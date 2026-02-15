@@ -29,7 +29,7 @@
 </head>
 <body>
 
-<audio id="bgSong" src="Sitaare-KoshalWorld.Com-mc.mp3" autoplay loop></audio>
+<audio id="bgSong" src="song.mp3" autoplay loop></audio>
 <canvas id="confettiCanvas"></canvas>
 
 <!-- Heart bubbles -->
@@ -60,21 +60,21 @@ createHearts();
 
 <div class="page" id="page1">
   <div class="title typing" id="typeText1"></div>
-  <video src="From-Main-Klickpin-CF-Love-Letters-6sfnj1iz8.mp4" autoplay muted></video>
+  <video src="video 1.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page2">
   <div class="title">First and foremost</div>
-  <video src="InShot_20260216_014300027.mp4" autoplay muted></video>
+  <video src="video 2.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page3">
   <div class="title">Please press to open</div>
-  <img src="87ba7265a3278eb26ac53a916bba7585.jpg" alt="Image 1">
+  <img src="image1.jpg" alt="Image 1">
 </div>
 
 <div class="page" id="page4">
-  <img src="Picsart_26-02-16_02-00-23-833.jpg" alt="Image 2">
+  <img src="image2.jpg" alt="Image 2">
 </div>
 
 <div class="page" id="page5">
@@ -85,7 +85,7 @@ createHearts();
 
 <div class="page" id="page6">
   <div class="title">I have something to say click to view</div>
-  <video src="From-Main-Klickpin-CF-Cute-videos-4OpY22JDS.mp4" autoplay muted></video>
+  <video src="video 3.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page7">
@@ -95,17 +95,17 @@ createHearts();
 </div>
 
 <div class="page" id="page8">
-  <video src="From-Main-Klickpin-CF-Video-Pinterest-6sl5pQwZf.mp4" autoplay muted></video>
+  <video src="video 4.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page9">
   <div class="title">This is how I feel when I'm near u</div>
-  <video src="From-Main-Klickpin-CF-Video-Pinterest-5B8SIpTed.mp4" autoplay muted></video>
+  <video src="video 5.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page10">
   <div class="title">Will you hold my hands forever?</div>
-  <video src="From-Main-Klickpin-CF-Video-Pinterest-7MQLY1I01.mp4" autoplay muted></video>
+  <video src="video 6.mp4" autoplay muted></video>
   <button class="yes" onclick="startConfetti()">Yes</button>
   <button class="no" onclick="runAway(this)">No</button>
 </div>
@@ -124,20 +124,20 @@ createHearts();
 
 <div class="page" id="page13">
   <div class="title">You wanna know what's in my heart?</div>
-  <video src="f14d48423244e4275d5eb1ae5d598030.gif" autoplay muted loop></video>
-  <img src="Picsart_26-02-16_01-22-35-151.jpg" alt="Image 5">
+  <video src="video 7.mp4" autoplay muted></video>
+  <img src="image5.jpg" alt="Image 5">
 </div>
 
 <div class="page" id="page14">
   <div class="title">A lot of kisses for you</div>
-  <video src="From-Main-Klickpin-CF-Video-Pinterest-5nTAnx1fk.mp4" autoplay muted></video>
+  <video src="video 8.mp4" autoplay muted></video>
   <div class="title">Hugs</div>
-  <video src="From-Main-Klickpin-CF-Pinterest-Video-6w4DmnP94.mp4" autoplay muted></video>
+  <video src="video 9.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page15">
   <div class="title">You wanna see a memory?</div>
-  <img src="IMG_20260216_012450.png" alt="Image 6">
+  <img src="image6.jpg" alt="Image 6">
 </div>
 
 <div class="page" id="page16">
@@ -146,7 +146,7 @@ createHearts();
 </div>
 
 <script>
-// Page navigation
+// Navigation
 let currentPage=0;
 function nextPage(num){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -154,7 +154,7 @@ function nextPage(num){
   currentPage=num;
 }
 
-// Password page
+// Password
 function checkPassword(){
   const input=document.getElementById('passInput').value;
   if(input==="2025-06-18"){
@@ -269,7 +269,7 @@ function animateCountdown(){
 }
 animateCountdown();
 
-// Tap anywhere navigation (disabled on puzzle)
+// Tap anywhere navigation
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
     if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && p.id!=='page11'){
@@ -286,7 +286,7 @@ function initPuzzle() {
   const puzzleDiv = document.getElementById('puzzleGame');
   const tiles = [];
   const img = new Image();
-  img.src = "IMG_20260216_012519.png";
+  img.src = "image4.jpg";
   img.onload = function() {
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
@@ -315,7 +315,6 @@ function initPuzzle() {
     tiles.forEach(t=>{
       puzzleDiv.appendChild(t);
       t.addEventListener('click', function(){
-        // Simple swap with adjacent tile logic
         const empty = tiles.find(tile=>tile.dataset.empty==="true");
         if(!empty) return;
         const tr=parseInt(t.dataset.row), tc=parseInt(t.dataset.col);
@@ -333,7 +332,7 @@ function initPuzzle() {
         }
       });
     });
-    // Make last tile empty
+    // Last tile empty
     const last=tiles[tiles.length-1];
     last.dataset.empty="true";
     last.style.opacity=0;
