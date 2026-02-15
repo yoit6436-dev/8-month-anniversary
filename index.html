@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8 Month Anniversary Surprise</title>
 <style>
-  body, html { margin:0; padding:0; width:100%; height:100%; font-family:sans-serif; overflow:hidden; background:#f8e3d2; color:#fff; }
-  .page { display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer; }
-  .page.active { display:block; }
-  .title { font-size:2em; margin-bottom:20px; }
-  input[type=date]{ padding:10px; font-size:1em; border-radius:5px; border:none; }
+  html, body {margin:0; padding:0; width:100%; height:100%; font-family:sans-serif; overflow:hidden; background: linear-gradient(135deg, #ffdfba, #ffb6b9); color:#fff;}
+  .page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer;}
+  .page.active {display:block;}
+  .title {font-size:2em; margin-bottom:20px;}
+  input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
   .bubble, .heart{position:absolute; border-radius:50%; opacity:0.7; animation:float linear infinite; pointer-events:none;}
-  @keyframes float { 0% {transform:translateY(0) rotate(0deg);} 100% {transform:translateY(-120vh) rotate(360deg);} }
-  .typing { display:inline; border-right:2px solid #fff; padding-right:2px; }
-  .yes, .no { padding:10px 20px; font-size:1em; margin:10px; cursor:pointer; border:none; border-radius:5px; position:relative; }
-  .yes { background: #ff6b81; color:#fff; }
-  .no { background:#ffcb77; color:#000; }
+  @keyframes float {0% {transform:translateY(0) rotate(0deg);} 100% {transform:translateY(-120vh) rotate(360deg);}}
+  .typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
+  .yes, .no {padding:10px 20px; font-size:1em; margin:10px; cursor:pointer; border:none; border-radius:5px; position:relative;}
+  .yes {background: #ff6b81; color:#fff;}
+  .no {background:#ffcb77; color:#000;}
   canvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%;}
   video{max-width:80%; border-radius:10px;}
-  .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate; }
-  @keyframes move { 0%{transform:translateX(-10px);}100%{transform:translateX(10px);} }
+  .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
+  @keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
   #gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:10px; overflow:hidden;}
   .gameHeart{position:absolute;width:50px;height:50px;background:red;border-radius:50%;cursor:pointer; background-image: url('heart.png'); background-size:cover;}
   .score{font-size:1.5em;margin-top:10px;}
@@ -32,10 +32,10 @@
 <audio id="bgSong" src="song.mp3" autoplay loop></audio>
 <canvas id="confettiCanvas"></canvas>
 
-<!-- Heart bubbles -->
 <script>
+// Floating heart bubbles
 function createHearts(){
-  for(let i=0;i<100;i++){
+  for(let i=0;i<50;i++){
     const h = document.createElement('div');
     h.classList.add('heart');
     const size = Math.random()*25+15;
@@ -60,12 +60,12 @@ createHearts();
 
 <div class="page" id="page1">
   <div class="title typing" id="typeText1"></div>
-  <video src="video 1.mp4" autoplay muted></video>
+  <video src="video1.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page2">
   <div class="title">First and foremost</div>
-  <video src="video 2.mp4" autoplay muted></video>
+  <video src="video2.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page3">
@@ -85,7 +85,7 @@ createHearts();
 
 <div class="page" id="page6">
   <div class="title">I have something to say click to view</div>
-  <video src="video 3.mp4" autoplay muted></video>
+  <video src="video3.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page7">
@@ -95,22 +95,21 @@ createHearts();
 </div>
 
 <div class="page" id="page8">
-  <video src="video 4.mp4" autoplay muted></video>
+  <video src="video4.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page9">
   <div class="title">This is how I feel when I'm near u</div>
-  <video src="video 5.mp4" autoplay muted></video>
+  <video src="video5.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page10">
   <div class="title">Will you hold my hands forever?</div>
-  <video src="video 6.mp4" autoplay muted></video>
+  <video src="video6.mp4" autoplay muted></video>
   <button class="yes" onclick="startConfetti()">Yes</button>
   <button class="no" onclick="runAway(this)">No</button>
 </div>
 
-<!-- Playable Puzzle -->
 <div class="page" id="page11">
   <div class="title">Solve this puzzle to see how cute we look together</div>
   <div id="puzzleGame"></div>
@@ -124,15 +123,15 @@ createHearts();
 
 <div class="page" id="page13">
   <div class="title">You wanna know what's in my heart?</div>
-  <video src="video 7.mp4" autoplay muted></video>
+  <video src="video7.mp4" autoplay muted></video>
   <img src="image5.jpg" alt="Image 5">
 </div>
 
 <div class="page" id="page14">
   <div class="title">A lot of kisses for you</div>
-  <video src="video 8.mp4" autoplay muted></video>
+  <video src="video8.mp4" autoplay muted></video>
   <div class="title">Hugs</div>
-  <video src="video 9.mp4" autoplay muted></video>
+  <video src="video9.mp4" autoplay muted></video>
 </div>
 
 <div class="page" id="page15">
@@ -302,7 +301,6 @@ function initPuzzle() {
         tiles.push(canvas);
       }
     }
-    // Shuffle tiles
     for(let i=tiles.length-1;i>0;i--){
       const j = Math.floor(Math.random()* (i+1));
       const tempTop = tiles[i].style.top;
@@ -332,7 +330,6 @@ function initPuzzle() {
         }
       });
     });
-    // Last tile empty
     const last=tiles[tiles.length-1];
     last.dataset.empty="true";
     last.style.opacity=0;
