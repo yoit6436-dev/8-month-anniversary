@@ -126,32 +126,46 @@ function showPage(n){
 }
 
 // ---------- FIXED TYPING ----------
-function startTyping(text,id,callback){
-  let i=0;
-  const el=document.getElementById(id);
-  el.textContent="";
-  const interval=setInterval(()=>{
+function startTyping(text, id, callback){
+  const el = document.getElementById(id);
+  el.textContent = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
     el.textContent += text.charAt(i);
     i++;
-    if(i===text.length){
+
+    if (i === text.length) {
       clearInterval(interval);
-      setTimeout(callback,800);
+      setTimeout(() => {
+        if (callback) callback();
+      }, 700); // small pause so it feels natural
     }
-  },60);
+  }, 60);
 }
 
 // ---------- Password (FIXED) ----------
-const bgSong=document.getElementById('bgSong');
 function checkPassword(){
-  const input=document.getElementById('passInput').value;
-  if(input==="2025-06-18"){
+  const input = document.getElementById('passInput').value;
+
+  if(input === "2025-06-18"){
     bgSong.play().catch(()=>{});
-    showPage(1); // 🔥 THIS WAS MISSING
+
+    // show typing page first
+    showPage(1);
+
+    // start typing
     startTyping(
       "Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖",
       "typeText1",
-      ()=>showPage(2)
+      () => {
+        // SAFE transition to video page
+        setTimeout(() => {
+          showPage(2);
+        }, 100);
+      }
     );
+
   } else {
     alert("Incorrect password!");
   }
@@ -160,3 +174,4 @@ function checkPassword(){
 
 </body>
 </html>
+
