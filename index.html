@@ -4,92 +4,103 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>8 Month Anniversary Surprise</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
+:root {
+    --primary: #ff6b81;
+    --accent: #ffcb77;
+    --glass: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.2);
+}
+
 html, body {
   margin:0; padding:0; width:100%; height:100%;
   font-family:'Poppins', sans-serif;
   overflow:hidden;
-  background: linear-gradient(135deg, #1e1f26, #2c2f3b);
+  background: radial-gradient(circle at center, #2c2f3b 0%, #1e1f26 100%);
   color:#fff;
   touch-action: manipulation;
 }
+
+/* Background Bubbles */
+canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1; opacity: 0.6;}
+
 .page {
   display:none; width:100%; height:100%; position:absolute; top:0; left:0;
   text-align:center; padding-top:6vh; box-sizing:border-box;
+  transition: all 0.5s ease-in-out;
 }
-.page.active {display:block;}
+.page.active {display:block; animation: fadeIn 0.8s ease-in-out;}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
 .title {
   font-family:'Dancing Script', cursive;
-  font-size:2.5em; margin-bottom:15px;
-  text-shadow:2px 2px 10px rgba(0,0,0,0.5);
+  font-size:2.8em; margin-bottom:15px;
+  background: linear-gradient(to right, #fff, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
 }
+
 .typing {display:inline; border-right:2px solid #fff; padding-right:2px; animation: blink 0.7s infinite;}
 @keyframes blink { 50% { border-color: transparent; } }
 
-video, img {max-width:85%; border-radius:15px; position:relative; z-index:5; box-shadow:0 15px 30px rgba(0,0,0,0.7);}
+video, img {max-width:85%; border-radius:20px; position:relative; z-index:5; box-shadow:0 20px 40px rgba(0,0,0,0.6); border: 1px solid var(--border);}
 
-/* Creative Progress Bar */
-#progress-container {
-    position: fixed; bottom: 10px; left: 10%; width: 80%; height: 6px;
-    background: rgba(255,255,255,0.1); border-radius: 10px; z-index: 100; display: none;
+/* Pinterest Aesthetic: Polaroid */
+.polaroid-frame {
+    background: #fff;
+    padding: 12px 12px 45px 12px;
+    border-radius: 5px;
+    display: inline-block;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    transform: rotate(-2deg);
+    animation: floatImg 4s ease-in-out infinite alternate;
 }
-#progress-bar {
-    width: 0%; height: 100%; background: #ff6b81; border-radius: 10px;
-    transition: width 0.5s ease; box-shadow: 0 0 10px #ff6b81;
-}
+@keyframes floatImg { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(-15px) rotate(2deg); } }
 
-/* Floating Memory Effect */
-.float-anim { animation: float-img 4s ease-in-out infinite alternate; }
-@keyframes float-img {
-    0% { transform: translateY(0) rotate(-1deg); }
-    100% { transform: translateY(-15px) rotate(2deg); }
-}
+/* Buttons */
+button {padding:12px 28px; font-size:1em; margin:15px; cursor:pointer; border:none; border-radius:50px; z-index:10; position:relative; font-family:'Poppins'; font-weight: 600; letter-spacing: 1px; transition: 0.3s;}
+.yes{background: linear-gradient(45deg, var(--primary), #ff4757); color:#fff; box-shadow: 0 10px 20px rgba(255,107,129,0.3);}
+.no{background: var(--accent); color:#000; box-shadow: 0 10px 20px rgba(255,203,119,0.2);}
 
-button {padding:12px 25px; font-size:1.1em; margin:15px; cursor:pointer; border:none; border-radius:30px; z-index:10; position:relative; transition: transform 0.2; font-family: 'Poppins';}
-.yes{background: linear-gradient(to right, #ff6b81, #ff4757); color:#fff; box-shadow: 0 4px 15px rgba(255,107,129,0.4);}
-.no{background:#ffcb77; color:#000; position:relative;}
-
-/* Game Canvas */
-#game-canvas { background: rgba(0,0,0,0.3); border-radius: 15px; margin: 10px auto; border: 1px solid rgba(255,255,255,0.2); touch-action: none; }
-
-/* Puzzle */
+/* Game & Puzzle Areas */
+#game-canvas { background: var(--glass); border-radius: 20px; margin: 10px auto; border: 1px solid var(--border); touch-action: none; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
 #puzzle-board {
     display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px);
-    grid-gap: 5px; justify-content: center; margin: 15px auto;
-    background: rgba(255,255,255,0.1); padding: 10px; border-radius: 15px;
+    grid-gap: 8px; justify-content: center; margin: 15px auto;
+    background: var(--glass); padding: 15px; border-radius: 20px; border: 1px solid var(--border);
 }
-.puzzle-piece { width: 90px; height: 90px; border: 1px solid #ff6b81; border-radius: 5px; background-size: cover; }
-.selected-piece { outline: 3px solid #fff; transform: scale(1.05); }
+.puzzle-piece { width: 90px; height: 90px; border-radius: 10px; background-size: cover; border: 1px solid rgba(255,255,255,0.1); }
+.selected-piece { outline: 3px solid #fff; box-shadow: 0 0 20px var(--primary); transform: scale(1.05); }
+
+/* Progress Bar */
+#progress-wrap { position: fixed; bottom: 20px; left: 10%; width: 80%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; z-index: 100; }
+#progress-bar { width: 0%; height: 100%; background: var(--primary); border-radius: 10px; transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 15px var(--primary); }
 
 /* Final Aesthetic Card */
 .glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 25px;
-    padding: 25px; width: 88%; margin: 0 auto;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 30px; width: 85%; margin: 0 auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
-#finalTitle {
-  font-family:'Fredoka One', cursive; font-size:2.5em;
-  background: linear-gradient(to bottom, #fff, #ff6b81);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
+#finalTitle { font-family:'Fredoka One', cursive; font-size:2.6em; margin-bottom: 10px; color: #fff; text-shadow: 0 0 20px var(--primary); }
 </style>
 </head>
 <body>
 
 <audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <canvas id="bubblesCanvas"></canvas>
-
-<div id="progress-container"><div id="progress-bar"></div></div>
+<div id="progress-wrap"><div id="progress-bar"></div></div>
 
 <div class="page active" id="page0">
   <h1 class="title">Enter the Secret Date 💖</h1>
-  <input type="date" id="passInput" style="padding:10px; border-radius:5px;">
-  <button onclick="checkPassword()">Submit</button>
+  <input type="date" id="passInput" style="padding:12px; border-radius:10px; border:1px solid var(--border); background: var(--glass); color: white;">
+  <button onclick="checkPassword()" class="yes">Unlock My Love</button>
 </div>
 
 <div class="page" id="page1"><div class="title"><span id="typeText1" class="typing"></span></div></div>
@@ -110,19 +121,19 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <button class="yes" id="yesBtn5">YES</button>
   <button class="no" id="noBtn5">NO</button>
   <div id="imageContainer5"></div>
-  <button id="next5" style="display:none;" onclick="showPage(6)">Next</button>
+  <button id="next5" style="display:none; margin-top: 10px;" class="yes" onclick="showPage(6)">Next Step</button>
 </div>
 
 <div class="page" id="page6">
   <div class="title">I have something to say, click to view.</div>
-  <button id="clickToView6">Click</button>
+  <button id="clickToView6" class="yes">Open Note</button>
   <div id="videoContainer6"></div>
 </div>
 
 <div class="page" id="page7">
   <div class="title">You wanna know how your fix my heart?</div>
-  <button class="yes" id="yesBtn7">YES</button>
-  <button class="no" id="noBtn7">NO</button>
+  <button class="yes" id="yesBtn7">Show Me</button>
+  <button class="no" id="noBtn7">No</button>
   <div id="videoContainer7"></div>
 </div>
 
@@ -162,29 +173,32 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
 
 <div class="page" id="page14">
   <div class="title">A sweet and childish memory</div>
-  <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg" class="float-anim">
-  <p style="font-style: italic; color: #ffd6e0; margin-top:10px;">(Continue to the challenge...)</p>
+  <div class="polaroid-frame">
+     <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg">
+  </div>
+  <p style="margin-top:20px; font-weight: 300; opacity: 0.8;">(Tap for a challenge...)</p>
 </div>
 
 <div class="page" id="pageGame">
-  <div class="title">Catch the Glowing Stars! ✨</div>
+  <div class="title">Catch 10 Glowing Stars ✨</div>
   <canvas id="game-canvas" width="300" height="350"></canvas>
-  <h2 id="scoreDisplay" style="color:#ffcb77;">Collected: 0</h2>
+  <h2 id="scoreDisplay" style="color:var(--accent); font-weight: 400;">Collected: 0 / 10</h2>
 </div>
 
 <div class="page" id="pagePuzzle">
   <div class="title">Fix Our Memory 🧩</div>
   <div id="puzzle-board"></div>
-  <button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">The Secret ✨</button>
+  <button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">See Final Surprise</button>
 </div>
 
 <div class="page" id="pageFinal">
     <div class="glass-card">
-        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg" style="max-width:100%; border-radius:15px; margin-bottom:10px;">
+        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg" style="max-width:100%; border-radius:15px; margin-bottom:15px;">
         <h1 id="finalTitle">Happy 8 Months!</h1>
-        <p style="color: #ffd6e0; font-weight: 300;">
-            I love you more than all the stars in the sky.<br>
-            <span style="font-size: 1.2em; font-weight: 600;">18.06.2025</span>
+        <p style="color: #ffd6e0; font-weight: 300; line-height: 1.6;">
+            Every day with you is a gift I never expected but always needed. <br>
+            <span style="font-weight: 600; font-size: 1.3em;">Forever to go. ❤️</span><br>
+            18.06.2025
         </p>
     </div>
 </div>
@@ -198,17 +212,24 @@ const heartImg=new Image(); heartImg.src='https://raw.githubusercontent.com/yoit
 const kissImg=new Image(); kissImg.src='https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
 
 let bubbles=[];
-for(let i=0;i<15;i++) bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*25+15,speedY:Math.random()*1+0.5,img:Math.random()<0.5?heartImg:kissImg});
+for(let i=0;i<18;i++) bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*25+15,speedY:Math.random()*1+0.5,img:Math.random()<0.5?heartImg:kissImg});
 
-function drawBubbles(){bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);bubbles.forEach(b=>{bctx.drawImage(b.img,b.x,b.y,b.size,b.size);b.y-=b.speedY;if(b.y<-50)b.y=bubblesCanvas.height+50;});requestAnimationFrame(drawBubbles);}
+function drawBubbles(){
+    bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);
+    bubbles.forEach(b=>{
+        bctx.drawImage(b.img,b.x,b.y,b.size,b.size);
+        b.y-=b.speedY; if(b.y<-50) b.y=bubblesCanvas.height+50;
+    });
+    requestAnimationFrame(drawBubbles);
+}
 drawBubbles();
 
 let currentPage=0;
-const totalPages = 16; // Adjust based on total steps
+const totalSteps = 16;
 
 function updateProgress(num) {
     let bar = document.getElementById('progress-bar');
-    let percent = (num / totalPages) * 100;
+    let percent = (num / totalSteps) * 100;
     bar.style.width = percent + '%';
 }
 
@@ -217,11 +238,9 @@ function showPage(num){
     let target = (typeof num === 'string') ? document.getElementById('page'+num) : document.getElementById('page'+num);
     target.classList.add('active');
     
-    if(num !== 0) document.getElementById('progress-container').style.display = 'block';
+    let step = (typeof num === 'string') ? totalSteps : num;
+    updateProgress(step);
     
-    let pageNum = (typeof num === 'string') ? totalPages : num;
-    updateProgress(pageNum);
-
     currentPage = num;
     if(num === 'Game') startStarGame();
     if(num === 'Puzzle') initPuzzle();
@@ -232,7 +251,7 @@ function checkPassword(){
         bgSong.play().catch(()=>{});
         showPage(1);
         startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage(2));
-    } else alert("Incorrect password!");
+    } else alert("Secret code incorrect! ❌");
 }
 
 function startTyping(text,id,callback){
@@ -240,12 +259,12 @@ function startTyping(text,id,callback){
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } }, 50);
 }
 
-/* YES/NO Growth */
-let yesScale = 1;
+/* YES/NO Interaction */
+let yesBtnScale = 1;
 document.getElementById('noBtn5').onclick = (e) => {
     e.stopPropagation();
-    yesScale += 0.4;
-    document.getElementById('yesBtn5').style.transform = `scale(${yesScale})`;
+    yesBtnScale += 0.4;
+    document.getElementById('yesBtn5').style.transform = `scale(${yesBtnScale})`;
 };
 document.getElementById('yesBtn5').onclick = (e) => {
     e.stopPropagation();
@@ -253,7 +272,7 @@ document.getElementById('yesBtn5').onclick = (e) => {
     document.getElementById('next5').style.display='inline-block';
 };
 
-/* STAR CATCH GAME */
+/* STAR GAME */
 function startStarGame() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -271,25 +290,23 @@ function startStarGame() {
     function update() {
         if(document.getElementById('pageGame').classList.contains('active')) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            if(Math.random() < 0.05) stars.push({ x: Math.random()*(canvas.width-20), y: -20, size: Math.random()*5+5 });
+            if(Math.random() < 0.05) stars.push({ x: Math.random()*(canvas.width-20), y: -20 });
             
-            // Draw Glow Basket
-            ctx.shadowBlur = 10; ctx.shadowColor = "#ff6b81";
+            // Draw Basket (Glow)
+            ctx.shadowBlur = 15; ctx.shadowColor = "#ff6b81";
             ctx.fillStyle = "#ff6b81";
-            ctx.fillRect(basketX, canvas.height - 20, 60, 10);
+            ctx.beginPath(); ctx.roundRect(basketX, canvas.height-20, 65, 12, 5); ctx.fill();
             ctx.shadowBlur = 0;
 
             stars.forEach((s, i) => {
-                s.y += 3.5;
-                // Draw Glowing Star
+                s.y += (3.5 + score*0.1);
+                // Glowing Star
                 ctx.fillStyle = "#ffcb77";
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, Math.PI*2); ctx.fill();
                 
-                if(s.y > canvas.height - 35 && s.x > basketX - 10 && s.x < basketX + 70) {
+                if(s.y > canvas.height - 40 && s.x > basketX - 10 && s.x < basketX + 75) {
                     stars.splice(i,1); score++;
-                    document.getElementById('scoreDisplay').innerText = "Collected: " + score;
+                    document.getElementById('scoreDisplay').innerText = `Collected: ${score} / 10`;
                     if(score >= 10) showPage('Puzzle');
                 }
                 if(s.y > canvas.height) stars.splice(i,1);
@@ -318,7 +335,7 @@ function initPuzzle() {
 }
 function checkWin() { if (JSON.stringify(currentPieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display = 'inline-block'; }
 
-/* Click Handlers */
+/* Other Handlers */
 document.getElementById('clickToView6').onclick=()=>{ document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline loop style="max-width:90%; border-radius:15px;"></video>`; };
 document.getElementById('yesBtn7').onclick=()=>{ document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay muted playsinline loop style="max-width:90%; border-radius:15px;"></video>`; };
 document.getElementById('noBtn7').onclick=(e)=>{ e.target.style.position='absolute'; e.target.style.top=Math.random()*80+'%'; e.target.style.left=Math.random()*80+'%'; };
