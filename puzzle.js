@@ -5,56 +5,97 @@ var currTile;
 var otherTile;
 var turns = 0;
 
-var imgOrder = ["4","2","8","5","1","6","7","9","3"];
+// 10.jpg is the blank tile
+var imgOrder = ["4","2","8","5","1","6","7","9","3","10"];
 
 window.onload = function () {
-  for (let i = 0; i < 9; i++) {
-    let tile = document.createElement("img");
-    tile.src = imgOrder[i] + ".jpg";
-    tile.id = i;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
 
-    tile.addEventListener("dragstart", dragStart);
-    tile.addEventListener("dragover", e => e.preventDefault());
-    tile.addEventListener("drop", dragDrop);
-    tile.addEventListener("dragend", dragEnd);
+            let tile = document.createElement("img");
+            tile.id = r + "-" + c;
+            tile.src = imgOrder.shift() + ".jpg";
 
-    document.getElementById("board").append(tile);
-  }
+            tile.addEventListener("dragstart", dragStart);
+            tile.addEventListener("dragover", dragOver);
+            tile.addEventListener("dragenter", dragEnter);
+            tile.addEventListener("dragleave", dragLeave);
+            tile.addEventListener("drop", dragDrop);
+            tile.addEventListener("dragend", dragEnd);
+
+            document.getElementById("board").append(tile);
+        }
+    }
 };
 
+// ---------------- Drag Functions ----------------
+
 function dragStart() {
-  currTile = this;
+    currTile = this;
 }
 
+function dragOver(e) {
+    e.preventDefault();
+}
+
+function dragEnter(e) {
+    e.preventDefault();
+}
+
+function dragLeave() {}
+
 function dragDrop() {
-  otherTile = this;
+    otherTile = this;
 }
 
 function dragEnd() {
-  if (!otherTile.src.includes("9.jpg")) return;
+    // only allow swapping with blank tile (10.jpg)
+    if (!otherTile.src.includes("10.jpg")) {
+        return;
+    }
 
-  let currImg = currTile.src;
-  currTile.src = otherTile.src;
-  otherTile.src = currImg;
+    let currCoords = currTile.id.split("-");
+    let r = parseInt(currCoords[0]);
+    let c = parseInt(currCoords[1]);
 
-  turns++;
-  document.getElementById("turns").innerText = turns;
+    let otherCoords = otherTile.id.split("-");
+    let r2 = parseInt(otherCoords[0]);
+    let c2 = parseInt(otherCoords[1]);
 
-  checkSolved();
+    let isAdjacent =
+        (r == r2 && Math.abs(c - c2) == 1) ||
+        (c == c2 && Math.abs(r - r2) == 1);
+
+    if (isAdjacent) {
+        let currImg = currTile.src;
+        let otherImg = otherTile.src;
+
+        currTile.src = otherImg;
+        otherTile.src = currImg;
+
+        turns++;
+        document.getElementById("turns").innerText = turns;
+
+        checkWin();
+    }
 }
 
-function checkSolved() {
-  let imgs = document.querySelectorAll("#board img");
-  let correct = true;
+// ---------------- Win Check ----------------
 
-  for (let i = 0; i < 9; i++) {
-    if (!imgs[i].src.includes((i + 1) + ".jpg")) {
-      correct = false;
-      break;
+function checkWin() {
+    let correct = true;
+    let tiles = document.querySelectorAll("#board img");
+
+    for (let i = 0; i < 9; i++) {
+        if (!tiles[i].src.includes((i + 1) + ".jpg")) {
+            correct = false;
+            break;
+        }
     }
-  }
 
-  if (correct) {
-    document.getElementById("doneText").style.display = "block";
-  }
+    if (correct) {
+        setTimeout(() => {
+            alert("Completed 💖 See how cute we look together!");
+        }, 300);
+    }
 }
