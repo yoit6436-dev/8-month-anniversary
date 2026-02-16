@@ -9,67 +9,122 @@
 html, body {margin:0; padding:0; width:100%; height:100%; font-family: 'Dancing Script', cursive; overflow:hidden; background: linear-gradient(135deg, #ffdfba, #ffb6b9);}
 .page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:10vh; box-sizing:border-box; cursor:pointer;}
 .page.active {display:block;}
-.title {font-size:2.5em; margin-bottom:20px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);}
-input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
+.title {font-size:2.8em; margin-bottom:20px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);}
 .typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
 .yes, .no {padding:12px 25px; font-size:1.2em; margin:15px; cursor:pointer; border:none; border-radius:8px; position:relative; z-index:10;}
 .yes {background: #ff6b81; color:#fff;}
 .no {background:#ffcb77; color:#000;}
-video,img{max-width:80%; border-radius:15px; z-index:5; position:relative;}
-canvas#heartsCanvas, canvas#confettiCanvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:1;}
+video,img{max-width:80%; border-radius:15px; z-index:5; position:relative; box-shadow: 0 10px 20px rgba(255,182,185,0.5); animation: floatShadow 3s ease-in-out infinite;}
+@keyframes floatShadow {
+  0% { box-shadow: 0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}
+  50% { box-shadow: 0 20px 30px rgba(255,182,185,0.6); transform: translateY(-5px);}
+  100% { box-shadow: 0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}
+}
+canvas#bubblesCanvas, canvas#confettiCanvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:1;}
 .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
 @keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
 #gameArea{position:relative;width:100%;height:70vh;margin-top:20px; background:#fce8e6; border-radius:15px; overflow:hidden;}
-.gameHeart{position:absolute;width:50px;height:50px; cursor:pointer; background-image: url('heart.png'); background-size:cover;}
+.gameHeart{position:absolute;width:50px;height:50px; cursor:pointer; background-size:cover;}
 .score{font-size:1.8em;margin-top:10px; transition: transform 0.2s;}
 #puzzleGame{position:relative; margin:20px auto; width:320px; height:320px; border-radius:15px; overflow:hidden; touch-action:none;}
 #puzzleGame canvas{position:absolute; cursor:pointer; user-select:none;}
+input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
 </style>
 </head>
 <body>
 
 <audio id="bgSong" src="song.mp3" autoplay loop></audio>
-<canvas id="heartsCanvas"></canvas>
+<canvas id="bubblesCanvas"></canvas>
 <canvas id="confettiCanvas"></canvas>
 
+<!-- Password Page -->
+<div class="page active" id="page0">
+  <h1 class="title">Enter the Secret Date 💖</h1>
+  <input type="date" id="passInput">
+  <button onclick="checkPassword()">Submit</button>
+</div>
+
+<!-- Page 1: Title then Video -->
+<div class="page" id="page1">
+  <div class="title typing" id="typeText1"></div>
+  <video src="video1.mp4" controls autoplay></video>
+</div>
+
+<!-- Example Yes/No Page -->
+<div class="page" id="page2">
+  <div class="title typing" id="typeText2">Do you love me? 💖</div>
+  <button class="yes" id="yes1">YES</button>
+  <button class="no" id="no1">NO</button>
+</div>
+
+<!-- Mini-game Page -->
+<div class="page" id="page12">
+  <div class="title typing" id="typeText12">Catch the hearts! 💖</div>
+  <div id="gameArea"></div>
+  <div class="score" id="score">0</div>
+</div>
+
+<!-- Draggable Puzzle Page -->
+<div class="page" id="page11">
+  <div class="title typing" id="typeText11">Solve the puzzle 💖</div>
+  <div id="puzzleGame"></div>
+</div>
+
+<!-- Countdown Page -->
+<div class="page" id="page13">
+  <div class="title typing" id="typeText13">Counting down to our special day 💖</div>
+  <div class="countdown" id="animatedCountdown"></div>
+</div>
+
 <script>
-// Heart bubbles as images
-const heartsCanvas = document.getElementById('heartsCanvas');
-const hctx = heartsCanvas.getContext('2d');
-heartsCanvas.width = window.innerWidth;
-heartsCanvas.height = window.innerHeight;
-const heartImg = new Image();
-heartImg.src = 'heart.png';
-let hearts = [];
+// Heart + Kiss Bubbles
+const bubblesCanvas = document.getElementById('bubblesCanvas');
+const bctx = bubblesCanvas.getContext('2d');
+bubblesCanvas.width = window.innerWidth;
+bubblesCanvas.height = window.innerHeight;
+
+const images = [new Image(), new Image()];
+images[0].src = 'heart.png';
+images[1].src = 'kiss.png';
+
+let bubbles = [];
 for(let i=0;i<60;i++){
-  hearts.push({
-    x: Math.random()*heartsCanvas.width,
-    y: Math.random()*heartsCanvas.height,
+  bubbles.push({
+    x: Math.random()*bubblesCanvas.width,
+    y: Math.random()*bubblesCanvas.height,
     size: Math.random()*20+20,
     speedX: (Math.random()-0.5)*1,
     speedY: Math.random()*1+0.5,
     rotation: Math.random()*360,
-    rotationSpeed: (Math.random()-0.5)*2
+    rotationSpeed: (Math.random()-0.5)*2,
+    img: images[Math.floor(Math.random()*images.length)]
   });
 }
-function drawHearts(){
-  hctx.clearRect(0,0,heartsCanvas.width,heartsCanvas.height);
-  hearts.forEach(h=>{
-    hctx.save();
-    hctx.translate(h.x,h.y);
-    hctx.rotate(h.rotation*Math.PI/180);
-    hctx.drawImage(heartImg,-h.size/2,-h.size/2,h.size,h.size);
-    hctx.restore();
-    h.x += h.speedX;
-    h.y -= h.speedY;
-    h.rotation += h.rotationSpeed;
-    if(h.y<-50) h.y=heartsCanvas.height+50;
-    if(h.x<-50) h.x=heartsCanvas.width+50;
-    if(h.x>heartsCanvas.width+50) h.x=-50;
+
+function drawBubbles(){
+  bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);
+  bubbles.forEach(b=>{
+    bctx.save();
+    bctx.translate(b.x,b.y);
+    bctx.rotate(b.rotation*Math.PI/180);
+    bctx.drawImage(b.img,-b.size/2,-b.size/2,b.size,b.size);
+    bctx.restore();
+    b.x += b.speedX;
+    b.y -= b.speedY;
+    b.rotation += b.rotationSpeed;
+    if(b.y<-50) b.y=bubblesCanvas.height+50;
+    if(b.x<-50) b.x=bubblesCanvas.width+50;
+    if(b.x>bubblesCanvas.width+50) b.x=-50;
   });
-  requestAnimationFrame(drawHearts);
+  requestAnimationFrame(drawBubbles);
 }
-heartImg.onload = drawHearts;
+let loadedCount=0;
+images.forEach(img=>{
+  img.onload=()=>{
+    loadedCount++;
+    if(loadedCount===images.length) drawBubbles();
+  }
+});
 
 // Confetti
 const confCanvas=document.getElementById('confettiCanvas');
@@ -107,7 +162,7 @@ function drawConfetti(){
   requestAnimationFrame(drawConfetti);
 }
 
-// Navigation & typing
+// Navigation and Typing
 let currentPage=0;
 function showPage(num){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -124,7 +179,7 @@ function startTyping(text,id){
   },50);
 }
 
-// Password
+// Password Page
 function checkPassword(){
   const input=document.getElementById('passInput').value;
   if(input==="2025-06-18"){
@@ -133,7 +188,7 @@ function checkPassword(){
   } else alert("Incorrect password!");
 }
 
-// Yes/No buttons
+// First Yes enlarges on No click
 document.getElementById('no1').addEventListener('click',()=>{
   const btn=document.getElementById('yes1');
   let scale=1;
@@ -145,6 +200,7 @@ document.getElementById('no1').addEventListener('click',()=>{
 });
 document.getElementById('yes1').addEventListener('click',()=>showPage(6));
 
+// Runaway No buttons
 function runAway(el){
   const x=Math.random()*(window.innerWidth-100);
   const y=Math.random()*(window.innerHeight-50);
@@ -153,7 +209,7 @@ function runAway(el){
   el.style.top=y+'px';
 }
 
-// Countdown
+// Countdown Animation
 const countdownEl=document.getElementById('animatedCountdown');
 function animateCountdown(){
   const text="18/02/2026";
@@ -165,20 +221,21 @@ function animateCountdown(){
 }
 animateCountdown();
 
-// Tap anywhere
+// Tap anywhere navigation
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && p.id!=='page11' && p.id!=='page12'){
+    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){
       if(index<16) showPage(index+1);
     }
   });
 });
 
-// Mini-game
+// Mini-game Hearts
 let score=0;
 function createGameHeart(){
   const heart=document.createElement('div');
   heart.classList.add('gameHeart');
+  heart.style.backgroundImage='url(heart.png)';
   heart.style.left=Math.random()*(window.innerWidth-50)+'px';
   heart.style.top='-50px';
   document.getElementById('gameArea').appendChild(heart);
@@ -203,7 +260,7 @@ document.getElementById('page12').addEventListener('click',()=>{
   for(let i=0;i<5;i++) createGameHeart();
 });
 
-// Draggable puzzle
+// Draggable Puzzle
 function initDraggablePuzzle(){
   const puzzleDiv = document.getElementById('puzzleGame');
   const rows = 3, cols =3;
@@ -222,64 +279,72 @@ function initDraggablePuzzle(){
         canvas.dataset.col=c;
         canvas.dataset.correctRow=r;
         canvas.dataset.correctCol=c;
+        canvas.style.position='absolute';
         const ctx=canvas.getContext('2d');
         ctx.drawImage(img, c*size, r*size, size, size, 0, 0, size, size);
         tiles.push(canvas);
+        puzzleDiv.appendChild(canvas);
+        enableDrag(canvas);
       }
     }
-    for(let i=tiles.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      const tTop=tiles[i].style.top, tLeft=tiles[i].style.left;
-      tiles[i].style.top=tiles[j].style.top;
-      tiles[i].style.left=tiles[j].style.left;
-      tiles[j].style.top=tTop;
-      tiles[j].style.left=tLeft;
-    }
-    tiles.forEach(c=>{
-      puzzleDiv.appendChild(c);
-      dragElement(c);
+    tiles.forEach(t=>{
+      t.style.top = Math.random()*(320-size)+'px';
+      t.style.left = Math.random()*(320-size)+'px';
     });
   }
-  function dragElement(el){
-    let offsetX=0,offsetY=0,startX=0,startY=0;
+
+  function enableDrag(el){
+    let offsetX=0, offsetY=0;
+    let startX=0, startY=0;
+    el.style.cursor='grab';
     el.onpointerdown=function(e){
       e.preventDefault();
       startX=e.clientX;
       startY=e.clientY;
+      offsetX = parseInt(el.style.left);
+      offsetY = parseInt(el.style.top);
+      el.style.cursor='grabbing';
       document.onpointermove=drag;
       document.onpointerup=drop;
     }
     function drag(e){
-      offsetX=e.clientX-startX;
-      offsetY=e.clientY-startY;
-      el.style.top=(parseInt(el.style.top)+offsetY)+'px';
-      el.style.left=(parseInt(el.style.left)+offsetX)+'px';
-      startX=e.clientX;
-      startY=e.clientY;
+      let dx = e.clientX - startX;
+      let dy = e.clientY - startY;
+      el.style.left = offsetX + dx + 'px';
+      el.style.top = offsetY + dy + 'px';
     }
     function drop(){
       document.onpointermove=null;
       document.onpointerup=null;
+      el.style.cursor='grab';
+      let nearestCol = Math.round(parseInt(el.style.left)/size);
+      let nearestRow = Math.round(parseInt(el.style.top)/size);
+      nearestCol = Math.min(Math.max(nearestCol,0),cols-1);
+      nearestRow = Math.min(Math.max(nearestRow,0),rows-1);
+      el.style.left = nearestCol*size+'px';
+      el.style.top = nearestRow*size+'px';
       checkPuzzle();
     }
   }
+
   function checkPuzzle(){
-    const tiles = document.querySelectorAll('#puzzleGame canvas');
+    const tiles = puzzleDiv.querySelectorAll('canvas');
     let solved=true;
     tiles.forEach(t=>{
-      const top=parseInt(t.style.top);
       const left=parseInt(t.style.left);
-      if(Math.abs(top - t.dataset.correctRow*size)>15 || Math.abs(left - t.dataset.correctCol*size)>15){
+      const top=parseInt(t.style.top);
+      if(left !== t.dataset.correctCol*size || top !== t.dataset.correctRow*size){
         solved=false;
       }
     });
-    if(solved) showPage(12);
+    if(solved){
+      alert("Puzzle Completed! 🎉");
+      showPage(12);
+    }
   }
 }
 initDraggablePuzzle();
 </script>
-
-<!-- Include all pages HTML here (password page → last countdown) same as previously defined -->
 
 </body>
 </html>
