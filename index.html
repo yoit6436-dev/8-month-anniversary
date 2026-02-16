@@ -6,20 +6,20 @@
 <title>8 Month Anniversary Surprise</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
-html, body {margin:0; padding:0; width:100%; height:100%; font-family:'Dancing Script', cursive; overflow:hidden; background:linear-gradient(135deg,#ffdfba,#ffb6b9);}
+html, body {margin:0;padding:0;width:100%;height:100%;font-family:'Dancing Script',cursive;overflow:hidden;background:linear-gradient(135deg,#ffdfba,#ffb6b9);}
 .page {display:none;width:100%;height:100%;position:absolute;top:0;left:0;text-align:center;padding-top:10vh;box-sizing:border-box;cursor:pointer;}
 .page.active {display:block;}
 .title {font-size:2.8em;margin-bottom:20px;text-shadow:2px 2px 5px rgba(0,0,0,0.3);}
 .typing {display:inline;border-right:2px solid #fff;padding-right:2px;}
-.yes, .no {padding:12px 25px;font-size:1.2em;margin:15px;cursor:pointer;border:none;border-radius:8px;position:relative; z-index:10;}
-.yes {background: #ff6b81;color:#fff;}
-.no {background:#ffcb77;color:#000;}
-video,img{max-width:80%;border-radius:15px;position:relative;z-index:5;box-shadow:0 15px 30px rgba(255,182,185,0.6);transition: transform 0.3s, box-shadow 0.3s;}
+.yes,.no{padding:12px 25px;font-size:1.2em;margin:15px;cursor:pointer;border:none;border-radius:8px;position:relative;z-index:10;}
+.yes{background:#ff6b81;color:#fff;}
+.no{background:#ffcb77;color:#000;}
+video,img{max-width:80%;border-radius:15px;position:relative;z-index:5;box-shadow:0 15px 30px rgba(255,182,185,0.6);transition:transform 0.3s,box-shadow 0.3s;}
 video:hover,img:hover{transform:translateY(-5px);box-shadow:0 25px 40px rgba(255,182,185,0.8);}
-canvas#bubblesCanvas, canvas#confettiCanvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:1;}
-.overlay {position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);z-index:2;border-radius:15px;pointer-events:none;}
-.countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
-@keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
+canvas#bubblesCanvas, canvas#confettiCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);z-index:2;border-radius:15px;pointer-events:none;}
+.countdown{font-size:3em;margin-top:20px;animation:move 5s infinite alternate;}
+@keyframes move{0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
 #gameArea{position:relative;width:100%;height:70vh;margin-top:20px;background:#fce8e6;border-radius:15px;overflow:hidden;}
 .gameHeart{position:absolute;width:50px;height:50px;cursor:pointer;background-size:cover;}
 .score{font-size:1.8em;margin-top:10px;transition: transform 0.2s;}
@@ -133,8 +133,22 @@ const videoTitles=[
   "Our journey together 💖",
   "Forever and always 💖"
 ];
-function checkPassword(){const input=document.getElementById('passInput').value;if(input==="2025-06-18"){bgSong.play().catch(e=>console.log("Audio autoplay blocked"));showPage(1);playVideosSequential(0);} else alert("Incorrect password!");}
-function playVideosSequential(index){if(index>=videoPages.length) return;const pageId=videoPages[index]; const videoFile=videoFiles[index]; const title=videoTitles[index]; showPage(pageId); startTyping(title,"typeText"+pageId,()=>{const container=document.getElementById('videoContainer'+pageId); const v=document.createElement('video'); v.src=videoFile; v.controls=true; v.autoplay=true; container.appendChild(v);}); setTimeout(()=>{if(index<videoPages.length-1) playVideosSequential(index+1);}, title.length*50 + 1000);}
+function checkPassword(){
+  const input=document.getElementById('passInput').value;
+  if(input==="2025-06-18"){
+    bgSong.play().catch(()=>{console.log("Audio autoplay blocked")});
+    playVideosSequential(0);
+  }else alert("Incorrect password!");
+}
+function playVideosSequential(index){
+  if(index>=videoPages.length) { showPage(10); return; }
+  const pageId=videoPages[index]; const videoFile=videoFiles[index]; const title=videoTitles[index];
+  showPage(pageId);
+  startTyping(title,"typeText"+pageId,()=>{
+    const container=document.getElementById('videoContainer'+pageId);
+    const v=document.createElement('video'); v.src=videoFile; v.controls=true; v.autoplay=true; container.appendChild(v);
+  });
+}
 
 // ---------------- Do You Love Me ----------------
 document.getElementById('yes1').addEventListener('click',()=>{showPage(11);});
@@ -151,23 +165,6 @@ document.querySelectorAll('.page').forEach((p,index)=>{
     if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){if(index<14) showPage(index+1);}
   });
 });
-
-// ---------------- Mini-game ----------------
-let score=0;
-function createGameHeart(){const heart=document.createElement('div'); heart.classList.add('gameHeart'); heart.style.backgroundImage='url(heart.png)';
-heart.style.left=Math.random()*(window.innerWidth-50)+'px'; heart.style.top='-50px'; document.getElementById('gameArea').appendChild(heart);
-let fall=setInterval(()=>{let top=parseInt(heart.style.top); heart.style.top=(top+5)+'px'; if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createGameHeart();}},30);
-heart.addEventListener('click',()=>{score++; const scoreEl=document.getElementById('score'); scoreEl.textContent=score; scoreEl.style.transform='scale(1.5)'; setTimeout(()=>{scoreEl.style.transform='scale(1)';},200); heart.remove(); clearInterval(fall); createGameHeart();});}
-document.getElementById('page11').addEventListener('click',()=>{score=0; document.getElementById('score').textContent=score; document.getElementById('gameArea').innerHTML=''; for(let i=0;i<5;i++) createGameHeart();});
-
-// ---------------- Draggable Puzzle ----------------
-function initDraggablePuzzle(){const puzzleDiv=document.getElementById('puzzleGame'); const rows=3,cols=3; const size=320/cols; const tiles=[]; const img=new Image(); img.src='image4.jpg'; img.onload=function(){for(let r=0;r<rows;r++){for(let c=0;c<cols;c++){const canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;canvas.style.top=r*size+'px';canvas.style.left=c*size+'px';canvas.dataset.row=r;canvas.dataset.col=c;canvas.dataset.correctRow=r;canvas.dataset.correctCol=c;canvas.style.position='absolute';const ctx=canvas.getContext('2d');ctx.drawImage(img,c*size,r*size,size,size,0,0,size,size);tiles.push(canvas);puzzleDiv.appendChild(canvas);enableDrag(canvas);}}tiles.forEach(t=>{t.style.top=Math.random()*(320-size)+'px'; t.style.left=Math.random()*(320-size)+'px';});}
-function enableDrag(el){let offsetX=0,offsetY=0,startX=0,startY=0;el.style.cursor='grab';el.onpointerdown=function(e){e.preventDefault(); startX=e.clientX; startY=e.clientY; offsetX=parseInt(el.style.left); offsetY=parseInt(el.style.top); el.style.cursor='grabbing'; document.onpointermove=drag; document.onpointerup=drop;}
-function drag(e){let dx=e.clientX-startX; let dy=e.clientY-startY; el.style.left=offsetX+dx+'px'; el.style.top=offsetY+dy+'px';}
-function drop(){document.onpointermove=null; document.onpointerup=null; el.style.cursor='grab';let nearestCol=Math.round(parseInt(el.style.left)/size); let nearestRow=Math.round(parseInt(el.style.top)/size); nearestCol=Math.min(Math.max(nearestCol,0),cols-1); nearestRow=Math.min(Math.max(nearestRow,0),rows-1); el.style.left=nearestCol*size+'px'; el.style.top=nearestRow*size+'px'; checkPuzzle();}}
-function checkPuzzle(){const tiles=puzzleDiv.querySelectorAll('canvas'); let solved=true; tiles.forEach(t=>{const left=parseInt(t.style.left); const top=parseInt(t.style.top); if(left!==t.dataset.correctCol*size || top!==t.dataset.correctRow*size){solved=false;}}); if(solved){alert("Puzzle Completed! 🎉"); showPage(13);}}
-}
-initDraggablePuzzle();
 </script>
 </body>
 </html>
