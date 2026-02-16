@@ -29,12 +29,14 @@ html, body {
 
 video, img {max-width:85%; border-radius:15px; position:relative; z-index:5; box-shadow:0 15px 30px rgba(0,0,0,0.7);}
 
-button {padding:12px 25px; font-size:1.1em; margin:15px; cursor:pointer; border:none; border-radius:30px; z-index:10; position:relative; transition: 0.3s;}
+button {padding:12px 25px; font-size:1.1em; margin:15px; cursor:pointer; border:none; border-radius:30px; z-index:10; position:relative; transition: transform 0.2s;}
 .yes{background: linear-gradient(to right, #ff6b81, #ff4757); color:#fff; box-shadow: 0 4px 15px rgba(255,107,129,0.4);}
 .no{background:#ffcb77; color:#000; position:relative;}
 
-/* Game & Puzzle */
-#game-canvas { background: rgba(255,255,255,0.05); border-radius: 15px; margin: 10px auto; border: 1px solid rgba(255,255,255,0.1); }
+/* Basket Game */
+#game-canvas { background: rgba(255,255,255,0.05); border-radius: 15px; margin: 10px auto; border: 1px solid rgba(255,255,255,0.1); touch-action: none; }
+
+/* Puzzle */
 #puzzle-board {
     display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px);
     grid-gap: 5px; justify-content: center; margin: 15px auto;
@@ -49,9 +51,7 @@ button {padding:12px 25px; font-size:1.1em; margin:15px; cursor:pointer; border:
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 25px;
-    padding: 25px;
-    width: 88%;
-    margin: 0 auto;
+    padding: 25px; width: 88%; margin: 0 auto;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 #finalTitle {
@@ -59,7 +59,6 @@ button {padding:12px 25px; font-size:1.1em; margin:15px; cursor:pointer; border:
   background: linear-gradient(to bottom, #fff, #ff6b81);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
-
 canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
 </style>
 </head>
@@ -146,13 +145,14 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
 <div class="page" id="page14">
   <div class="title">A sweet and childish memory</div>
   <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg">
-  <p style="font-style: italic; color: #ffd6e0; margin-top:10px;">(Click to play a game!)</p>
+  <p style="font-style: italic; color: #ffd6e0; margin-top:10px;">(Click to continue...)</p>
 </div>
 
 <div class="page" id="pageGame">
-  <div class="title">Pop 10 Bubbles! 🎈</div>
-  <canvas id="game-canvas" width="300" height="400"></canvas>
-  <h2 id="scoreDisplay">Popped: 0</h2>
+  <div class="title">Catch my love! 🧺</div>
+  <p>Move the basket to catch 10 hearts</p>
+  <canvas id="game-canvas" width="300" height="350"></canvas>
+  <h2 id="scoreDisplay">Score: 0</h2>
 </div>
 
 <div class="page" id="pagePuzzle">
@@ -193,7 +193,7 @@ function showPage(num){
     let target = (typeof num === 'string') ? document.getElementById('page'+num) : document.getElementById('page'+num);
     target.classList.add('active');
     currentPage = num;
-    if(num === 'Game') startPopGame();
+    if(num === 'Game') startCatchGame();
     if(num === 'Puzzle') initPuzzle();
 }
 
@@ -210,26 +210,54 @@ function startTyping(text,id,callback){
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } },50);
 }
 
-/* POP GAME */
-function startPopGame() {
+/* NO BUTTON GROWTH (PAGE 5) */
+let yesSize = 1;
+document.getElementById('noBtn5').onclick = (e) => {
+    e.stopPropagation();
+    yesSize += 0.3;
+    document.getElementById('yesBtn5').style.transform = `scale(${yesSize})`;
+};
+document.getElementById('yesBtn5').onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`;
+    document.getElementById('next5').style.display='inline-block';
+};
+
+/* CATCH GAME */
+function startCatchGame() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-    let score = 0; let targets = [];
-    canvas.onclick = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
-        targets.forEach((t, i) => {
-            let dist = Math.sqrt((mx-t.x)**2 + (my-t.y)**2);
-            if(dist < 30) { targets.splice(i, 1); score++; document.getElementById('scoreDisplay').innerText = "Popped: " + score; if(score >= 10) showPage('Puzzle'); }
-        });
+    let score = 0; let items = []; let basketX = canvas.width/2 - 25;
+    
+    // Slide touch to move basket
+    canvas.ontouchmove = (e) => {
+        let rect = canvas.getBoundingClientRect();
+        basketX = e.touches[0].clientX - rect.left - 25;
     };
+    canvas.onmousemove = (e) => {
+        let rect = canvas.getBoundingClientRect();
+        basketX = e.clientX - rect.left - 25;
+    };
+
     function update() {
         if(document.getElementById('pageGame').classList.contains('active')) {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            if(Math.random() < 0.03) targets.push({ x: Math.random()*(canvas.width-40)+20, y: canvas.height+40, color: `hsl(${Math.random()*360}, 70%, 70%)` });
-            targets.forEach(t => { 
-                t.y -= 2; ctx.beginPath(); ctx.arc(t.x, t.y, 25, 0, Math.PI*2); 
-                ctx.fillStyle = t.color; ctx.fill(); ctx.strokeStyle = "#fff"; ctx.stroke();
+            if(Math.random() < 0.04) items.push({ x: Math.random()*(canvas.width-30), y: -30 });
+            
+            // Draw Basket
+            ctx.fillStyle = "#ff6b81";
+            ctx.fillRect(basketX, canvas.height - 20, 50, 10);
+            
+            items.forEach((it, i) => {
+                it.y += 3;
+                ctx.drawImage(heartImg, it.x, it.y, 30, 30);
+                // Collision
+                if(it.y > canvas.height - 40 && it.x > basketX - 10 && it.x < basketX + 50) {
+                    items.splice(i,1); score++;
+                    document.getElementById('scoreDisplay').innerText = "Score: " + score;
+                    if(score >= 10) showPage('Puzzle');
+                }
+                if(it.y > canvas.height) items.splice(i,1);
             });
             requestAnimationFrame(update);
         }
@@ -255,16 +283,14 @@ function initPuzzle() {
 }
 function checkWin() { if (JSON.stringify(currentPieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display = 'inline-block'; }
 
-/* Original Handlers */
-document.getElementById('yesBtn5').onclick=()=>{ document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`; document.getElementById('next5').style.display='inline-block'; };
-document.getElementById('noBtn5').onclick=(e)=>{ let b=e.target; b.style.position='absolute'; b.style.top=Math.random()*80+'%'; b.style.left=Math.random()*80+'%'; };
+/* Other Button Handlers */
 document.getElementById('clickToView6').onclick=()=>{ document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline loop style="max-width:90%; border-radius:15px;"></video>`; };
 document.getElementById('yesBtn7').onclick=()=>{ document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay muted playsinline loop style="max-width:90%; border-radius:15px;"></video>`; };
-document.getElementById('noBtn7').onclick=(e)=>{ let b=e.target; b.style.position='absolute'; b.style.top=Math.random()*80+'%'; b.style.left=Math.random()*80+'%'; };
+document.getElementById('noBtn7').onclick=(e)=>{ e.target.style.position='absolute'; e.target.style.top=Math.random()*80+'%'; e.target.style.left=Math.random()*80+'%'; };
 document.getElementById('yesBtn9').onclick=()=>showPage(10);
-document.getElementById('noBtn9').onclick=(e)=>{ let b=e.target; b.style.position='absolute'; b.style.top=Math.random()*80+'%'; b.style.left=Math.random()*80+'%'; };
+document.getElementById('noBtn9').onclick=(e)=>{ e.target.style.position='absolute'; e.target.style.top=Math.random()*80+'%'; e.target.style.left=Math.random()*80+'%'; };
 document.getElementById('yesBtn10').onclick=()=>showPage(11);
-document.getElementById('noBtn10').onclick=(e)=>{ let b=e.target; b.style.position='absolute'; b.style.top=Math.random()*80+'%'; b.style.left=Math.random()*80+'%'; };
+document.getElementById('noBtn10').onclick=(e)=>{ e.target.style.position='absolute'; e.target.style.top=Math.random()*80+'%'; e.target.style.left=Math.random()*80+'%'; };
 
 document.addEventListener('click', (e) => {
     const ignore = ['VIDEO', 'INPUT', 'BUTTON', 'IMG', 'CANVAS'];
