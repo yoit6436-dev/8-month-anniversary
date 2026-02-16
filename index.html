@@ -16,24 +16,13 @@ html, body {margin:0;padding:0;width:100%;height:100%;font-family:'Dancing Scrip
 .no{background:#ffcb77;color:#000;}
 video,img{max-width:80%;border-radius:15px;position:relative;z-index:5;box-shadow:0 15px 30px rgba(255,182,185,0.6);transition:transform 0.3s,box-shadow 0.3s;}
 video:hover,img:hover{transform:translateY(-5px);box-shadow:0 25px 40px rgba(255,182,185,0.8);}
-canvas#bubblesCanvas, canvas#confettiCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
-.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);z-index:2;border-radius:15px;pointer-events:none;}
-.countdown{font-size:3em;margin-top:20px;animation:move 5s infinite alternate;}
-@keyframes move{0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
-#gameArea{position:relative;width:100%;height:70vh;margin-top:20px;background:#fce8e6;border-radius:15px;overflow:hidden;}
-.gameHeart{position:absolute;width:50px;height:50px;cursor:pointer;background-size:cover;}
-.score{font-size:1.8em;margin-top:10px;transition: transform 0.2s;}
-#puzzleGame{position:relative;margin:20px auto;width:320px;height:320px;border-radius:15px;overflow:hidden;touch-action:none;}
-#puzzleGame canvas{position:absolute;cursor:pointer;user-select:none;box-shadow:0 8px 20px rgba(255,182,185,0.5);transition: transform 0.2s;}
-#puzzleGame canvas:active{transform:scale(1.05);}
-input[type=date]{padding:10px;font-size:1em;border-radius:5px;border:none;}
+canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
 </style>
 </head>
 <body>
 
 <audio id="bgSong" src="song.mp3" loop></audio>
 <canvas id="bubblesCanvas"></canvas>
-<canvas id="confettiCanvas"></canvas>
 
 <!-- Password Page -->
 <div class="page active" id="page0">
@@ -43,83 +32,53 @@ input[type=date]{padding:10px;font-size:1em;border-radius:5px;border:none;}
 </div>
 
 <!-- Video Pages 1-9 -->
-<div class="page" id="page1"><div class="title typing" id="typeText1"></div><div class="overlay"></div><div id="videoContainer1"></div></div>
-<div class="page" id="page2"><div class="title typing" id="typeText2"></div><div class="overlay"></div><div id="videoContainer2"></div></div>
-<div class="page" id="page3"><div class="title typing" id="typeText3"></div><div class="overlay"></div><div id="videoContainer3"></div></div>
-<div class="page" id="page4"><div class="title typing" id="typeText4"></div><div class="overlay"></div><div id="videoContainer4"></div></div>
-<div class="page" id="page5"><div class="title typing" id="typeText5"></div><div class="overlay"></div><div id="videoContainer5"></div></div>
-<div class="page" id="page6"><div class="title typing" id="typeText6"></div><div class="overlay"></div><div id="videoContainer6"></div></div>
-<div class="page" id="page7"><div class="title typing" id="typeText7"></div><div class="overlay"></div><div id="videoContainer7"></div></div>
-<div class="page" id="page8"><div class="title typing" id="typeText8"></div><div class="overlay"></div><div id="videoContainer8"></div></div>
-<div class="page" id="page9"><div class="title typing" id="typeText9"></div><div class="overlay"></div><div id="videoContainer9"></div></div>
+<div class="page" id="page1"><div class="title typing" id="typeText1"></div><div id="videoContainer1"></div></div>
+<div class="page" id="page2"><div class="title typing" id="typeText2"></div><div id="videoContainer2"></div></div>
+<div class="page" id="page3"><div class="title typing" id="typeText3"></div><div id="videoContainer3"></div></div>
+<div class="page" id="page4"><div class="title typing" id="typeText4"></div><div id="videoContainer4"></div></div>
+<div class="page" id="page5"><div class="title typing" id="typeText5"></div><div id="videoContainer5"></div></div>
+<div class="page" id="page6"><div class="title typing" id="typeText6"></div><div id="videoContainer6"></div></div>
+<div class="page" id="page7"><div class="title typing" id="typeText7"></div><div id="videoContainer7"></div></div>
+<div class="page" id="page8"><div class="title typing" id="typeText8"></div><div id="videoContainer8"></div></div>
+<div class="page" id="page9"><div class="title typing" id="typeText9"></div><div id="videoContainer9"></div></div>
 
-<!-- Yes/No Page -->
+<!-- Do You Love Me Page -->
 <div class="page" id="page10">
   <div class="title typing" id="typeText10">Do you love me? 💖</div>
   <button class="yes" id="yes1">YES</button>
   <button class="no" id="no1">NO</button>
 </div>
 
-<!-- Mini-game Page -->
-<div class="page" id="page11">
-  <div class="title typing" id="typeText11">Catch the hearts! 💖</div>
-  <div class="overlay"></div>
-  <div id="gameArea"></div>
-  <div class="score" id="score">0</div>
-</div>
-
-<!-- Draggable Puzzle Page -->
-<div class="page" id="page12">
-  <div class="title typing" id="typeText12">Solve the puzzle 💖</div>
-  <div class="overlay"></div>
-  <div id="puzzleGame"></div>
-</div>
-
-<!-- Countdown Page -->
-<div class="page" id="page13">
-  <div class="title typing" id="typeText13">Counting down to our special day 💖</div>
-  <div class="countdown" id="animatedCountdown"></div>
-</div>
-
 <script>
-// ---------------- Heart + Kiss Bubbles ----------------
+// ---------------- Heart Bubbles ----------------
 const bubblesCanvas = document.getElementById('bubblesCanvas');
 const bctx = bubblesCanvas.getContext('2d');
 bubblesCanvas.width = window.innerWidth;
 bubblesCanvas.height = window.innerHeight;
-const images = [new Image(), new Image()];
-images[0].src = 'heart.png';
-images[1].src = 'kiss.png';
+const heartImg = new Image();
+heartImg.src = 'heart.png';
 let bubbles = [];
-for(let i=0;i<60;i++){
-  bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*20+20,speedX:(Math.random()-0.5)*1,speedY:Math.random()*1+0.5,rotation:Math.random()*360,rotationSpeed:(Math.random()-0.5)*2,img:images[Math.floor(Math.random()*images.length)]});
+for(let i=0;i<50;i++){
+  bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*20+20,speedY:Math.random()*1+0.5});
 }
+heartImg.onload = () => {drawBubbles();}
 function drawBubbles(){
   bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);
-  bubbles.forEach(b=>{bctx.save();bctx.translate(b.x,b.y);bctx.rotate(b.rotation*Math.PI/180);bctx.drawImage(b.img,-b.size/2,-b.size/2,b.size,b.size);bctx.restore();
-  b.x+=b.speedX;b.y-=b.speedY;b.rotation+=b.rotationSpeed;
-  if(b.y<-50) b.y=bubblesCanvas.height+50;
-  if(b.x<-50) b.x=bubblesCanvas.width+50;
-  if(b.x>bubblesCanvas.width+50) b.x=-50;});
+  bubbles.forEach(b=>{
+    bctx.drawImage(heartImg,b.x,b.y,b.size,b.size);
+    b.y -= b.speedY;
+    if(b.y<-50) b.y = bubblesCanvas.height + 50;
+  });
   requestAnimationFrame(drawBubbles);
 }
-let loadedCount=0; images.forEach(img=>{img.onload=()=>{loadedCount++;if(loadedCount===images.length) drawBubbles();}});
 
-// ---------------- Confetti ----------------
-const confCanvas=document.getElementById('confettiCanvas');
-const cctx=confCanvas.getContext('2d');
-confCanvas.width=window.innerWidth; confCanvas.height=window.innerHeight;
-let confettiParticles=[];
-function startConfetti(){for(let i=0;i<200;i++){confettiParticles.push({x:Math.random()*confCanvas.width,y:Math.random()*confCanvas.height-500,r:Math.random()*6+2,d:Math.random()*50+2,color:`hsl(${Math.random()*360},100%,50%)`,tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});} requestAnimationFrame(drawConfetti);}
-function drawConfetti(){cctx.clearRect(0,0,confCanvas.width,confCanvas.height);confettiParticles.forEach(p=>{cctx.beginPath();cctx.lineWidth=p.r;cctx.strokeStyle=p.color;cctx.moveTo(p.x+p.tilt+p.r/2,p.y);cctx.lineTo(p.x+p.tilt,p.y+p.tilt+p.r/2);cctx.stroke();p.tilt+=p.tiltAngleIncrement;p.y+=(Math.cos(p.d)+3+p.r/2)/2;if(p.y>confCanvas.height)p.y=-10;});requestAnimationFrame(drawConfetti);}
-
-// ---------------- Navigation & Typing ----------------
-let currentPage=0;
+// ---------------- Pages & Typing ----------------
+let currentPage = 0;
 function showPage(num){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page'+num).classList.add('active');currentPage=num;}
-function startTyping(text,id,callback){let i=0; const el=document.getElementById(id); const interval=setInterval(()=>{el.innerHTML=text.slice(0,i);i++;if(i>text.length){clearInterval(interval);if(callback) callback();}},50);}
+function startTyping(text,id,callback){let i=0; const el=document.getElementById(id); const interval=setInterval(()=>{el.textContent=text.slice(0,i);i++;if(i>text.length){clearInterval(interval);if(callback) callback();}},50);}
 
-// ---------------- Password & Video Sequence ----------------
-const bgSong=document.getElementById('bgSong');
+// ---------------- Password & Videos ----------------
+const bgSong = document.getElementById('bgSong');
 const videoPages=[1,2,3,4,5,6,7,8,9];
 const videoFiles=['video1.mp4','video2.mp4','video3.mp4','video4.mp4','video5.mp4','video6.mp4','video7.mp4','video8.mp4','video9.mp4'];
 const videoTitles=[
@@ -133,36 +92,48 @@ const videoTitles=[
   "Our journey together 💖",
   "Forever and always 💖"
 ];
+
 function checkPassword(){
   const input=document.getElementById('passInput').value;
   if(input==="2025-06-18"){
-    bgSong.play().catch(()=>{console.log("Audio autoplay blocked")});
+    bgSong.play().catch(()=>{console.log("Autoplay blocked");});
     playVideosSequential(0);
-  }else alert("Incorrect password!");
+  } else alert("Incorrect password!");
 }
+
 function playVideosSequential(index){
-  if(index>=videoPages.length) { showPage(10); return; }
-  const pageId=videoPages[index]; const videoFile=videoFiles[index]; const title=videoTitles[index];
+  if(index>=videoPages.length){ showPage(10); return; }
+  const pageId = videoPages[index];
+  const title = videoTitles[index];
+  const container = document.getElementById('videoContainer'+pageId);
   showPage(pageId);
   startTyping(title,"typeText"+pageId,()=>{
-    const container=document.getElementById('videoContainer'+pageId);
-    const v=document.createElement('video'); v.src=videoFile; v.controls=true; v.autoplay=true; container.appendChild(v);
+    const v = document.createElement('video');
+    v.src = videoFiles[index];
+    v.controls = true;
+    v.autoplay = true;
+    container.appendChild(v);
   });
 }
 
-// ---------------- Do You Love Me ----------------
-document.getElementById('yes1').addEventListener('click',()=>{showPage(11);});
-document.getElementById('no1').addEventListener('click',()=>{const btn=document.getElementById('yes1');let scale=1;const interval=setInterval(()=>{scale+=0.1;btn.style.transform=`scale(${scale})`; if(scale>5) clearInterval(interval);},100);});
+// ---------------- Do You Love Me Buttons ----------------
+document.getElementById('yes1').addEventListener('click', ()=>{
+  let scale = 1;
+  const btn = document.getElementById('yes1');
+  const interval = setInterval(()=>{
+    scale += 0.1;
+    btn.style.transform = `scale(${scale})`;
+    if(scale > 5) clearInterval(interval);
+  },100);
+});
+// No button does nothing
 
-// ---------------- Countdown ----------------
-const countdownEl=document.getElementById('animatedCountdown');
-function animateCountdown(){const text="18/02/2026"; let i=0; setInterval(()=>{countdownEl.textContent=text.slice(0,i+1); i=(i+1)%text.length;},400);}
-animateCountdown();
-
-// ---------------- Tap Anywhere ----------------
+// ---------------- Tap Anywhere to Next ----------------
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){if(index<14) showPage(index+1);}
+    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){
+      if(currentPage<10) playVideosSequential(currentPage); 
+    }
   });
 });
 </script>
