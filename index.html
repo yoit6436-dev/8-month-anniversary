@@ -3,233 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8 Month Anniversary 💖</title>
+<title>8 Month Anniversary Surprise</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
 
 <style>
 html,body{
-  margin:0; padding:0; width:100%; height:100%;
+  margin:0; padding:0;
+  width:100%; height:100%;
+  overflow:hidden;
   font-family:'Dancing Script', cursive;
   background:linear-gradient(135deg,#1e1f26,#2c2f3b);
-  color:#fff; overflow:hidden;
+  color:#fff;
 }
+
 .page{
-  display:none; position:absolute; inset:0;
-  text-align:center; padding-top:8vh;
+  display:none;
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0; left:0;
+  text-align:center;
+  padding-top:8vh;
 }
 .page.active{display:block}
+
 .title{
   font-size:3em;
   margin-bottom:20px;
-  text-shadow:0 5px 15px rgba(0,0,0,.5);
+  text-shadow:2px 2px 10px rgba(0,0,0,.5);
 }
+
+/* FIXED typing */
+.typing{
+  display:inline-block;
+  white-space:pre-wrap;
+  border-right:2px solid #fff;
+  padding-right:6px;
+}
+
 video,img{
-  max-width:85%;
+  max-width:80%;
   border-radius:15px;
-  box-shadow:0 15px 30px rgba(0,0,0,.6);
+  box-shadow:0 15px 30px rgba(0,0,0,.7);
 }
+
 button{
   padding:12px 25px;
   font-size:1.2em;
-  border:none; border-radius:8px;
-  cursor:pointer; margin:15px;
+  margin:15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
 }
 .yes{background:#ff6b81;color:#fff}
-.no{background:#ffd166;color:#000}
+.no{background:#ffcb77;color:#000;position:relative}
 
+/* FLOATING HEARTS FIXED */
+#bubblesCanvas{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:10;
+}
+
+/* FINAL PAGE */
 #finalTitle{
   font-family:'Fredoka One', cursive;
   font-size:5em;
   color:#ff6b81;
-  animation:float 2s ease-in-out infinite alternate;
-  text-shadow:0 0 25px #ffb6c1;
+  animation:float 2.5s ease-in-out infinite;
+  text-shadow:0 0 20px #ffd6e0;
 }
+
 @keyframes float{
-  from{transform:translateY(0)}
-  to{transform:translateY(-20px)}
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-25px)}
+  100%{transform:translateY(0)}
 }
 
 /* PUZZLE */
 #board{
   width:360px;height:360px;
   margin:20px auto;
-  display:flex;flex-wrap:wrap;
+  display:flex;
+  flex-wrap:wrap;
   border:8px solid #ff6b81;
-  background:#fff;
 }
 #board img{
   width:118px;height:118px;
   border:1px solid #ff6b81;
 }
-#puzzleDone{display:none;font-size:2.2em;margin-top:20px}
+#completeText{
+  display:none;
+  font-size:2em;
+  color:#ffb6c1;
+}
 </style>
 </head>
 
 <body>
 
-<audio id="bgSong" src="song.mp3" loop></audio>
+<canvas id="bubblesCanvas"></canvas>
 
 <!-- PASSWORD -->
 <div class="page active" id="page0">
   <h1 class="title">Enter the Secret Date 💖</h1>
   <input type="date" id="passInput">
-  <br>
   <button onclick="checkPassword()">Submit</button>
 </div>
 
 <!-- TYPING -->
 <div class="page" id="page1">
-  <div class="title" id="typeText"></div>
+  <div class="title typing" id="typeText1"></div>
 </div>
 
 <!-- VIDEOS -->
-<div class="page" id="page2"><video src="video1.mp4" autoplay muted playsinline></video></div>
-<div class="page" id="page3"><div class="title">First and foremost</div><video src="video2.mp4" autoplay muted playsinline></video></div>
+<div class="page" id="page2">
+  <video src="video1.mp4" autoplay muted playsinline></video>
+</div>
+
+<div class="page" id="page3">
+  <div class="title">First and foremost</div>
+  <video src="video2.mp4" autoplay muted playsinline></video>
+</div>
 
 <!-- PRESS -->
 <div class="page" id="page4">
   <div class="title">Please press to open</div>
-  <img src="image1.jpg" style="cursor:pointer" onclick="openImage()">
-</div>
-
-<!-- CUTE -->
-<div class="page" id="page5">
-  <div class="title">Do you wanna see something cute?</div>
-  <button class="yes" onclick="showCute()">YES</button>
-  <button class="no" onclick="runAway(this)">NO</button>
-  <div id="cuteImg"></div>
-</div>
-
-<!-- MORE -->
-<div class="page" id="page6">
-  <div class="title">I have something to say</div>
-  <button onclick="loadVideo(6,'video3.mp4')">Click</button>
-  <div id="vid6"></div>
-</div>
-
-<div class="page" id="page7">
-  <div class="title">You wanna know how you fix my heart?</div>
-  <button class="yes" onclick="loadVideo(7,'video4.mp4')">YES</button>
-  <button class="no" onclick="runAway(this)">NO</button>
-  <div id="vid7"></div>
-</div>
-
-<div class="page" id="page8"><div class="title">This is how I feel near you</div><video src="video5.mp4" autoplay muted></video></div>
-
-<div class="page" id="page9">
-  <div class="title">Will you hold my hands forever?</div>
-  <video src="video6.mp4" autoplay muted></video>
-  <br>
-  <button class="yes" onclick="goToPage(10)">YES</button>
+  <img src="image1.jpg" onclick="window.open('image2.jpg')">
 </div>
 
 <!-- HEART QUESTION -->
-<div class="page" id="page10">
+<div class="page" id="page5">
   <div class="title">You wanna know what's in my heart?</div>
-  <video src="video7.mp4" autoplay muted></video>
-  <br>
-  <button class="yes" onclick="goToPage(11)">YES</button>
+  <video src="video7.mp4" autoplay muted playsinline></video>
+  <button class="yes" onclick="showPage(6)">YES</button>
+  <button class="no" onclick="moveBtn(this)">NO</button>
 </div>
 
-<div class="page" id="page11">
+<!-- HEART IMAGE -->
+<div class="page" id="page6">
   <div class="title">Look inside 💖</div>
   <img src="image5.jpg">
 </div>
 
-<!-- PUZZLE -->
-<div class="page" id="page12">
-  <div class="title">Solve this 💕</div>
+<!-- PUZZLE PAGE -->
+<div class="page" id="page7">
+  <img src="logo.png" style="width:200px"><br>
   <div id="board"></div>
-  <div id="puzzleDone">
-    Aww… look how cute we look together 🥹💞
-    <br><br>
-    <img src="10.jpg">
-  </div>
+  <div id="completeText">How cute we look together 💖</div>
 </div>
 
 <!-- FINAL -->
-<div class="page" id="page13">
-  <div id="finalTitle">18/06/2025<br>Happy 8 Months 💖</div>
+<div class="page" id="page8">
+  <div id="finalTitle">18 / 06 / 2025<br>Happy 8 Months 💖</div>
 </div>
 
 <script>
-let current=0;
+/* PAGE */
+let currentPage=0;
 function showPage(n){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page'+n).classList.add('active');
-  current=n;
+  currentPage=n;
 }
 
-function goToPage(n){
-  showPage(n);
-  if(n===12) initPuzzle();
-}
-
+/* PASSWORD */
 function checkPassword(){
   if(passInput.value==="2025-06-18"){
-    bgSong.play();
-    typeText.innerText="";
-    showPage(1);
-    let t="Hi my fattu, this is your cutie 💖";
-    let i=0;
-    let int=setInterval(()=>{
-      typeText.innerText+=t[i++];
-      if(i===t.length){clearInterval(int); setTimeout(()=>showPage(2),800);}
-    },50);
-  }else alert("Wrong date!");
+    startTyping("Hi my fattu, this is your cutie and this is something for you 💖","typeText1",()=>showPage(2));
+  }else alert("Wrong date");
 }
 
-function openImage(){
-  window.open("image2.jpg");
-  showPage(5);
-}
-function showCute(){
-  cuteImg.innerHTML='<img src="image3.jpg">';
-}
-function runAway(btn){
-  btn.style.position='absolute';
-  btn.style.left=Math.random()*80+'%';
-  btn.style.top=Math.random()*80+'%';
-}
-function loadVideo(p,src){
-  document.getElementById('vid'+p).innerHTML=`<video src="${src}" autoplay muted></video>`;
+/* TYPING */
+function startTyping(text,id,cb){
+  let i=0,el=document.getElementById(id);
+  let t=setInterval(()=>{
+    el.textContent=text.slice(0,i++);
+    if(i>text.length){clearInterval(t);cb&&cb();}
+  },50);
 }
 
-/* CLICK ANYWHERE */
-document.addEventListener('click',e=>{
-  if(['BUTTON','VIDEO','IMG','INPUT'].includes(e.target.tagName)) return;
-  if(current<13) showPage(current+1);
-});
+/* NO BUTTON */
+function moveBtn(btn){
+  btn.style.top=Math.random()*80+"%";
+  btn.style.left=Math.random()*80+"%";
+}
+
+/* FLOATING HEARTS */
+const c=document.getElementById("bubblesCanvas");
+const ctx=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+const heart=new Image();heart.src="heart.png";
+const kiss=new Image();kiss.src="kiss.png";
+let items=[];
+for(let i=0;i<30;i++)items.push({x:Math.random()*c.width,y:Math.random()*c.height,s:20+Math.random()*20,v:1+Math.random(),img:Math.random()<.5?heart:kiss});
+function anim(){
+ ctx.clearRect(0,0,c.width,c.height);
+ items.forEach(i=>{
+  ctx.drawImage(i.img,i.x,i.y,i.s,i.s);
+  i.y-=i.v;
+  if(i.y<-50)i.y=c.height+50;
+ });
+ requestAnimationFrame(anim);
+}
+anim();
 
 /* PUZZLE */
 let order=["4","2","8","5","1","6","7","9","3"];
-function initPuzzle(){
-  const board=document.getElementById("board");
-  board.innerHTML="";
-  let blank="3.jpg";
-  order.forEach(n=>{
-    let img=document.createElement("img");
-    img.src=n+".jpg";
-    img.draggable=true;
-    img.ondragstart=()=>drag=img;
-    img.ondragover=e=>e.preventDefault();
-    img.ondrop=()=>swap(img);
-    board.appendChild(img);
-  });
-}
-let drag;
-function swap(t){
-  if(!t.src.includes("3.jpg")) return;
-  [drag.src,t.src]=[t.src,drag.src];
-  checkSolved();
-}
-function checkSolved(){
-  const imgs=[...document.querySelectorAll("#board img")];
-  if(imgs.every((i,x)=>i.src.includes((x+1)+".jpg"))){
-    document.getElementById("puzzleDone").style.display="block";
-    setTimeout(()=>showPage(13),2500);
-  }
+let board=document.getElementById("board");
+let curr,other,turns=0;
+
+order.forEach((n,i)=>{
+ let img=document.createElement("img");
+ img.src=n+".jpg";
+ img.draggable=true;
+ img.addEventListener("dragstart",()=>curr=img);
+ img.addEventListener("dragover",e=>e.preventDefault());
+ img.addEventListener("drop",()=>other=img);
+ img.addEventListener("dragend",()=>{
+  if(!other||!other.src.includes("9.jpg"))return;
+  let t=curr.src;curr.src=other.src;other.src=t;
+  turns++;
+  checkComplete();
+ });
+ board.appendChild(img);
+});
+
+function checkComplete(){
+ let imgs=[...board.children].map(i=>i.src.split("/").pop());
+ if(imgs.join()=="1.jpg,2.jpg,3.jpg,4.jpg,5.jpg,6.jpg,7.jpg,8.jpg,9.jpg"){
+  document.getElementById("completeText").style.display="block";
+  setTimeout(()=>showPage(8),2000);
+ }
 }
 </script>
 
