@@ -15,11 +15,7 @@ html, body {margin:0; padding:0; width:100%; height:100%; font-family: 'Dancing 
 .yes {background: #ff6b81; color:#fff;}
 .no {background:#ffcb77; color:#000;}
 video,img{max-width:80%; border-radius:15px; z-index:5; position:relative; box-shadow: 0 10px 20px rgba(255,182,185,0.5); animation: floatShadow 3s ease-in-out infinite;}
-@keyframes floatShadow {
-  0% { box-shadow: 0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}
-  50% { box-shadow: 0 20px 30px rgba(255,182,185,0.6); transform: translateY(-5px);}
-  100% { box-shadow: 0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}
-}
+@keyframes floatShadow {0%{box-shadow:0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}50%{box-shadow:0 20px 30px rgba(255,182,185,0.6); transform: translateY(-5px);}100%{box-shadow:0 10px 20px rgba(255,182,185,0.5); transform: translateY(0px);}}
 canvas#bubblesCanvas, canvas#confettiCanvas{position:absolute; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:1;}
 .countdown { font-size:3em; margin-top:20px; animation:move 5s infinite alternate;}
 @keyframes move {0%{transform:translateX(-10px);}100%{transform:translateX(10px);}}
@@ -33,7 +29,7 @@ input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
 </head>
 <body>
 
-<audio id="bgSong" src="song.mp3" autoplay loop></audio>
+<audio id="bgSong" src="song.mp3" loop></audio>
 <canvas id="bubblesCanvas"></canvas>
 <canvas id="confettiCanvas"></canvas>
 
@@ -47,10 +43,10 @@ input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
 <!-- Page 1: Title then Video -->
 <div class="page" id="page1">
   <div class="title typing" id="typeText1"></div>
-  <video src="video1.mp4" controls autoplay></video>
+  <div id="videoContainer1"></div>
 </div>
 
-<!-- Example Yes/No Page -->
+<!-- Yes/No Page -->
 <div class="page" id="page2">
   <div class="title typing" id="typeText2">Do you love me? 💖</div>
   <button class="yes" id="yes1">YES</button>
@@ -77,16 +73,14 @@ input[type=date]{padding:10px; font-size:1em; border-radius:5px; border:none;}
 </div>
 
 <script>
-// Heart + Kiss Bubbles
+// ---------------- Heart + Kiss Bubbles ----------------
 const bubblesCanvas = document.getElementById('bubblesCanvas');
 const bctx = bubblesCanvas.getContext('2d');
 bubblesCanvas.width = window.innerWidth;
 bubblesCanvas.height = window.innerHeight;
-
 const images = [new Image(), new Image()];
 images[0].src = 'heart.png';
 images[1].src = 'kiss.png';
-
 let bubbles = [];
 for(let i=0;i<60;i++){
   bubbles.push({
@@ -100,7 +94,6 @@ for(let i=0;i<60;i++){
     img: images[Math.floor(Math.random()*images.length)]
   });
 }
-
 function drawBubbles(){
   bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);
   bubbles.forEach(b=>{
@@ -109,9 +102,7 @@ function drawBubbles(){
     bctx.rotate(b.rotation*Math.PI/180);
     bctx.drawImage(b.img,-b.size/2,-b.size/2,b.size,b.size);
     bctx.restore();
-    b.x += b.speedX;
-    b.y -= b.speedY;
-    b.rotation += b.rotationSpeed;
+    b.x += b.speedX; b.y -= b.speedY; b.rotation += b.rotationSpeed;
     if(b.y<-50) b.y=bubblesCanvas.height+50;
     if(b.x<-50) b.x=bubblesCanvas.width+50;
     if(b.x>bubblesCanvas.width+50) b.x=-50;
@@ -126,23 +117,14 @@ images.forEach(img=>{
   }
 });
 
-// Confetti
+// ---------------- Confetti ----------------
 const confCanvas=document.getElementById('confettiCanvas');
 const cctx=confCanvas.getContext('2d');
-confCanvas.width=window.innerWidth;
-confCanvas.height=window.innerHeight;
+confCanvas.width=window.innerWidth; confCanvas.height=window.innerHeight;
 let confettiParticles=[];
 function startConfetti(){
   for(let i=0;i<200;i++){
-    confettiParticles.push({
-      x:Math.random()*confCanvas.width,
-      y:Math.random()*confCanvas.height-500,
-      r:Math.random()*6+2,
-      d:Math.random()*50+2,
-      color:`hsl(${Math.random()*360},100%,50%)`,
-      tilt:Math.random()*10-10,
-      tiltAngleIncrement:Math.random()*0.07+0.05
-    });
+    confettiParticles.push({x:Math.random()*confCanvas.width,y:Math.random()*confCanvas.height-500,r:Math.random()*6+2,d:Math.random()*50+2,color:`hsl(${Math.random()*360},100%,50%)`,tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});
   }
   requestAnimationFrame(drawConfetti);
 }
@@ -162,185 +144,90 @@ function drawConfetti(){
   requestAnimationFrame(drawConfetti);
 }
 
-// Navigation and Typing
+// ---------------- Navigation & Typing ----------------
 let currentPage=0;
-function showPage(num){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page'+num).classList.add('active');
-  currentPage=num;
-}
-function startTyping(text,id){
-  let i=0;
-  const el=document.getElementById(id);
-  const interval=setInterval(()=>{
-    el.innerHTML=text.slice(0,i);
-    i++;
-    if(i>text.length) clearInterval(interval);
-  },50);
-}
+function showPage(num){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page'+num).classList.add('active');currentPage=num;}
+function startTyping(text,id){let i=0; const el=document.getElementById(id); const interval=setInterval(()=>{el.innerHTML=text.slice(0,i); i++; if(i>text.length) clearInterval(interval);},50);}
 
-// Password Page
+// ---------------- Password ----------------
+const bgSong = document.getElementById('bgSong');
 function checkPassword(){
   const input=document.getElementById('passInput').value;
   if(input==="2025-06-18"){
     showPage(1);
-    startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1");
+    bgSong.play().catch(e=>console.log("Audio autoplay blocked"));
+
+    const titleText = "Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖";
+    startTyping(titleText,"typeText1");
+
+    setTimeout(()=>{
+      const videoDiv = document.getElementById('videoContainer1');
+      const video = document.createElement('video');
+      video.src="video1.mp4"; video.controls=true; video.autoplay=true;
+      video.style.maxWidth="80%"; video.style.borderRadius="15px"; video.style.boxShadow="0 10px 20px rgba(255,182,185,0.5)";
+      videoDiv.appendChild(video);
+    }, titleText.length*50 + 200);
   } else alert("Incorrect password!");
 }
 
-// First Yes enlarges on No click
+// ---------------- Do You Love Me Logic ----------------
+document.getElementById('yes1').addEventListener('click',()=>{showPage(3);}); // Next page
 document.getElementById('no1').addEventListener('click',()=>{
-  const btn=document.getElementById('yes1');
-  let scale=1;
-  const interval=setInterval(()=>{
-    scale+=0.1;
-    btn.style.transform=`scale(${scale})`;
-    if(scale>5) clearInterval(interval);
-  },100);
+  const btn=document.getElementById('yes1'); let scale=1;
+  const interval=setInterval(()=>{scale+=0.1; btn.style.transform=`scale(${scale})`; if(scale>5) clearInterval(interval);},100);
 });
-document.getElementById('yes1').addEventListener('click',()=>showPage(6));
 
-// Runaway No buttons
-function runAway(el){
-  const x=Math.random()*(window.innerWidth-100);
-  const y=Math.random()*(window.innerHeight-50);
-  el.style.position='absolute';
-  el.style.left=x+'px';
-  el.style.top=y+'px';
-}
-
-// Countdown Animation
+// ---------------- Countdown ----------------
 const countdownEl=document.getElementById('animatedCountdown');
-function animateCountdown(){
-  const text="18/02/2026";
-  let i=0;
-  setInterval(()=>{
-    countdownEl.textContent=text.slice(0,i+1);
-    i=(i+1)%text.length;
-  },400);
-}
+function animateCountdown(){const text="18/02/2026"; let i=0; setInterval(()=>{countdownEl.textContent=text.slice(0,i+1); i=(i+1)%text.length;},400);}
 animateCountdown();
 
-// Tap anywhere navigation
+// ---------------- Tap Anywhere ----------------
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){
-      if(index<16) showPage(index+1);
-    }
+    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){if(index<16) showPage(index+1);}
   });
 });
 
-// Mini-game Hearts
+// ---------------- Mini-game ----------------
 let score=0;
 function createGameHeart(){
-  const heart=document.createElement('div');
-  heart.classList.add('gameHeart');
-  heart.style.backgroundImage='url(heart.png)';
-  heart.style.left=Math.random()*(window.innerWidth-50)+'px';
-  heart.style.top='-50px';
-  document.getElementById('gameArea').appendChild(heart);
-  let fall=setInterval(()=>{
-    let top=parseInt(heart.style.top);
-    heart.style.top=(top+5)+'px';
-    if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createGameHeart();}
-  },30);
-  heart.addEventListener('click',()=>{
-    score++;
-    const scoreEl=document.getElementById('score');
-    scoreEl.textContent=score;
-    scoreEl.style.transform='scale(1.5)';
-    setTimeout(()=>{scoreEl.style.transform='scale(1)';},200);
-    heart.remove(); clearInterval(fall); createGameHeart();
-  });
+  const heart=document.createElement('div'); heart.classList.add('gameHeart'); heart.style.backgroundImage='url(heart.png)';
+  heart.style.left=Math.random()*(window.innerWidth-50)+'px'; heart.style.top='-50px'; document.getElementById('gameArea').appendChild(heart);
+  let fall=setInterval(()=>{let top=parseInt(heart.style.top); heart.style.top=(top+5)+'px'; if(top>window.innerHeight*0.7){heart.remove(); clearInterval(fall); createGameHeart();}},30);
+  heart.addEventListener('click',()=>{score++; const scoreEl=document.getElementById('score'); scoreEl.textContent=score; scoreEl.style.transform='scale(1.5)'; setTimeout(()=>{scoreEl.style.transform='scale(1)';},200); heart.remove(); clearInterval(fall); createGameHeart();});
 }
 document.getElementById('page12').addEventListener('click',()=>{
-  score=0;
-  document.getElementById('score').textContent=score;
-  document.getElementById('gameArea').innerHTML='';
-  for(let i=0;i<5;i++) createGameHeart();
+  score=0; document.getElementById('score').textContent=score; document.getElementById('gameArea').innerHTML=''; for(let i=0;i<5;i++) createGameHeart();
 });
 
-// Draggable Puzzle
+// ---------------- Draggable Puzzle ----------------
 function initDraggablePuzzle(){
-  const puzzleDiv = document.getElementById('puzzleGame');
-  const rows = 3, cols =3;
-  const size = 320/cols;
-  const tiles=[];
-  const img = new Image();
-  img.src='image4.jpg';
-  img.onload=function(){
-    for(let r=0;r<rows;r++){
-      for(let c=0;c<cols;c++){
-        const canvas=document.createElement('canvas');
-        canvas.width=size; canvas.height=size;
-        canvas.style.top = r*size+'px';
-        canvas.style.left = c*size+'px';
-        canvas.dataset.row=r;
-        canvas.dataset.col=c;
-        canvas.dataset.correctRow=r;
-        canvas.dataset.correctCol=c;
-        canvas.style.position='absolute';
-        const ctx=canvas.getContext('2d');
-        ctx.drawImage(img, c*size, r*size, size, size, 0, 0, size, size);
-        tiles.push(canvas);
-        puzzleDiv.appendChild(canvas);
-        enableDrag(canvas);
-      }
-    }
-    tiles.forEach(t=>{
-      t.style.top = Math.random()*(320-size)+'px';
-      t.style.left = Math.random()*(320-size)+'px';
-    });
+  const puzzleDiv = document.getElementById('puzzleGame'); const rows=3, cols=3; const size=320/cols; const tiles=[]; const img=new Image();
+  img.src='image4.jpg'; img.onload=function(){
+    for(let r=0;r<rows;r++){for(let c=0;c<cols;c++){
+      const canvas=document.createElement('canvas'); canvas.width=size; canvas.height=size; canvas.style.top=r*size+'px'; canvas.style.left=c*size+'px';
+      canvas.dataset.row=r; canvas.dataset.col=c; canvas.dataset.correctRow=r; canvas.dataset.correctCol=c; canvas.style.position='absolute';
+      const ctx=canvas.getContext('2d'); ctx.drawImage(img,c*size,r*size,size,size,0,0,size,size);
+      tiles.push(canvas); puzzleDiv.appendChild(canvas); enableDrag(canvas);
+    }}
+    tiles.forEach(t=>{t.style.top = Math.random()*(320-size)+'px'; t.style.left = Math.random()*(320-size)+'px';});
   }
 
-  function enableDrag(el){
-    let offsetX=0, offsetY=0;
-    let startX=0, startY=0;
-    el.style.cursor='grab';
-    el.onpointerdown=function(e){
-      e.preventDefault();
-      startX=e.clientX;
-      startY=e.clientY;
-      offsetX = parseInt(el.style.left);
-      offsetY = parseInt(el.style.top);
-      el.style.cursor='grabbing';
-      document.onpointermove=drag;
-      document.onpointerup=drop;
-    }
-    function drag(e){
-      let dx = e.clientX - startX;
-      let dy = e.clientY - startY;
-      el.style.left = offsetX + dx + 'px';
-      el.style.top = offsetY + dy + 'px';
-    }
-    function drop(){
-      document.onpointermove=null;
-      document.onpointerup=null;
-      el.style.cursor='grab';
-      let nearestCol = Math.round(parseInt(el.style.left)/size);
-      let nearestRow = Math.round(parseInt(el.style.top)/size);
-      nearestCol = Math.min(Math.max(nearestCol,0),cols-1);
-      nearestRow = Math.min(Math.max(nearestRow,0),rows-1);
-      el.style.left = nearestCol*size+'px';
-      el.style.top = nearestRow*size+'px';
-      checkPuzzle();
+  function enableDrag(el){let offsetX=0, offsetY=0; let startX=0, startY=0; el.style.cursor='grab';
+    el.onpointerdown=function(e){e.preventDefault(); startX=e.clientX; startY=e.clientY; offsetX=parseInt(el.style.left); offsetY=parseInt(el.style.top); el.style.cursor='grabbing'; document.onpointermove=drag; document.onpointerup=drop;}
+    function drag(e){let dx=e.clientX-startX; let dy=e.clientY-startY; el.style.left=offsetX+dx+'px'; el.style.top=offsetY+dy+'px';}
+    function drop(){document.onpointermove=null; document.onpointerup=null; el.style.cursor='grab';
+      let nearestCol=Math.round(parseInt(el.style.left)/size); let nearestRow=Math.round(parseInt(el.style.top)/size);
+      nearestCol=Math.min(Math.max(nearestCol,0),cols-1); nearestRow=Math.min(Math.max(nearestRow,0),rows-1);
+      el.style.left=nearestCol*size+'px'; el.style.top=nearestRow*size+'px'; checkPuzzle();
     }
   }
 
-  function checkPuzzle(){
-    const tiles = puzzleDiv.querySelectorAll('canvas');
-    let solved=true;
-    tiles.forEach(t=>{
-      const left=parseInt(t.style.left);
-      const top=parseInt(t.style.top);
-      if(left !== t.dataset.correctCol*size || top !== t.dataset.correctRow*size){
-        solved=false;
-      }
-    });
-    if(solved){
-      alert("Puzzle Completed! 🎉");
-      showPage(12);
-    }
+  function checkPuzzle(){const tiles=puzzleDiv.querySelectorAll('canvas'); let solved=true;
+    tiles.forEach(t=>{const left=parseInt(t.style.left); const top=parseInt(t.style.top);
+      if(left!==t.dataset.correctCol*size || top!==t.dataset.correctRow*size){solved=false;}});
+    if(solved){alert("Puzzle Completed! 🎉"); showPage(12);}
   }
 }
 initDraggablePuzzle();
