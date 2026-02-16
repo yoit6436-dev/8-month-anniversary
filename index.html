@@ -4,21 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>8 Month Anniversary Surprise</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-html, body {margin:0; padding:0; width:100%; height:100%; font-family:'Dancing Script', cursive; overflow:hidden; background: linear-gradient(135deg, #1e1f26, #2c2f3b); color:#fff;}
-.page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:8vh; box-sizing:border-box;}
+html, body {
+  margin:0; padding:0; width:100%; height:100%;
+  font-family:'Dancing Script', cursive;
+  overflow:hidden;
+  background: linear-gradient(135deg, #1e1f26, #2c2f3b);
+  color:#fff;
+}
+.page {
+  display:none; width:100%; height:100%; position:absolute; top:0; left:0;
+  text-align:center; padding-top:8vh; box-sizing:border-box;
+}
 .page.active {display:block;}
-.title {font-size:3em; margin-bottom:20px; text-shadow:2px 2px 10px rgba(0,0,0,0.5);}
+.title {
+  font-size:3em; margin-bottom:20px;
+  text-shadow:2px 2px 10px rgba(0,0,0,0.5);
+}
 .typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
 video,img{max-width:80%; border-radius:15px; position:relative; z-index:5; box-shadow:0 15px 30px rgba(0,0,0,0.7);}
 button {padding:12px 25px; font-size:1.2em; margin:15px; cursor:pointer; border:none; border-radius:8px;}
 .yes{background:#ff6b81; color:#fff;}
 .no{background:#ffcb77; color:#000; position:relative;}
 canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
-.puzzle-container{margin-top:20px;display:grid;grid-template-columns:repeat(3,100px);grid-gap:2px;justify-content:center;}
-.puzzle-piece{width:100px;height:100px;background-size:300px 300px; cursor:pointer;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.5);}
-#finalTitle{font-size:5em; font-weight:bold; cursor:move; display:inline-block;}
+#finalTitle {
+  font-family:'Fredoka One', cursive;
+  font-size:5em;
+  color: #ff6b81;
+  animation: float 2s ease-in-out infinite alternate;
+  text-shadow: 2px 2px 15px #ffd6e0, 0 0 10px #ffb6c1;
+}
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(-5deg);}
+  100% { transform: translateY(0) rotate(0deg);}
+}
 </style>
 </head>
 <body>
@@ -38,29 +59,28 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <div class="title typing" id="typeText1"></div>
 </div>
 
-<!-- First video without title -->
+<!-- Video Pages -->
 <div class="page" id="page2">
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video1.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
 </div>
-
-<!-- Second video with title -->
 <div class="page" id="page3">
   <div class="title">First and foremost</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video2.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
 </div>
 
-<!-- Image press interface -->
+<!-- Press-to-open page -->
 <div class="page" id="page4">
   <div class="title">Please press to open</div>
   <div id="imageContainer4"></div>
 </div>
 
-<!-- Yes/No interactive interface -->
+<!-- Yes/No Cute Page -->
 <div class="page" id="page5">
   <div class="title">Do you wanna see something cute?</div>
   <button class="yes" id="yesBtn5">YES</button>
   <button class="no" id="noBtn5">NO</button>
   <div id="imageContainer5"></div>
+  <button id="next5" style="display:none;">Next</button>
 </div>
 
 <!-- Click to view video3 -->
@@ -70,7 +90,7 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <div id="videoContainer6"></div>
 </div>
 
-<!-- You wanna know how you fix my heart -->
+<!-- How you fix my heart -->
 <div class="page" id="page7">
   <div class="title">You wanna know how you fix my heart?</div>
   <button class="yes" id="yesBtn7">YES</button>
@@ -78,13 +98,13 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <div id="videoContainer7"></div>
 </div>
 
-<!-- This is how I feel when near you -->
+<!-- This is how I feel -->
 <div class="page" id="page8">
   <div class="title">This is how I feel when I'm near u</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
 </div>
 
-<!-- Will you hold my hands forever -->
+<!-- Hold hands -->
 <div class="page" id="page9">
   <div class="title">Will you hold my hands forever?</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video6.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
@@ -92,177 +112,104 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <button class="no" id="noBtn9">NO</button>
 </div>
 
-<!-- Puzzle game -->
-<div class="page" id="page10">
-  <div class="title">Solve this puzzle to see how cute we look together</div>
-  <div class="puzzle-container" id="puzzleContainer10"></div>
-</div>
-
-<!-- Mini Heart Click Game -->
-<div class="page" id="page11">
-  <div class="title">Mini Heart Click Game 💖</div>
-  <canvas id="heartCatcherCanvas" width="400" height="400" style="border:2px solid #fff; margin-top:20px;"></canvas>
-  <p style="color:#fff; font-size:1.2em;">Click the hearts to collect points!</p>
-</div>
-
 <!-- You wanna know what's in my heart -->
-<div class="page" id="page12">
+<div class="page" id="page10">
   <div class="title">You wanna know what's in my heart?</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video7.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
-  <button class="yes" id="yesBtn12">YES</button>
-  <button class="no" id="noBtn12">NO</button>
-  <div id="imageContainer12"></div>
+  <button class="yes" id="yesBtn10">YES</button>
+  <button class="no" id="noBtn10">NO</button>
 </div>
 
-<!-- A lot of kisses -->
-<div class="page" id="page13">
+<!-- Heart image page -->
+<div class="page" id="page11">
+  <div class="title">Look inside 💖</div>
+  <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg" style="max-width:80%; border-radius:15px;">
+</div>
+
+<!-- Kisses & Hugs -->
+<div class="page" id="page12">
   <div class="title">A lot of kisses for you</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video8.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
 </div>
-
-<!-- Hugs -->
-<div class="page" id="page14">
+<div class="page" id="page13">
   <div class="title">And hugs for u</div>
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>
 </div>
 
 <!-- Sweet memory -->
-<div class="page" id="page15">
+<div class="page" id="page14">
   <div class="title">A Sweet and childish memory</div>
   <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg" style="max-width:80%; border-radius:15px;">
 </div>
 
 <!-- Final page -->
-<div class="page" id="page16">
+<div class="page" id="page15">
   <div class="title" id="finalTitle">18/06/2025 - Yayy Happy 8 Months to Us!</div>
 </div>
 
 <script>
-// -------------- Bubbles --------------
-const bubblesCanvas = document.getElementById('bubblesCanvas');
-const bctx = bubblesCanvas.getContext('2d');
-bubblesCanvas.width = window.innerWidth;
-bubblesCanvas.height = window.innerHeight;
-const heartImg = new Image(); heartImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
-const kissImg = new Image(); kissImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
-let bubbles = [];
+// ---------- Bubbles ----------
+const bubblesCanvas=document.getElementById('bubblesCanvas');
+const bctx=bubblesCanvas.getContext('2d');
+bubblesCanvas.width=window.innerWidth;
+bubblesCanvas.height=window.innerHeight;
+const heartImg=new Image(); heartImg.src='https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
+const kissImg=new Image(); kissImg.src='https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
+let bubbles=[];
 for(let i=0;i<30;i++) bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*30+20,speedY:Math.random()*1+0.5,img:Math.random()<0.5?heartImg:kissImg});
 function drawBubbles(){bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);bubbles.forEach(b=>{bctx.drawImage(b.img,b.x,b.y,b.size,b.size);b.y-=b.speedY;if(b.y<-50)b.y=bubblesCanvas.height+50;});requestAnimationFrame(drawBubbles);}
 drawBubbles();
 
-// -------------- Pages & Typing --------------
+// ---------- Pages & Typing ----------
 let currentPage=0;
 function showPage(num){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page'+num).classList.add('active');currentPage=num;}
 function startTyping(text,id,callback){let i=0; const el=document.getElementById(id); const interval=setInterval(()=>{el.textContent=text.slice(0,i); i++; if(i>text.length){clearInterval(interval); if(callback) callback();}},50);}
 
-// -------------- Password & Song --------------
-const bgSong = document.getElementById('bgSong');
+// ---------- Password ----------
+const bgSong=document.getElementById('bgSong');
 function checkPassword(){const input=document.getElementById('passInput').value;
 if(input==="2025-06-18"){bgSong.play().catch(()=>{});startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage(2));} else alert("Incorrect password!");}
 
-// -------------- Image/Video/Yes-No Logic --------------
+// ---------- Press-to-open ----------
 document.getElementById('imageContainer4').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image1.jpg" style="cursor:pointer;">`;
-document.querySelector('#imageContainer4 img').onclick = ()=>{
-    window.open("https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg");
-    setTimeout(()=>showPage(4),100);
-};
+document.querySelector('#imageContainer4 img').onclick=()=>{
+  window.open("https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg");
+  showPage(4); // stays on press page
+}
+
+// ---------- Cute Yes/No ----------
 const yesBtn5=document.getElementById('yesBtn5');
 const noBtn5=document.getElementById('noBtn5');
-yesBtn5.onclick=()=>{document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`;}
+const next5=document.getElementById('next5');
+yesBtn5.onclick=()=>{
+  document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`;
+  next5.style.display='inline-block';
+}
 noBtn5.onclick=()=>{let size=1; const interval=setInterval(()=>{size+=0.05; yesBtn5.style.transform=`scale(${size})`;},50);}
-document.getElementById('clickToView6').onclick=()=>{document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>`;}
+next5.onclick=()=>{showPage(6);}
+
+// ---------- Click to view video3 ----------
+document.getElementById('clickToView6').onclick=()=>{
+  document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>`;
+}
+
+// ---------- How you fix heart ----------
 document.getElementById('yesBtn7').onclick=()=>{document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay muted playsinline style="max-width:90%; border-radius:15px;"></video>`;}
 document.getElementById('noBtn7').onclick=()=>{let btn=document.getElementById('noBtn7'); btn.style.position='absolute'; btn.style.top=Math.random()*80+'%'; btn.style.left=Math.random()*80+'%';}
+
+// ---------- Hold hands ----------
 document.getElementById('yesBtn9').onclick=()=>{showPage(10);}
 document.getElementById('noBtn9').onclick=()=>{let btn=document.getElementById('noBtn9'); btn.style.position='absolute'; btn.style.top=Math.random()*80+'%'; btn.style.left=Math.random()*80+'%';}
-document.getElementById('yesBtn12').onclick=()=>{document.getElementById('imageContainer12').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg">`;}
-document.getElementById('noBtn12').onclick=()=>{let btn=document.getElementById('noBtn12'); btn.style.position='absolute'; btn.style.top=Math.random()*80+'%'; btn.style.left=Math.random()*80+'%';}
 
-// -------------- Puzzle Game --------------
-const puzzleContainer10=document.getElementById('puzzleContainer10');
-puzzleContainer10.innerHTML = '';
-let pieces=[];
-const imgPuzzle=new Image();
-imgPuzzle.src='https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image4.jpg';
-imgPuzzle.onload=()=>{
-  const tileSize=100;
-  for(let y=0;y<3;y++){for(let x=0;x<3;x++){
-    const div=document.createElement('div'); div.className='puzzle-piece';
-    div.style.backgroundImage=`url(${imgPuzzle.src})`;
-    div.style.backgroundPosition=`-${x*tileSize}px -${y*tileSize}px`;
-    div.style.width=tileSize+'px';
-    div.style.height=tileSize+'px';
-    div.dataset.pos=(y*3+x);
-    puzzleContainer10.appendChild(div);
-    pieces.push(div);
-  }}
-  pieces.sort(()=>Math.random()-0.5);
-  pieces.forEach(p=>puzzleContainer10.appendChild(p));
-  let emptyPos=8;
-  pieces.forEach(p=>p.onclick=function(){
-    const idx=Array.from(puzzleContainer10.children).indexOf(p);
-    if(Math.abs(idx-emptyPos)==1 || Math.abs(idx-emptyPos)==3){
-      puzzleContainer10.children[emptyPos].style.backgroundImage=p.style.backgroundImage;
-      p.style.backgroundImage='';
-      emptyPos=idx;
-    }
-  });
-};
+// ---------- What's in my heart ----------
+document.getElementById('yesBtn10').onclick=()=>{showPage(11);}
+document.getElementById('noBtn10').onclick=()=>{let btn=document.getElementById('noBtn10'); btn.style.position='absolute'; btn.style.top=Math.random()*80+'%'; btn.style.left=Math.random()*80+'%';}
 
-// -------------- Mini Game --------------
-const canvas=document.getElementById('heartCatcherCanvas'); 
-const ctx=canvas.getContext('2d'); 
-let hearts=[],score=0;
-canvas.addEventListener('click',(e)=>{
-  const rect=canvas.getBoundingClientRect();
-  const mx=e.clientX-rect.left;
-  const my=e.clientY-rect.top;
-  for(let i=hearts.length-1;i>=0;i--){
-    const h=hearts[i];
-    if(mx>h.x && mx<h.x+h.size && my>h.y && my< h.y+h.size){
-      hearts.splice(i,1);
-      score++;
-    }
-  }
-});
-function spawnHeart(){hearts.push({x:Math.random()*380,y:Math.random()*380,size:30+Math.random()*10,dx:(Math.random()-0.5)*4,dy:(Math.random()-0.5)*4});}
-function gameLoop(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  hearts.forEach(h=>{
-    h.x+=h.dx; h.y+=h.dy;
-    if(h.x<0 || h.x>canvas.width-h.size) h.dx*=-1;
-    if(h.y<0 || h.y>canvas.height-h.size) h.dy*=-1;
-    ctx.drawImage(heartImg,h.x,h.y,h.size,h.size);
-  });
-  ctx.fillStyle="#fff"; ctx.font="18px 'Dancing Script'"; ctx.fillText("Score: "+score,10,20);
-  requestAnimationFrame(gameLoop);
-}
-setInterval(spawnHeart,600);
-gameLoop();
-
-// -------------- Final Page Big Moving Date --------------
-const finalTitle = document.getElementById('finalTitle');
-let angle=0;
-setInterval(()=>{
-  angle+=0.02;
-  finalTitle.style.transform=`rotate(${Math.sin(angle)*5}deg) scale(${1+0.05*Math.sin(angle*3)})`;
-},30);
-finalTitle.onmousedown=function(e){
-  e.preventDefault();
-  let shiftX = e.clientX - finalTitle.getBoundingClientRect().left;
-  let shiftY = e.clientY - finalTitle.getBoundingClientRect().top;
-  function moveAt(pageX,pageY){finalTitle.style.left=pageX-shiftX+'px'; finalTitle.style.top=pageY-shiftY+'px';}
-  function onMouseMove(e){moveAt(e.pageX,e.pageY);}
-  document.addEventListener('mousemove',onMouseMove);
-  document.onmouseup=function(){document.removeEventListener('mousemove',onMouseMove); document.onmouseup=null;}
-}
-finalTitle.ondragstart = ()=>false;
-
-// -------------- Click Anywhere ----------------
+// ---------- Click anywhere to next ----------
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
     if(e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && !e.target.classList.contains('yes') && !e.target.classList.contains('no') && e.target.tagName!=='BUTTON'){
-      if(currentPage<16) showPage(currentPage+1);
+      if(currentPage<15) showPage(currentPage+1);
     }
   });
 });
