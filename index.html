@@ -9,236 +9,274 @@
 
 <style>
 html,body{
-  margin:0; padding:0;
-  width:100%; height:100%;
-  overflow:hidden;
-  font-family:'Dancing Script', cursive;
+  margin:0;padding:0;width:100%;height:100%;
   background:linear-gradient(135deg,#1e1f26,#2c2f3b);
+  font-family:'Dancing Script',cursive;
   color:#fff;
+  overflow:hidden;
 }
-
 .page{
   display:none;
-  width:100%;
-  height:100%;
   position:absolute;
-  top:0; left:0;
+  inset:0;
   text-align:center;
   padding-top:8vh;
 }
 .page.active{display:block}
-
 .title{
   font-size:3em;
   margin-bottom:20px;
   text-shadow:2px 2px 10px rgba(0,0,0,.5);
 }
-
-/* FIXED typing */
 .typing{
-  display:inline-block;
   white-space:pre-wrap;
   border-right:2px solid #fff;
-  padding-right:6px;
+  padding-right:4px;
 }
-
 video,img{
   max-width:80%;
   border-radius:15px;
-  box-shadow:0 15px 30px rgba(0,0,0,.7);
+  box-shadow:0 15px 30px rgba(0,0,0,.6);
 }
-
 button{
   padding:12px 25px;
   font-size:1.2em;
-  margin:15px;
   border:none;
   border-radius:8px;
   cursor:pointer;
+  margin:10px;
 }
 .yes{background:#ff6b81;color:#fff}
 .no{background:#ffcb77;color:#000;position:relative}
 
-/* FLOATING HEARTS FIXED */
-#bubblesCanvas{
+canvas{
   position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
+  inset:0;
   pointer-events:none;
-  z-index:10;
 }
 
 /* FINAL PAGE */
-#finalTitle{
-  font-family:'Fredoka One', cursive;
-  font-size:5em;
-  color:#ff6b81;
-  animation:float 2.5s ease-in-out infinite;
-  text-shadow:0 0 20px #ffd6e0;
-}
-
-@keyframes float{
-  0%{transform:translateY(0)}
-  50%{transform:translateY(-25px)}
-  100%{transform:translateY(0)}
-}
-
-/* PUZZLE */
-#board{
-  width:360px;height:360px;
-  margin:20px auto;
+#finalWrap{
+  height:100%;
   display:flex;
-  flex-wrap:wrap;
-  border:8px solid #ff6b81;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
-#board img{
-  width:118px;height:118px;
-  border:1px solid #ff6b81;
+#finalDate{
+  font-family:'Fredoka One',cursive;
+  font-size:6rem;
+  background:linear-gradient(45deg,#ff6b81,#ffd93d,#6bcfff,#b56bff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:grad 4s infinite alternate, float 2.5s infinite ease-in-out;
 }
-#completeText{
-  display:none;
-  font-size:2em;
-  color:#ffb6c1;
+#finalText{
+  font-size:2.5rem;
+  margin-top:20px;
+  opacity:0;
+  animation:fadeUp 2s forwards;
+}
+
+@keyframes grad{
+  0%{background-position:0%}
+  100%{background-position:100%}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-20px)}
+}
+@keyframes fadeUp{
+  to{opacity:1;transform:translateY(-10px)}
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="bubblesCanvas"></canvas>
+<audio id="bgSong" src="song.mp3" loop></audio>
+
+<canvas id="bubbleCanvas"></canvas>
 
 <!-- PASSWORD -->
 <div class="page active" id="page0">
   <h1 class="title">Enter the Secret Date 💖</h1>
   <input type="date" id="passInput">
+  <br><br>
   <button onclick="checkPassword()">Submit</button>
 </div>
 
 <!-- TYPING -->
 <div class="page" id="page1">
-  <div class="title typing" id="typeText1"></div>
+  <div class="title typing" id="typeText"></div>
 </div>
 
-<!-- VIDEOS -->
+<!-- VIDEO 1 -->
 <div class="page" id="page2">
   <video src="video1.mp4" autoplay muted playsinline></video>
 </div>
 
+<!-- VIDEO 2 -->
 <div class="page" id="page3">
   <div class="title">First and foremost</div>
   <video src="video2.mp4" autoplay muted playsinline></video>
 </div>
 
-<!-- PRESS -->
+<!-- PRESS TO OPEN -->
 <div class="page" id="page4">
   <div class="title">Please press to open</div>
-  <img src="image1.jpg" onclick="window.open('image2.jpg')">
+  <img src="image1.jpg" id="pressImg" style="cursor:pointer">
 </div>
 
-<!-- HEART QUESTION -->
+<!-- CUTE -->
 <div class="page" id="page5">
+  <div class="title">Do you wanna see something cute?</div>
+  <button class="yes" onclick="showCute()">YES</button>
+  <button class="no" onclick="runAway(this)">NO</button>
+  <div id="cuteHolder"></div>
+</div>
+
+<!-- CLICK TO VIEW -->
+<div class="page" id="page6">
+  <div class="title">I have something to say, click to view</div>
+  <button onclick="playVideo3()">Click</button>
+  <div id="v3"></div>
+</div>
+
+<!-- FIX MY HEART -->
+<div class="page" id="page7">
+  <div class="title">You wanna know how you fix my heart?</div>
+  <button class="yes" onclick="playVideo4()">YES</button>
+  <button class="no" onclick="runAway(this)">NO</button>
+  <div id="v4"></div>
+</div>
+
+<!-- FEEL -->
+<div class="page" id="page8">
+  <div class="title">This is how I feel when I'm near u</div>
+  <video src="video5.mp4" autoplay muted playsinline></video>
+</div>
+
+<!-- HOLD HANDS -->
+<div class="page" id="page9">
+  <div class="title">Will you hold my hands forever?</div>
+  <video src="video6.mp4" autoplay muted playsinline></video>
+  <br>
+  <button class="yes" onclick="showPage(10)">YES</button>
+  <button class="no" onclick="runAway(this)">NO</button>
+</div>
+
+<!-- WHAT'S IN MY HEART -->
+<div class="page" id="page10">
   <div class="title">You wanna know what's in my heart?</div>
   <video src="video7.mp4" autoplay muted playsinline></video>
-  <button class="yes" onclick="showPage(6)">YES</button>
-  <button class="no" onclick="moveBtn(this)">NO</button>
+  <br>
+  <button class="yes" onclick="showPage(11)">YES</button>
+  <button class="no" onclick="runAway(this)">NO</button>
 </div>
 
 <!-- HEART IMAGE -->
-<div class="page" id="page6">
-  <div class="title">Look inside 💖</div>
+<div class="page" id="page11">
   <img src="image5.jpg">
 </div>
 
-<!-- PUZZLE PAGE -->
-<div class="page" id="page7">
-  <img src="logo.png" style="width:200px"><br>
-  <div id="board"></div>
-  <div id="completeText">How cute we look together 💖</div>
+<!-- KISSES -->
+<div class="page" id="page12">
+  <div class="title">A lot of kisses for you 💋</div>
+  <video src="video8.mp4" autoplay muted playsinline></video>
+</div>
+
+<!-- HUGS -->
+<div class="page" id="page13">
+  <div class="title">And hugs for u 🤍</div>
+  <video src="video9.mp4" autoplay muted playsinline></video>
+</div>
+
+<!-- MEMORY -->
+<div class="page" id="page14">
+  <div class="title">A Sweet and childish memory</div>
+  <img src="image6.jpg">
 </div>
 
 <!-- FINAL -->
-<div class="page" id="page8">
-  <div id="finalTitle">18 / 06 / 2025<br>Happy 8 Months 💖</div>
+<div class="page" id="page15">
+  <div id="finalWrap">
+    <div id="finalDate">18 / 06 / 2025</div>
+    <div id="finalText">Happy 8 Months to Us 💖</div>
+  </div>
 </div>
 
 <script>
-/* PAGE */
-let currentPage=0;
+let current=0;
 function showPage(n){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page'+n).classList.add('active');
-  currentPage=n;
+  current=n;
 }
 
-/* PASSWORD */
 function checkPassword(){
   if(passInput.value==="2025-06-18"){
-    startTyping("Hi my fattu, this is your cutie and this is something for you 💖","typeText1",()=>showPage(2));
-  }else alert("Wrong date");
+    bgSong.play().catch(()=>{});
+    typeText.textContent="";
+    showPage(1);
+    type("Hi my fattu, this is your cutie and this is something I made with all my love 💖",()=>showPage(2));
+  } else alert("Wrong date");
 }
 
-/* TYPING */
-function startTyping(text,id,cb){
-  let i=0,el=document.getElementById(id);
-  let t=setInterval(()=>{
-    el.textContent=text.slice(0,i++);
-    if(i>text.length){clearInterval(t);cb&&cb();}
+function type(t,cb){
+  let i=0;
+  let it=setInterval(()=>{
+    typeText.textContent=t.slice(0,i++);
+    if(i>t.length){clearInterval(it);cb();}
   },50);
 }
 
-/* NO BUTTON */
-function moveBtn(btn){
-  btn.style.top=Math.random()*80+"%";
-  btn.style.left=Math.random()*80+"%";
+pressImg.onclick=()=>window.open("image2.jpg");
+
+function showCute(){
+  cuteHolder.innerHTML='<img src="image3.jpg">';
 }
 
-/* FLOATING HEARTS */
-const c=document.getElementById("bubblesCanvas");
-const ctx=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-const heart=new Image();heart.src="heart.png";
-const kiss=new Image();kiss.src="kiss.png";
-let items=[];
-for(let i=0;i<30;i++)items.push({x:Math.random()*c.width,y:Math.random()*c.height,s:20+Math.random()*20,v:1+Math.random(),img:Math.random()<.5?heart:kiss});
-function anim(){
- ctx.clearRect(0,0,c.width,c.height);
- items.forEach(i=>{
-  ctx.drawImage(i.img,i.x,i.y,i.s,i.s);
-  i.y-=i.v;
-  if(i.y<-50)i.y=c.height+50;
- });
- requestAnimationFrame(anim);
+function playVideo3(){
+  v3.innerHTML='<video src="video3.mp4" autoplay muted playsinline></video>';
 }
-anim();
 
-/* PUZZLE */
-let order=["4","2","8","5","1","6","7","9","3"];
-let board=document.getElementById("board");
-let curr,other,turns=0;
+function playVideo4(){
+  v4.innerHTML='<video src="video4.mp4" autoplay muted playsinline></video>';
+}
 
-order.forEach((n,i)=>{
- let img=document.createElement("img");
- img.src=n+".jpg";
- img.draggable=true;
- img.addEventListener("dragstart",()=>curr=img);
- img.addEventListener("dragover",e=>e.preventDefault());
- img.addEventListener("drop",()=>other=img);
- img.addEventListener("dragend",()=>{
-  if(!other||!other.src.includes("9.jpg"))return;
-  let t=curr.src;curr.src=other.src;other.src=t;
-  turns++;
-  checkComplete();
- });
- board.appendChild(img);
+function runAway(b){
+  b.style.top=Math.random()*80+'%';
+  b.style.left=Math.random()*80+'%';
+  b.style.position='absolute';
+}
+
+document.querySelectorAll('.page').forEach(p=>{
+  p.onclick=e=>{
+    if(!['VIDEO','BUTTON','INPUT','IMG'].includes(e.target.tagName)){
+      if(current<15)showPage(current+1);
+    }
+  }
 });
 
-function checkComplete(){
- let imgs=[...board.children].map(i=>i.src.split("/").pop());
- if(imgs.join()=="1.jpg,2.jpg,3.jpg,4.jpg,5.jpg,6.jpg,7.jpg,8.jpg,9.jpg"){
-  document.getElementById("completeText").style.display="block";
-  setTimeout(()=>showPage(8),2000);
- }
+/* HEART + KISS FLOATING */
+const c=document.getElementById('bubbleCanvas'),x=c.getContext('2d');
+c.width=innerWidth;c.height=innerHeight;
+const heart=new Image();heart.src='heart.png';
+const kiss=new Image();kiss.src='kiss.png';
+let b=[];
+for(let i=0;i<25;i++)b.push({x:Math.random()*c.width,y:Math.random()*c.height,s:20+Math.random()*20,v:.5+Math.random(),i:Math.random()>.5?heart:kiss});
+function draw(){
+  x.clearRect(0,0,c.width,c.height);
+  b.forEach(o=>{
+    x.drawImage(o.i,o.x,o.y,o.s,o.s);
+    o.y-=o.v;
+    if(o.y<-50)o.y=c.height+50;
+  });
+  requestAnimationFrame(draw);
 }
+draw();
 </script>
 
 </body>
