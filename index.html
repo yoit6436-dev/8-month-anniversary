@@ -6,22 +6,29 @@
 <title>8 Month Anniversary Surprise</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
-html, body {margin:0;padding:0;width:100%;height:100%;font-family:'Dancing Script',cursive;overflow:hidden;background:linear-gradient(135deg,#ffdfba,#ffb6b9);}
-.page {display:none;width:100%;height:100%;position:absolute;top:0;left:0;text-align:center;padding-top:10vh;box-sizing:border-box;cursor:pointer;}
+html, body {
+  margin:0; padding:0; width:100%; height:100%;
+  font-family:'Dancing Script', cursive;
+  overflow:hidden;
+  background: linear-gradient(135deg, #1e1f26, #2c2f3b);
+  color:#fff;
+}
+.page {display:none; width:100%; height:100%; position:absolute; top:0; left:0; text-align:center; padding-top:8vh; box-sizing:border-box;}
 .page.active {display:block;}
-.title {font-size:2.8em;margin-bottom:20px;text-shadow:2px 2px 5px rgba(0,0,0,0.3);}
-.typing {display:inline;border-right:2px solid #fff;padding-right:2px;}
-.yes,.no{padding:12px 25px;font-size:1.2em;margin:15px;cursor:pointer;border:none;border-radius:8px;position:relative;z-index:10;}
-.yes{background:#ff6b81;color:#fff;}
-.no{background:#ffcb77;color:#000;}
-video,img{max-width:80%;border-radius:15px;position:relative;z-index:5;box-shadow:0 15px 30px rgba(255,182,185,0.6);transition:transform 0.3s,box-shadow 0.3s;}
-video:hover,img:hover{transform:translateY(-5px);box-shadow:0 25px 40px rgba(255,182,185,0.8);}
+.title {font-size:3em; margin-bottom:20px; text-shadow:2px 2px 10px rgba(0,0,0,0.5);}
+.typing {display:inline; border-right:2px solid #fff; padding-right:2px;}
+video,img{max-width:80%; border-radius:15px; position:relative; z-index:5; box-shadow:0 15px 30px rgba(0,0,0,0.7);}
+button {padding:12px 25px; font-size:1.2em; margin:15px; cursor:pointer; border:none; border-radius:8px;}
+.yes{background:#ff6b81; color:#fff;}
+.no{background:#ffcb77; color:#000; position:relative;}
 canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:100%;height:100%;z-index:1;}
+.puzzle-container{margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;width:300px;}
+.puzzle-piece{width:90px;height:90px;margin:2px;background-color:#ff6b81;display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;cursor:pointer;border-radius:10px;user-select:none;}
 </style>
 </head>
 <body>
 
-<audio id="bgSong" src="song.mp3" loop></audio>
+<audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <canvas id="bubblesCanvas"></canvas>
 
 <!-- Password Page -->
@@ -31,108 +38,204 @@ canvas#bubblesCanvas{position:absolute;top:0;left:0;pointer-events:none;width:10
   <button onclick="checkPassword()">Submit</button>
 </div>
 
-<!-- Video Pages 1-9 -->
-<div class="page" id="page1"><div class="title typing" id="typeText1"></div><div id="videoContainer1"></div></div>
-<div class="page" id="page2"><div class="title typing" id="typeText2"></div><div id="videoContainer2"></div></div>
-<div class="page" id="page3"><div class="title typing" id="typeText3"></div><div id="videoContainer3"></div></div>
-<div class="page" id="page4"><div class="title typing" id="typeText4"></div><div id="videoContainer4"></div></div>
-<div class="page" id="page5"><div class="title typing" id="typeText5"></div><div id="videoContainer5"></div></div>
-<div class="page" id="page6"><div class="title typing" id="typeText6"></div><div id="videoContainer6"></div></div>
-<div class="page" id="page7"><div class="title typing" id="typeText7"></div><div id="videoContainer7"></div></div>
-<div class="page" id="page8"><div class="title typing" id="typeText8"></div><div id="videoContainer8"></div></div>
-<div class="page" id="page9"><div class="title typing" id="typeText9"></div><div id="videoContainer9"></div></div>
+<!-- Typed Message -->
+<div class="page" id="page1">
+  <div class="title typing" id="typeText1"></div>
+</div>
 
-<!-- Do You Love Me Page -->
+<!-- Embedded Videos & Images Pages -->
+<div class="page" id="page2"><div class="title">First and foremost</div><div id="videoContainer2"></div></div>
+<div class="page" id="page3"><div class="title">Please press to open</div><div id="imageContainer3"></div></div>
+
+<!-- Yes/No interactive pages -->
+<div class="page" id="page4">
+  <div class="title">Do you wanna see something cute?</div>
+  <button class="yes" id="yesBtn4">YES</button>
+  <button class="no" id="noBtn4">NO</button>
+  <div id="imageContainer4"></div>
+</div>
+
+<div class="page" id="page5">
+  <div class="title">I have something to say, click to view</div>
+  <button id="clickToView5">Click</button>
+  <div id="videoContainer5"></div>
+</div>
+
+<div class="page" id="page6">
+  <div class="title">You wanna know how you fix my heart?</div>
+  <button class="yes" id="yesBtn6">YES</button>
+  <button class="no" id="noBtn6">NO</button>
+  <div id="videoContainer6"></div>
+</div>
+
+<div class="page" id="page7">
+  <div class="title">This is how I feel when I'm near u</div>
+  <div id="videoContainer7"></div>
+</div>
+
+<div class="page" id="page8">
+  <div class="title">Will you hold my hands forever?</div>
+  <button class="yes" id="yesBtn8">YES</button>
+  <button class="no" id="noBtn8">NO</button>
+  <div id="videoContainer8"></div>
+</div>
+
+<div class="page" id="page9">
+  <div class="title">Solve this puzzle to see how cute we look together</div>
+  <div class="puzzle-container" id="puzzleContainer9"></div>
+</div>
+
 <div class="page" id="page10">
-  <div class="title typing" id="typeText10">Do you love me? 💖</div>
-  <button class="yes" id="yes1">YES</button>
-  <button class="no" id="no1">NO</button>
+  <div class="title">Mini Heart Catcher Game 💖</div>
+  <canvas id="heartCatcherCanvas" width="400" height="400"></canvas>
+</div>
+
+<div class="page" id="page11">
+  <div class="title">You wanna know what's in my heart?</div>
+  <button class="yes" id="yesBtn11">YES</button>
+  <button class="no" id="noBtn11">NO</button>
+  <div id="mediaContainer11"></div>
+</div>
+
+<div class="page" id="page12">
+  <div class="title">A lot of kisses for you</div>
+  <div id="videoContainer12"></div>
+</div>
+
+<div class="page" id="page13">
+  <div class="title">And hugs for u</div>
+  <div id="videoContainer13"></div>
+</div>
+
+<div class="page" id="page14">
+  <div class="title">A Sweet and childish memory</div>
+  <div id="imageContainer14"></div>
+</div>
+
+<div class="page" id="page15">
+  <div class="title" id="finalTitle">18/02/2026 - Yayy Happy 8 Months to Us!</div>
+  <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/confetti.png" style="width:100%;height:100%;position:absolute;top:0;left:0;z-index:0;">
 </div>
 
 <script>
-// ---------------- Heart Bubbles ----------------
+// ---------------- Heart & Kiss Bubbles ----------------
 const bubblesCanvas = document.getElementById('bubblesCanvas');
 const bctx = bubblesCanvas.getContext('2d');
 bubblesCanvas.width = window.innerWidth;
 bubblesCanvas.height = window.innerHeight;
 const heartImg = new Image();
-heartImg.src = 'heart.png';
+heartImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
+const kissImg = new Image();
+kissImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
 let bubbles = [];
-for(let i=0;i<50;i++){
-  bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*20+20,speedY:Math.random()*1+0.5});
+for(let i=0;i<30;i++){
+  bubbles.push({x:Math.random()*bubblesCanvas.width,y:Math.random()*bubblesCanvas.height,size:Math.random()*30+20,speedY:Math.random()*1+0.5,img:Math.random()<0.5?heartImg:kissImg});
 }
-heartImg.onload = () => {drawBubbles();}
 function drawBubbles(){
   bctx.clearRect(0,0,bubblesCanvas.width,bubblesCanvas.height);
   bubbles.forEach(b=>{
-    bctx.drawImage(heartImg,b.x,b.y,b.size,b.size);
+    bctx.drawImage(b.img,b.x,b.y,b.size,b.size);
     b.y -= b.speedY;
     if(b.y<-50) b.y = bubblesCanvas.height + 50;
   });
   requestAnimationFrame(drawBubbles);
 }
+drawBubbles();
 
 // ---------------- Pages & Typing ----------------
 let currentPage = 0;
-function showPage(num){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page'+num).classList.add('active');currentPage=num;}
-function startTyping(text,id,callback){let i=0; const el=document.getElementById(id); const interval=setInterval(()=>{el.textContent=text.slice(0,i);i++;if(i>text.length){clearInterval(interval);if(callback) callback();}},50);}
+function showPage(num){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+num).classList.add('active');
+  currentPage=num;
+}
+function startTyping(text,id,callback){
+  let i=0;
+  const el=document.getElementById(id);
+  const interval=setInterval(()=>{
+    el.textContent=text.slice(0,i);
+    i++;
+    if(i>text.length){
+      clearInterval(interval);
+      if(callback) callback();
+    }
+  },50);
+}
 
-// ---------------- Password & Videos ----------------
+// ---------------- Password & Song ----------------
 const bgSong = document.getElementById('bgSong');
-const videoPages=[1,2,3,4,5,6,7,8,9];
-const videoFiles=['video1.mp4','video2.mp4','video3.mp4','video4.mp4','video5.mp4','video6.mp4','video7.mp4','video8.mp4','video9.mp4'];
-const videoTitles=[
-  "Hi my fattu, this is your cutie 💖",
-  "Look at this special memory 💖",
-  "Remember this day? 💖",
-  "A little surprise for you 💖",
-  "You make me happiest 💖",
-  "Every moment with you 💖",
-  "Can't wait for more memories 💖",
-  "Our journey together 💖",
-  "Forever and always 💖"
-];
-
 function checkPassword(){
   const input=document.getElementById('passInput').value;
   if(input==="2025-06-18"){
     bgSong.play().catch(()=>{console.log("Autoplay blocked");});
-    playVideosSequential(0);
+    startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage(2));
   } else alert("Incorrect password!");
 }
 
-function playVideosSequential(index){
-  if(index>=videoPages.length){ showPage(10); return; }
-  const pageId = videoPages[index];
-  const title = videoTitles[index];
-  const container = document.getElementById('videoContainer'+pageId);
-  showPage(pageId);
-  startTyping(title,"typeText"+pageId,()=>{
-    const v = document.createElement('video');
-    v.src = videoFiles[index];
-    v.controls = true;
-    v.autoplay = true;
-    container.appendChild(v);
-  });
+// ---------------- Embedded Videos ----------------
+document.getElementById('videoContainer2').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video1.mp4" controls autoplay></video>`;
+document.getElementById('videoContainer2').addEventListener('click',()=>showPage(3));
+
+document.getElementById('imageContainer3').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image1.jpg" style="cursor:pointer;">`;
+document.querySelector('#imageContainer3 img').onclick = ()=>{
+  window.open("https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg");
+  showPage(4);
 }
 
-// ---------------- Do You Love Me Buttons ----------------
-document.getElementById('yes1').addEventListener('click', ()=>{
-  let scale = 1;
-  const btn = document.getElementById('yes1');
-  const interval = setInterval(()=>{
-    scale += 0.1;
-    btn.style.transform = `scale(${scale})`;
-    if(scale > 5) clearInterval(interval);
-  },100);
-});
-// No button does nothing
+// ---------------- Yes/No Buttons ----------------
+const yesBtn4 = document.getElementById('yesBtn4');
+const noBtn4 = document.getElementById('noBtn4');
+yesBtn4.onclick = ()=>{document.getElementById('imageContainer4').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`;};
+noBtn4.onclick = ()=>{
+  let size=1;
+  const interval=setInterval(()=>{size+=0.05; yesBtn4.style.transform=`scale(${size})`;},50);
+};
 
-// ---------------- Tap Anywhere to Next ----------------
+// --- Page5 click to view video3 ---
+document.getElementById('clickToView5').onclick = ()=>{
+  document.getElementById('videoContainer5').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" controls autoplay></video>`;
+};
+
+// --- More Yes/No and video pages ---
+document.getElementById('yesBtn6').onclick = ()=>{
+  document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" controls autoplay></video>`;
+};
+let noBtn6 = document.getElementById('noBtn6');
+noBtn6.onclick = ()=>{
+  noBtn6.style.position='absolute';
+  noBtn6.style.top=Math.random()*80+'%';
+  noBtn6.style.left=Math.random()*80+'%';
+};
+
+document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" controls autoplay></video>`;
+
+// --- Yes/No for page8 ---
+document.getElementById('yesBtn8').onclick = ()=>{
+  document.getElementById('videoContainer8').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/confetti.png" style="width:100%;">`;
+};
+let noBtn8 = document.getElementById('noBtn8');
+noBtn8.onclick = ()=>{
+  noBtn8.style.position='absolute';
+  noBtn8.style.top=Math.random()*80+'%';
+  noBtn8.style.left=Math.random()*80+'%';
+};
+
+// ---------------- Puzzle Game ----------------
+const puzzleContainer9 = document.getElementById('puzzleContainer9');
+let pieces=['A','B','C','D','E','F','G','H','I'];
+pieces.sort(()=>Math.random()-0.5);
+pieces.forEach(p=>{
+  const div=document.createElement('div');
+  div.className='puzzle-piece';
+  div.textContent=p;
+  puzzleContainer9.appendChild(div);
+});
+
+// ---------------- Click Anywhere ----------------
 document.querySelectorAll('.page').forEach((p,index)=>{
   p.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON' && e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT'){
-      if(currentPage<10) playVideosSequential(currentPage); 
+    if(e.target.tagName!=='VIDEO' && e.target.tagName!=='INPUT' && !e.target.classList.contains('yes') && !e.target.classList.contains('no')){
+      if(currentPage<15) showPage(currentPage+1);
     }
   });
 });
