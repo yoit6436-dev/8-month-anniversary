@@ -22,12 +22,14 @@ html, body {
   touch-action: manipulation;
 }
 
-canvas#bubblesCanvas {
+canvas#bubblesCanvas, canvas#explosionCanvas {
     position: absolute; top:0; left:0; 
     width:100%; height:100%; 
     pointer-events:none; z-index: 1;
-    opacity: 0.7;
 }
+
+canvas#bubblesCanvas { opacity: 0.7; }
+canvas#explosionCanvas { z-index: 20; }
 
 #parallax-bg {
     position: fixed; width: 110%; height: 110%;
@@ -111,7 +113,6 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 
 #game-canvas { border-radius: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); margin: 0 auto; display: block; touch-action: none;}
 
-/* Interactive Element Styles */
 #kiss-zone { width: 80%; height: 200px; margin: 20px auto; border: 2px dashed var(--border); border-radius: 30px; position: relative; overflow: hidden; background: var(--glass); display: flex; align-items: center; justify-content: center; }
 .timeline { position: relative; max-width: 300px; margin: 20px auto; padding: 20px 0; border-left: 2px dashed var(--primary); }
 .timeline-item { margin-bottom: 25px; padding-left: 30px; position: relative; text-align: left; }
@@ -119,16 +120,20 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 #scratch-container { position: relative; width: 280px; height: 150px; margin: 0 auto; border-radius: 20px; overflow: hidden; }
 .scratch-prize { position: absolute; width: 100%; height: 100%; background: #1e212b; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka One'; font-size: 1.8em; color: var(--primary); border: 1px solid var(--border); border-radius: 20px; }
 
-/* Intimate Page Styles */
 .intimate-card { background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(15px); padding: 25px; width: 85%; margin: 20px auto; border-radius: 30px; text-align: left; }
 .intimate-card p { font-family: 'Poppins'; font-weight: 300; line-height: 1.6; font-size: 0.95em; color: #ffd6e0; }
 #heartbeat-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2em; animation: pulse 1.5s infinite; cursor: pointer; border: none; }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7); } 70% { box-shadow: 0 0 0 25px rgba(255, 107, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0); } }
+
+#intimate-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 2s; }
+.star-particle { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: floatStar 5s infinite ease-in-out; }
+@keyframes floatStar { 0%, 100% { transform: translateY(0); opacity: 0.3; } 50% { transform: translateY(-30px); opacity: 0.9; } }
 </style>
 </head>
 <body>
 
 <canvas id="bubblesCanvas"></canvas>
+<canvas id="explosionCanvas"></canvas>
 <div id="parallax-bg"></div>
 <audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <div id="progress-path"><div id="progress-fill"></div></div>
@@ -243,6 +248,7 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 </div>
 
 <div class="page" id="pageIntimate">
+    <div id="intimate-stars"></div>
     <div class="title">My Promise</div>
     <div class="intimate-card">
         <p>
@@ -290,12 +296,11 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 </div>
 
 <script>
-// ---------- CONFIG ----------
-const pageOrder = [0, 1, 'Map', 2, 'Scratch', 3, 'Kiss', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'Intimate', 14, 'Game', 'Puzzle', 'Final'];
-let currentPage = 0;
+// ---------- FIXED NAVIGATION ARRAY ----------
+const pageOrder = ['0', '1', 'Map', '2', 'Scratch', '3', 'Kiss', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', 'Intimate', '14', 'Game', 'Puzzle', 'Final'];
+let currentPage = '0';
 let isUnlocked = false; 
 let videoStartedOnPage7 = false; 
-
 const bgSong = document.getElementById('bgSong');
 
 // ---------- BUBBLES SYSTEM ----------
@@ -306,53 +311,69 @@ const heartImg = new Image(); heartImg.src = 'https://raw.githubusercontent.com/
 const kissImg = new Image(); kissImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
 
 function initBubbles() {
-    bCanvas.width = window.innerWidth;
-    bCanvas.height = window.innerHeight;
+    bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight;
     bubbles = [];
     for(let i=0; i<15; i++) {
         bubbles.push({
-            x: Math.random() * bCanvas.width,
-            y: Math.random() * bCanvas.height + bCanvas.height,
-            size: Math.random() * 20 + 20,
-            speed: Math.random() * 1 + 0.5,
+            x: Math.random() * bCanvas.width, y: Math.random() * bCanvas.height + bCanvas.height,
+            size: Math.random() * 20 + 20, speed: Math.random() * 1 + 0.5,
             img: Math.random() > 0.5 ? heartImg : kissImg
         });
     }
 }
-
 function animateBubbles() {
     bctx.clearRect(0, 0, bCanvas.width, bCanvas.height);
-    bubbles.forEach(b => {
-        bctx.drawImage(b.img, b.x, b.y, b.size, b.size);
-        b.y -= b.speed;
-        if(b.y < -50) b.y = bCanvas.height + 50;
-    });
+    bubbles.forEach(b => { bctx.drawImage(b.img, b.x, b.y, b.size, b.size); b.y -= b.speed; if(b.y < -50) b.y = bCanvas.height + 50; });
     requestAnimationFrame(animateBubbles);
 }
 
-// ---------- NAVIGATION ----------
-function showPage(num) {
-    if (!isUnlocked && num !== 0) return; 
+// ---------- EXPLOSION SYSTEM ----------
+const eCanvas = document.getElementById('explosionCanvas');
+const ectx = eCanvas.getContext('2d');
+let particles = [];
+class Particle {
+    constructor(x, y) {
+        this.x = x; this.y = y; this.size = Math.random() * 15 + 5;
+        this.speedX = Math.random() * 6 - 3; this.speedY = Math.random() * 6 - 3;
+        this.color = Math.random() > 0.5 ? '#ff6b81' : '#ffcb77'; this.opacity = 1;
+        this.type = Math.random() > 0.3 ? 'heart' : 'star';
+    }
+    update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.015; }
+    draw() { ectx.globalAlpha = this.opacity; ectx.fillStyle = this.color; 
+        ectx.font = `${this.size}px serif`; ectx.fillText(this.type === 'heart' ? '❤️' : '✨', this.x, this.y); 
+    }
+}
+function createExplosion(x, y) { for (let i = 0; i < 50; i++) particles.push(new Particle(x, y)); }
+function animateExplosion() {
+    ectx.clearRect(0, 0, eCanvas.width, eCanvas.height);
+    particles.forEach((p, i) => { p.update(); p.draw(); if (p.opacity <= 0) particles.splice(i, 1); });
+    requestAnimationFrame(animateExplosion);
+}
 
+// ---------- NAVIGATION LOGIC ----------
+function showPage(num) {
+    if (!isUnlocked && num !== '0') return; 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     let target = document.getElementById('page' + num);
     if(target) target.classList.add('active');
     
-    let currentIndex = pageOrder.indexOf(num);
+    let currentIndex = pageOrder.indexOf(num.toString());
     document.getElementById('progress-fill').style.width = (currentIndex / (pageOrder.length - 1)) * 100 + '%';
     
-    currentPage = num;
+    currentPage = num.toString();
     if(num === 'Scratch') initScratch();
     if(num === 'Game') startStarGame();
     if(num === 'Puzzle') initPuzzle();
+    if(num === 'Intimate') { initIntimateStars(); document.getElementById('intimate-stars').style.opacity = '1'; }
+    else if(document.getElementById('intimate-stars')) { document.getElementById('intimate-stars').style.opacity = '0'; }
 }
 
 function checkPassword(e){
     if(e) e.stopPropagation();
     if(document.getElementById('passInput').value === "2025-06-18"){
-        isUnlocked = true;
-        bgSong.play().catch(()=>{});
-        showPage(1);
+        isUnlocked = true; bgSong.play().catch(()=>{});
+        if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        showPage('1');
         startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage('Map'));
     } else alert("The code is in our hearts. Try again! ❌");
 }
@@ -362,15 +383,12 @@ function startTyping(text,id,callback){
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } }, 50);
 }
 
-// Global Click Navigator
+// Fixed Global Click Event
 document.addEventListener('click', (e) => {
     if (!isUnlocked) return;
-
-    if (currentPage === 7 && videoStartedOnPage7) { showPage(8); return; }
-
-    const interactivePages = [0, 5, 7, 9, 10, 'Scratch', 'Kiss', 'Map', 'Game', 'Puzzle', 'Intimate'];
+    if (currentPage === '7' && videoStartedOnPage7) { showPage('8'); return; }
+    const interactivePages = ['0', '5', '7', '9', '10', 'Scratch', 'Kiss', 'Map', 'Game', 'Puzzle', 'Intimate'];
     if (interactivePages.includes(currentPage)) return;
-
     const ignore = ['VIDEO', 'INPUT', 'BUTTON', 'IMG', 'CANVAS'];
     if(!ignore.includes(e.target.tagName)){
         let idx = pageOrder.indexOf(currentPage);
@@ -378,51 +396,51 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ---------- SCRATCH LOGIC ----------
+// ---------- INTERACTIONS ----------
 function initScratch() {
-    const canvas = document.getElementById('scratchCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#A9A9A9';
-    for(let i=0; i<80; i++) ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
-    
+    const canvas = document.getElementById('scratchCanvas'); const ctx = canvas.getContext('2d');
+    ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#A9A9A9'; for(let i=0; i<80; i++) ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
     ctx.globalCompositeOperation = 'destination-out';
     const scratch = (e) => {
         const rect = canvas.getBoundingClientRect();
         const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
         ctx.beginPath(); ctx.arc(x,y,25,0,Math.PI*2); ctx.fill();
+        if(navigator.vibrate && Math.random() > 0.95) navigator.vibrate(5);
     };
     canvas.ontouchmove = scratch; canvas.onmousemove = scratch;
 }
 
-// ---------- INTIMATE PAGE LOGIC ----------
-let heartbeatTimeout;
+function initIntimateStars() {
+    const container = document.getElementById('intimate-stars'); container.innerHTML = '';
+    for(let i=0; i<45; i++) {
+        const star = document.createElement('div'); star.className = 'star-particle';
+        const size = Math.random() * 4 + 1; star.style.width = size + 'px'; star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%'; star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 5 + 's'; container.appendChild(star);
+    }
+}
+
+let heartbeatInterval, heartbeatTimeout;
 const hbBtn = document.getElementById('heartbeat-btn');
-hbBtn.addEventListener('mousedown', startSync);
-hbBtn.addEventListener('touchstart', startSync);
-hbBtn.addEventListener('mouseup', cancelSync);
-hbBtn.addEventListener('touchend', cancelSync);
-
-function startSync() {
-    hbBtn.style.transform = 'scale(0.9)';
+function startSync(e) {
+    if(e) e.preventDefault(); hbBtn.style.transform = 'scale(0.85)';
+    if(navigator.vibrate) heartbeatInterval = setInterval(() => { navigator.vibrate([150, 100, 150]); }, 1000);
     heartbeatTimeout = setTimeout(() => {
-        showPage(14);
-    }, 2000); // Hold for 2 seconds
+        const rect = hbBtn.getBoundingClientRect(); createExplosion(rect.left + rect.width/2, rect.top + rect.height/2);
+        if(navigator.vibrate) navigator.vibrate(300); setTimeout(() => showPage('14'), 1000);
+    }, 3000);
 }
-function cancelSync() {
-    hbBtn.style.transform = 'scale(1)';
-    clearTimeout(heartbeatTimeout);
-}
+function cancelSync() { hbBtn.style.transform = 'scale(1)'; clearInterval(heartbeatInterval); clearTimeout(heartbeatTimeout); }
+hbBtn.addEventListener('mousedown', startSync); hbBtn.addEventListener('touchstart', startSync);
+hbBtn.addEventListener('mouseup', cancelSync); hbBtn.addEventListener('touchend', cancelSync);
 
-// ---------- OTHER INTERACTIONS ----------
 document.getElementById('kiss-zone').onclick = function(e) {
-    const k = document.createElement('div');
-    k.innerHTML = '💋'; k.style.position = 'absolute';
+    if(navigator.vibrate) navigator.vibrate(20);
+    const k = document.createElement('div'); k.innerHTML = '💋'; k.style.position = 'absolute';
     k.style.left = (e.offsetX - 10) + 'px'; k.style.top = (e.offsetY - 10) + 'px';
-    k.style.fontSize = '2.5rem'; k.style.pointerEvents = 'none';
-    this.appendChild(k);
+    k.style.fontSize = '2.5rem'; k.style.pointerEvents = 'none'; this.appendChild(k);
     setTimeout(() => k.remove(), 800);
 };
 
@@ -431,17 +449,14 @@ document.getElementById('noBtn5').onclick = (e) => { e.stopPropagation(); yesSiz
 document.getElementById('yesBtn5').onclick = (e) => { e.stopPropagation(); document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`; document.getElementById('next5').style.display='inline-block'; };
 document.getElementById('clickToView6').onclick=(e)=>{ e.stopPropagation(); document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline loop></video>`; };
 document.getElementById('yesBtn7').onclick=(e)=>{ e.stopPropagation(); document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay muted playsinline loop></video>`; videoStartedOnPage7 = true; };
-document.getElementById('yesBtn9').onclick=(e)=> { e.stopPropagation(); showPage(10); };
-document.getElementById('yesBtn10').onclick=(e)=> { e.stopPropagation(); showPage(11); };
-
+document.getElementById('yesBtn9').onclick=(e)=> { e.stopPropagation(); showPage('10'); };
+document.getElementById('yesBtn10').onclick=(e)=> { e.stopPropagation(); showPage('11'); };
 [document.getElementById('noBtn7'), document.getElementById('noBtn9'), document.getElementById('noBtn10')].forEach(btn => {
     btn.onclick = (e) => { e.stopPropagation(); btn.style.position='absolute'; btn.style.top=Math.random()*70 + 10 +'%'; btn.style.left=Math.random()*70 + 10 +'%'; };
 });
 
-// ---------- GAMES ----------
 function startStarGame() {
-    const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('game-canvas'); const ctx = canvas.getContext('2d');
     let score = 0; let stars = []; let basketX = canvas.width/2 - 35;
     canvas.ontouchmove = (e) => { let rect = canvas.getBoundingClientRect(); basketX = e.touches[0].clientX - rect.left - 35; };
     function update() {
@@ -451,7 +466,11 @@ function startStarGame() {
             ctx.fillStyle = "#ff6b81"; ctx.beginPath(); ctx.roundRect(basketX, canvas.height-30, 75, 15, 10); ctx.fill();
             stars.forEach((s, i) => {
                 s.y += (4 + score*0.1); ctx.fillStyle = "#ffcb77"; ctx.beginPath(); ctx.arc(s.x, s.y, 8, 0, Math.PI*2); ctx.fill();
-                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { stars.splice(i,1); score++; document.getElementById('scoreDisplay').innerText = `Collected: ${score} / 10`; if(score >= 10) showPage('Puzzle'); }
+                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { 
+                    stars.splice(i,1); score++; if(navigator.vibrate) navigator.vibrate(10);
+                    document.getElementById('scoreDisplay').innerText = `Collected: ${score} / 10`; 
+                    if(score >= 10) showPage('Puzzle'); 
+                }
                 if(s.y > canvas.height) stars.splice(i,1);
             });
             requestAnimationFrame(update);
@@ -474,10 +493,10 @@ function initPuzzle() {
         board.appendChild(div);
     });
 }
-function checkWin() { if (JSON.stringify(currentPieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display = 'inline-block'; }
+function checkWin() { if (JSON.stringify(currentPieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) { if(navigator.vibrate) navigator.vibrate([100, 50, 100]); document.getElementById('puzzleNext').style.display = 'inline-block'; } }
 
-window.onload = () => { initBubbles(); animateBubbles(); };
-window.onresize = initBubbles;
+window.onload = () => { eCanvas.width = window.innerWidth; eCanvas.height = window.innerHeight; initBubbles(); animateBubbles(); animateExplosion(); };
+window.onresize = () => { eCanvas.width = window.innerWidth; eCanvas.height = window.innerHeight; initBubbles(); };
 </script>
 </body>
 </html>
