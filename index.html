@@ -118,6 +118,12 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 .timeline-item::before { content: '❤️'; position: absolute; left: -12px; top: 0; background: #0f0f13; }
 #scratch-container { position: relative; width: 280px; height: 150px; margin: 0 auto; border-radius: 20px; overflow: hidden; }
 .scratch-prize { position: absolute; width: 100%; height: 100%; background: #1e212b; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka One'; font-size: 1.8em; color: var(--primary); border: 1px solid var(--border); border-radius: 20px; }
+
+/* Intimate Page Styles */
+.intimate-card { background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(15px); padding: 25px; width: 85%; margin: 20px auto; border-radius: 30px; text-align: left; }
+.intimate-card p { font-family: 'Poppins'; font-weight: 300; line-height: 1.6; font-size: 0.95em; color: #ffd6e0; }
+#heartbeat-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2em; animation: pulse 1.5s infinite; cursor: pointer; border: none; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7); } 70% { box-shadow: 0 0 0 25px rgba(255, 107, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0); } }
 </style>
 </head>
 <body>
@@ -236,6 +242,20 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
   <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline loop></video>
 </div>
 
+<div class="page" id="pageIntimate">
+    <div class="title">My Promise</div>
+    <div class="intimate-card">
+        <p>
+            In these 8 months, you've become the home I never knew I was looking for. 
+            Every laugh, every video call, and every shared dream has made my world so much brighter. 
+            Thank you for being my fattu, my best friend, and my love. 
+            <br><br>
+            <strong>Hold the heart to connect our souls...</strong>
+        </p>
+    </div>
+    <button id="heartbeat-btn">❤️</button>
+</div>
+
 <div class="page" id="page14">
   <div class="title">A sweet memory</div>
   <div class="scrapbook-memory">
@@ -271,7 +291,7 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 
 <script>
 // ---------- CONFIG ----------
-const pageOrder = [0, 1, 'Map', 2, 'Scratch', 3, 'Kiss', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 'Game', 'Puzzle', 'Final'];
+const pageOrder = [0, 1, 'Map', 2, 'Scratch', 3, 'Kiss', 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 'Intimate', 14, 'Game', 'Puzzle', 'Final'];
 let currentPage = 0;
 let isUnlocked = false; 
 let videoStartedOnPage7 = false; 
@@ -348,7 +368,7 @@ document.addEventListener('click', (e) => {
 
     if (currentPage === 7 && videoStartedOnPage7) { showPage(8); return; }
 
-    const interactivePages = [0, 5, 7, 9, 10, 'Scratch', 'Kiss', 'Map', 'Game', 'Puzzle'];
+    const interactivePages = [0, 5, 7, 9, 10, 'Scratch', 'Kiss', 'Map', 'Game', 'Puzzle', 'Intimate'];
     if (interactivePages.includes(currentPage)) return;
 
     const ignore = ['VIDEO', 'INPUT', 'BUTTON', 'IMG', 'CANVAS'];
@@ -364,7 +384,6 @@ function initScratch() {
     const ctx = canvas.getContext('2d');
     ctx.globalCompositeOperation = 'source-over';
     ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    // Silver texture
     ctx.fillStyle = '#A9A9A9';
     for(let i=0; i<80; i++) ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
     
@@ -376,6 +395,25 @@ function initScratch() {
         ctx.beginPath(); ctx.arc(x,y,25,0,Math.PI*2); ctx.fill();
     };
     canvas.ontouchmove = scratch; canvas.onmousemove = scratch;
+}
+
+// ---------- INTIMATE PAGE LOGIC ----------
+let heartbeatTimeout;
+const hbBtn = document.getElementById('heartbeat-btn');
+hbBtn.addEventListener('mousedown', startSync);
+hbBtn.addEventListener('touchstart', startSync);
+hbBtn.addEventListener('mouseup', cancelSync);
+hbBtn.addEventListener('touchend', cancelSync);
+
+function startSync() {
+    hbBtn.style.transform = 'scale(0.9)';
+    heartbeatTimeout = setTimeout(() => {
+        showPage(14);
+    }, 2000); // Hold for 2 seconds
+}
+function cancelSync() {
+    hbBtn.style.transform = 'scale(1)';
+    clearTimeout(heartbeatTimeout);
 }
 
 // ---------- OTHER INTERACTIONS ----------
