@@ -22,7 +22,14 @@ html, body {
   touch-action: manipulation;
 }
 
-/* Parallax Bokeh */
+/* Background Bubbles Canvas */
+canvas#bubblesCanvas {
+    position: absolute; top:0; left:0; 
+    width:100%; height:100%; 
+    pointer-events:none; z-index: 1;
+    opacity: 0.7;
+}
+
 #parallax-bg {
     position: fixed; width: 110%; height: 110%;
     background: radial-gradient(circle at 20% 30%, #1e212b 0%, #0f0f13 100%);
@@ -31,7 +38,7 @@ html, body {
 
 .page {
   display:none; width:100%; height:100%; position:absolute; top:0; left:0;
-  text-align:center; padding-top:7vh; box-sizing:border-box;
+  text-align:center; padding-top:7vh; box-sizing:border-box; z-index: 5;
 }
 .page.active {display:block; animation: slideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1);}
 
@@ -85,7 +92,7 @@ video, img {max-width:85%; border-radius:30px; box-shadow:0 30px 60px rgba(0,0,0
 }
 
 /* Interactive Buttons */
-button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; font-weight: 600; transition: 0.4s; letter-spacing: 0.5px;}
+button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; font-weight: 600; transition: transform 0.2s; letter-spacing: 0.5px; z-index: 100;}
 .yes { background: var(--primary); color: white; box-shadow: 0 10px 30px rgba(255, 107, 129, 0.4); }
 .no { background: var(--glass); color: white; backdrop-filter: blur(8px); border: 1px solid var(--border); }
 
@@ -110,11 +117,12 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
 /* Star Game */
-#game-canvas { border-radius: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); margin: 0 auto; display: block; }
+#game-canvas { border-radius: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); margin: 0 auto; display: block; touch-action: none;}
 </style>
 </head>
 <body>
 
+<canvas id="bubblesCanvas"></canvas>
 <div id="parallax-bg"></div>
 <audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <div id="progress-path"><div id="progress-fill"></div></div>
@@ -229,6 +237,42 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 </div>
 
 <script>
+// ---------- BUBBLES SYSTEM ----------
+const bCanvas = document.getElementById('bubblesCanvas');
+const bctx = bCanvas.getContext('2d');
+let bubbles = [];
+const heartImg = new Image(); heartImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
+const kissImg = new Image(); kissImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
+
+function initBubbles() {
+    bCanvas.width = window.innerWidth;
+    bCanvas.height = window.innerHeight;
+    bubbles = [];
+    for(let i=0; i<15; i++) {
+        bubbles.push({
+            x: Math.random() * bCanvas.width,
+            y: Math.random() * bCanvas.height + bCanvas.height,
+            size: Math.random() * 20 + 20,
+            speed: Math.random() * 1 + 0.5,
+            img: Math.random() > 0.5 ? heartImg : kissImg
+        });
+    }
+}
+
+function animateBubbles() {
+    bctx.clearRect(0, 0, bCanvas.width, bCanvas.height);
+    bubbles.forEach(b => {
+        bctx.drawImage(b.img, b.x, b.y, b.size, b.size);
+        b.y -= b.speed;
+        if(b.y < -50) b.y = bCanvas.height + 50;
+    });
+    requestAnimationFrame(animateBubbles);
+}
+
+window.onload = () => { initBubbles(); animateBubbles(); };
+window.onresize = initBubbles;
+
+// ---------- NAVIGATION & LOGIC ----------
 let currentPage = 0;
 const totalSteps = 16;
 const bgSong = document.getElementById('bgSong');
@@ -259,7 +303,7 @@ function startTyping(text,id,callback){
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } }, 50);
 }
 
-/* Page 5: Interactive YES button */
+/* Page 5: YES button enlarge fixed */
 let yesSize = 1;
 document.getElementById('noBtn5').onclick = (e) => {
     e.stopPropagation();
@@ -272,7 +316,7 @@ document.getElementById('yesBtn5').onclick = (e) => {
     document.getElementById('next5').style.display='inline-block';
 };
 
-/* CATCH GAME */
+/* STAR GAME */
 function startStarGame() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
