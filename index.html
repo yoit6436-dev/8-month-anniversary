@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>8 Month Anniversary Surprise</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Fredoka+One&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root {
     --primary: #ff6b81;
@@ -22,14 +22,12 @@ html, body {
   touch-action: manipulation;
 }
 
-canvas#bubblesCanvas, canvas#explosionCanvas {
+canvas#bubblesCanvas, canvas#confettiCanvas {
     position: absolute; top:0; left:0; 
     width:100%; height:100%; 
     pointer-events:none; z-index: 1;
 }
-
-canvas#bubblesCanvas { opacity: 0.7; }
-canvas#explosionCanvas { z-index: 20; }
+canvas#confettiCanvas { z-index: 20; }
 
 #parallax-bg {
     position: fixed; width: 110%; height: 110%;
@@ -58,9 +56,14 @@ canvas#explosionCanvas { z-index: 20; }
 
 video, img {max-width:85%; border-radius:30px; box-shadow:0 30px 60px rgba(0,0,0,0.8); border: 1px solid var(--border);}
 
-button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; font-weight: 600; transition: transform 0.2s; letter-spacing: 0.5px; z-index: 100; position: relative;}
+button {
+    padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; 
+    font-weight: 600; transition: transform 0.2s; letter-spacing: 0.5px; 
+    z-index: 100; position: relative; display: block; margin: 20px auto;
+}
 .yes { background: var(--primary); color: white; box-shadow: 0 10px 30px rgba(255, 107, 129, 0.4); }
-.no { background: var(--glass); color: white; backdrop-filter: blur(8px); border: 1px solid var(--border); }
+.no { background: var(--glass); color: white; backdrop-filter: blur(8px); border: 1px solid var(--border); display: inline-block; margin: 0 10px; }
+.yes-inline { display: inline-block; margin: 0 10px; }
 
 .flip-container { perspective: 1000px; width: 85%; height: 40vh; margin: 20px auto; }
 .flip-card { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
@@ -69,25 +72,46 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 .flip-back { transform: rotateY(180deg); }
 .flip-front img, .flip-back img { width: 100%; height: 100%; object-fit: contain; }
 
-#puzzle-board {
-    display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px);
-    grid-gap: 12px; justify-content: center; margin: 20px auto;
-    background: var(--glass); padding: 20px; border-radius: 35px;
-}
-.puzzle-piece { width: 90px; height: 90px; border-radius: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); background-size: cover; }
-
-.final-aesthetic-card {
-    background: rgba(15, 15, 19, 0.8);
-    backdrop-filter: blur(25px);
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    padding: 35px 20px;
-    width: 88%;
+.pinterest-card {
+    background: #fff;
+    padding: 20px;
+    width: 82%;
     margin: 0 auto;
-    box-shadow: 0 50px 120px rgba(0,0,0,0.7);
-    animation: heartbeat 2s infinite ease-in-out;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    color: #333;
+    text-align: center;
 }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+.pinterest-card img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: none;
+    border: none;
+}
+.pinterest-card h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 2.2em;
+    margin: 10px 0;
+    color: #1a1a1a;
+}
+.pinterest-card p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95em;
+    color: #666;
+    line-height: 1.6;
+}
+.date-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    font-size: 0.75em;
+    letter-spacing: 2px;
+    margin-top: 15px;
+    color: #999;
+}
 
 #progress-path { position: fixed; bottom: 30px; left: 10%; width: 80%; height: 2px; background: rgba(255,255,255,0.05); z-index: 100; }
 #progress-fill { width: 0%; height: 100%; background: var(--primary); transition: width 1s; }
@@ -96,7 +120,7 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 <body>
 
 <canvas id="bubblesCanvas"></canvas>
-<canvas id="explosionCanvas"></canvas>
+<canvas id="confettiCanvas"></canvas>
 <div id="parallax-bg"></div>
 <audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <div id="progress-path"><div id="progress-fill"></div></div>
@@ -104,118 +128,124 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 <div class="page active" id="page0">
   <h1 class="title">Our Sanctuary 💖</h1>
   <p>Enter the date we started:</p>
-  <input type="date" id="passInput" style="padding:15px; border-radius:20px; background: var(--glass); border:1px solid var(--border); color:white; font-size:1.1em; width: 60%;">
-  <br><button onclick="checkPassword()" class="yes" style="margin-top: 25px;">Enter Our World</button>
+  <input type="date" id="passInput" style="padding:15px; border-radius:20px; background: var(--glass); border:1px solid var(--border); color:white; font-size:1.1em; width: 60%; display: block; margin: 0 auto;">
+  <button onclick="checkPassword()" class="yes">Enter Our World</button>
 </div>
 
 <div class="page" id="page1"><div class="title" style="padding:30px;"><span id="typeText1" class="typing"></span></div></div>
 
 <div class="page" id="pageMap">
-    <div class="title">8 Months of Us</div>
-    <div style="text-align:left; max-width:280px; margin: 0 auto; border-left: 2px dashed var(--primary); padding-left: 25px;">
-        <p>❤️ <strong>Month 1:</strong> Where it began.</p>
-        <p>❤️ <strong>Month 4:</strong> Growing together.</p>
-        <p>❤️ <strong>Month 8:</strong> My forever choice.</p>
+    <h1 class="title">8 Months of Us</h1>
+    <div style="text-align:left; max-width:280px; margin: 0 auto; border-left: 2px dashed var(--primary); padding-left: 25px; line-height: 2;">
+        <p>❤️ <strong>Month 1:</strong> Where it all began. ✨</p>
+        <p>❤️ <strong>Month 4:</strong> Growing together. 🌙</p>
+        <p>❤️ <strong>Month 8:</strong> My forever choice. ❤️</p>
     </div>
-    <button class="yes" style="margin-top:20px;" onclick="showPage(2)">Continue Journey</button>
+    <button class="yes" onclick="playFirstVideoAndGo()">Continue Journey</button>
 </div>
 
-<div class="page" id="page2"><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video1.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page2"><video id="firstVid" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video1.mp4" muted playsinline loop></video></div>
 
 <div class="page" id="pageScratch">
-    <div class="title">A Message for You</div>
+    <h1 class="title">A Message for You</h1>
     <p>Scratch to reveal my heart...</p>
-    <div style="position:relative; width:280px; height:150px; margin: 0 auto; border-radius: 20px; overflow: hidden;">
+    <div style="position:relative; width:280px; height:150px; margin: 20px auto; border-radius: 20px; overflow: hidden;">
         <div style="position:absolute; width:100%; height:100%; background:#1e212b; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One'; font-size:1.8em; color:var(--primary);">I MISS YOU ❤️</div>
         <canvas id="scratchCanvas" width="280" height="150" style="position:absolute; left:0; top:0; cursor:crosshair; touch-action:none;"></canvas>
     </div>
-    <br><button class="yes" onclick="showPage(3)">Go Next</button>
+    <button class="yes" onclick="showPage(3)">Go Next</button>
 </div>
 
-<div class="page" id="page3"><div class="title">First and foremost</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video2.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page3"><h1 class="title">First and foremost</h1><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video2.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="pageKiss">
-    <div class="title">The Kissing Booth</div>
-    <div id="kiss-zone" style="width:80%; height:200px; margin:20px auto; border:2px dashed var(--border); border-radius:30px; position:relative; overflow:hidden; background:var(--glass);"></div>
-    <button class="yes" style="margin-top:15px;" onclick="showPage(4)">That's enough! 🙈</button>
+    <h1 class="title">The Kissing Booth</h1>
+    <div id="kiss-zone" style="width:80%; height:200px; margin:20px auto; border:2px dashed var(--border); border-radius:30px; background:var(--glass); position:relative; overflow:hidden;"></div>
+    <button class="yes" onclick="showPage(4)">That's enough! 🙈</button>
 </div>
 
 <div class="page" id="page4">
-  <div class="title">Please press to open</div>
+  <h1 class="title">Please press to open</h1>
   <div class="flip-container">
       <div class="flip-card" id="mainFlip" onclick="flipMe()">
           <div class="flip-front"><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image1.jpg"></div>
           <div class="flip-back"><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg"></div>
       </div>
   </div>
-  <button id="flipNext" class="yes" style="display:none; margin-top:15px;" onclick="showPage(5)">Keep Going</button>
+  <button id="flipNext" class="yes" style="display:none;" onclick="showPage(5)">Keep Going</button>
 </div>
 
 <div class="page" id="page5">
-  <div class="title">Do you wanna see something cute?</div>
-  <div style="margin: 20px 0;">
-    <button class="yes" id="yesBtn5">YES</button>
+  <h1 class="title">Do you wanna see something cute?</h1>
+  <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+    <button class="yes yes-inline" id="yesBtn5">YES</button>
     <button class="no" id="noBtn5">NO</button>
   </div>
   <div id="imageContainer5"></div>
-  <button id="next5" style="display:none; margin-top:10px;" class="yes" onclick="showPage(6)">Keep Going</button>
+  <button id="next5" style="display:none;" class="yes" onclick="showPage(6)">Keep Going</button>
 </div>
 
-<div class="page" id="page6"><div class="title">I have something to say</div><button id="click6" class="yes">Open My Soul</button><div id="videoContainer6"></div></div>
+<div class="page" id="page6"><h1 class="title">I have something to say</h1><button id="click6" class="yes">Open My Soul</button><div id="videoContainer6"></div></div>
 
 <div class="page" id="page7">
-  <div class="title">You wanna know how you fix my heart?</div>
-  <div style="margin: 20px 0;">
-    <button class="yes" id="yesBtn7">Tell Me</button>
+  <h1 class="title">You wanna know how you fix my heart?</h1>
+  <div id="btnContainer7" style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+    <button class="yes yes-inline" id="yesBtn7">Tell Me</button>
     <button class="no" id="noBtn7">No</button>
   </div>
   <div id="videoContainer7"></div>
 </div>
 
-<div class="page" id="page8"><div class="title">Near You</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page8"><h1 class="title">This is how I feel when I'm near you</h1><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="page9">
-  <div class="title">Will you hold my hands forever?</div>
-  <div style="margin: 20px 0;">
-    <button class="yes" id="yesBtn9">Always</button>
+  <h1 class="title">Will you hold my hands forever?</h1>
+  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video6.mp4" autoplay muted playsinline loop></video>
+  <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+    <button class="yes yes-inline" id="yesBtn9">Always</button>
     <button class="no" id="noBtn9">No</button>
   </div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video6.mp4" autoplay muted playsinline loop></video>
 </div>
 
 <div class="page" id="page10">
-  <div class="title">You wanna know what's in my heart?</div>
-  <div style="margin: 20px 0;">
-    <button class="yes" id="yesBtn10">Yes</button>
+  <h1 class="title">You wanna know what's in my heart?</h1>
+  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video7.mp4" autoplay muted playsinline loop></video>
+  <div style="display:flex; justify-content:center; align-items:center; margin-top:20px;">
+    <button class="yes yes-inline" id="yesBtn10">Yes</button>
     <button class="no" id="noBtn10">No</button>
   </div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video7.mp4" autoplay muted playsinline loop></video>
 </div>
 
-<div class="page" id="page11"><div class="title">Look inside</div><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg"></div>
-<div class="page" id="page12"><div class="title">Kisses</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video8.mp4" autoplay muted playsinline loop></video></div>
-<div class="page" id="page13"><div class="title">Hugs</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page11"><h1 class="title">Look inside</h1><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg"></div>
+<div class="page" id="page12"><h1 class="title">A lot of kisses for you</h1><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video8.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page13"><h1 class="title">And hugs for you</h1><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="pageIntimate">
-    <div class="title">My Promise</div>
-    <div style="background:var(--glass); padding:20px; border-radius:30px; width:85%; margin:0 auto; text-align:left;">
-        <p style="color:#ffd6e0;">In these 8 months, you've become the home I never knew I was looking for. <br><br><strong>Hold the heart to connect...</strong></p>
-    </div>
-    <button id="heartBtn" style="width:90px; height:90px; border-radius:50%; background:var(--primary); font-size:2em; border:none; margin:30px auto; display:block; animation:pulse 1.5s infinite;">❤️</button>
+  <h1 class="title">My Promise</h1>
+  <div style="background:var(--glass); border:1px solid var(--border); padding:25px; border-radius:30px; width:85%; margin:0 auto; text-align:left;">
+      <p style="color:#ffd6e0; font-family:'Poppins'; line-height:1.6;">In these 8 months, you've become the home I never knew I was looking for. Every laugh, every video call, and every shared dream has made my world so much brighter. Thank you for being my fattu, my best friend, and my love. <br><br><strong>Hold the heart to connect our souls...</strong></p>
+  </div>
+  <button id="heartBtn" style="width:100px; height:100px; border-radius:50%; background:var(--primary); font-size:2.5em; border:none; margin:40px auto; display:block; animation:pulse 1.5s infinite; cursor:pointer;">❤️</button>
 </div>
 
-<div class="page" id="page14"><div class="title">Memory</div><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg"></div>
-<div class="page" id="pageGame"><div class="title">Stardust</div><canvas id="game-canvas" width="300" height="400"></canvas><h2 id="scoreDisplay">0 / 10</h2></div>
-<div class="page" id="pagePuzzle"><div class="title">Puzzle</div><div id="puzzle-board"></div><button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">The Reveal ✨</button></div>
+<div class="page" id="page14">
+  <h1 class="title">A sweet memory</h1>
+  <div style="background: #fdfdfd; padding: 15px 15px 50px 15px; border-radius: 5px; display: inline-block; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: rotate(-3deg);">
+    <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg" style="border-radius:0; box-shadow:none;">
+  </div>
+</div>
+
+<div class="page" id="pageGame"><h1 class="title">Catch the Stardust ✨</h1><canvas id="game-canvas" width="300" height="400"></canvas><h2 id="scoreDisplay">0 / 10</h2></div>
+<div class="page" id="pagePuzzle"><h1 class="title">Piece Us Together 🧩</h1><div id="puzzle-board" style="display:grid; grid-template-columns:repeat(3,90px); grid-gap:12px; justify-content:center; margin:20px auto; background:var(--glass); padding:20px; border-radius:35px;"></div><button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">The Reveal ✨</button></div>
 
 <div class="page" id="pageFinal">
-    <div class="final-aesthetic-card">
-        <h1 style="font-family:'Dancing Script'; font-size:2.5em; color:var(--accent);">Happy 8 Months</h1>
-        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg" style="width:95%; border-radius:20px; margin: 15px 0;">
-        <p style="font-weight:300; opacity:0.8;">Eight months of us, and a lifetime more to go. Always & Forever.</p>
-        <div style="font-size:0.7em; opacity:0.5; margin-top:15px;">18 . 06 . 2025</div>
+    <div class="pinterest-card">
+        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg">
+        <h1>Forever & Always.</h1>
+        <p>Choosing you every single day is my favorite part of life. Eight months down, and a lifetime more to go.</p>
+        <div class="date-badge">JUNE 18, 2025</div>
     </div>
-    <button class="yes" style="margin-top:25px; background:transparent; border:1px solid var(--gold); color:var(--gold);" onclick="location.reload()">Replay Magic 🔥</button>
+    <button class="yes" style="margin-top:25px; background:#1a1a1a; color:white;" onclick="location.reload()">Replay Our Story 🔥</button>
 </div>
 
 <script>
@@ -223,7 +253,6 @@ const pageOrder = ['0', '1', 'Map', '2', 'Scratch', '3', 'Kiss', '4', '5', '6', 
 let currentPage = '0';
 let isUnlocked = false;
 let videoStarted7 = false;
-
 const bgSong = document.getElementById('bgSong');
 
 function showPage(num) {
@@ -232,9 +261,16 @@ function showPage(num) {
     currentPage = num.toString();
     let idx = pageOrder.indexOf(currentPage);
     document.getElementById('progress-fill').style.width = (idx / (pageOrder.length - 1)) * 100 + '%';
+    
     if(num === 'Scratch') initScratch();
     if(num === 'Game') startStarGame();
     if(num === 'Puzzle') initPuzzle();
+}
+
+function playFirstVideoAndGo() {
+    const v = document.getElementById('firstVid');
+    v.load(); v.play().catch(e => console.log(e));
+    showPage(2);
 }
 
 function checkPassword() {
@@ -242,32 +278,33 @@ function checkPassword() {
         isUnlocked = true; bgSong.play();
         if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
         showPage('1');
-        startTyping("Hi my fattu, this is for you with all my love 💖","typeText1",()=>showPage('Map'));
+        startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage('Map'));
     } else alert("Try again! ❌");
 }
 
-function startTyping(text,id,callback) {
+function startTyping(text,id,callback){
     let i=0; const el=document.getElementById(id); el.textContent = "";
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } }, 50);
 }
 
+// NAVIGATION HANDLER
 document.addEventListener('click', (e) => {
     if (!isUnlocked) return;
+    
+    // Lock logic for video page 7
     if (currentPage === '7' && videoStarted7) { showPage('8'); return; }
+
     const interactive = ['0', 'Map', 'Scratch', 'Kiss', '4', '5', '7', '9', '10', 'Intimate', 'Game', 'Puzzle'];
     if (interactive.includes(currentPage)) return;
+
     const ignore = ['VIDEO', 'INPUT', 'BUTTON', 'IMG', 'CANVAS'];
     if(!ignore.includes(e.target.tagName)) {
         let idx = pageOrder.indexOf(currentPage);
-        if(idx < pageOrder.length - 1) showPage(pageOrder[idx+1]);
+        if(idx < pageOrder.length - 1) showPage(pageOrder[idx + 1]);
     }
 });
 
-function flipMe() {
-    document.getElementById('mainFlip').classList.toggle('flipped');
-    document.getElementById('flipNext').style.display = 'inline-block';
-    if(navigator.vibrate) navigator.vibrate(50);
-}
+function flipMe() { document.getElementById('mainFlip').classList.toggle('flipped'); document.getElementById('flipNext').style.display='block'; if(navigator.vibrate) navigator.vibrate(50); }
 
 function initScratch() {
     const canvas = document.getElementById('scratchCanvas'); const ctx = canvas.getContext('2d');
@@ -277,44 +314,71 @@ function initScratch() {
         const rect = canvas.getBoundingClientRect();
         const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-        ctx.beginPath(); ctx.arc(x,y,25,0,Math.PI*2); ctx.fill();
-        if(navigator.vibrate && Math.random() > 0.9) navigator.vibrate(5);
+        ctx.beginPath(); ctx.arc(x,y,30,0,Math.PI*2); ctx.fill();
+        if(navigator.vibrate && Math.random() > 0.9) navigator.vibrate(10);
     };
     canvas.ontouchmove = scratch; canvas.onmousemove = scratch;
 }
 
 document.getElementById('kiss-zone').onclick = (e) => {
     const k = document.createElement('div'); k.innerHTML = '💋'; k.style.position = 'absolute';
-    k.style.left = (e.offsetX - 10) + 'px'; k.style.top = (e.offsetY - 10) + 'px';
-    k.style.fontSize = '3rem'; document.getElementById('kiss-zone').appendChild(k);
-    if(navigator.vibrate) navigator.vibrate(30);
+    k.style.left = (e.offsetX - 15) + 'px'; k.style.top = (e.offsetY - 15) + 'px';
+    k.style.fontSize = '3.5rem'; document.getElementById('kiss-zone').appendChild(k);
+    if(navigator.vibrate) navigator.vibrate(40);
     setTimeout(() => k.remove(), 800);
 };
+
+// CONFETTI
+const cCanvas = document.getElementById('confettiCanvas');
+const cctx = cCanvas.getContext('2d');
+let confettis = [];
+function fireConfetti(x, y) {
+    for(let i=0; i<30; i++) confettis.push({ x: x, y: y, size: Math.random()*10+5, color: `hsl(${Math.random()*360}, 100%, 50%)`, vx: Math.random()*10-5, vy: Math.random()*10-5, opacity: 1 });
+}
+function animateConfetti() {
+    cctx.clearRect(0,0,cCanvas.width,cCanvas.height);
+    confettis.forEach((c, i) => {
+        c.x += c.vx; c.y += c.vy; c.vy += 0.2; c.opacity -= 0.015;
+        cctx.globalAlpha = c.opacity; cctx.fillStyle = c.color;
+        cctx.fillRect(c.x, c.y, c.size, c.size);
+        if(c.opacity <= 0) confettis.splice(i,1);
+    });
+    requestAnimationFrame(animateConfetti);
+}
 
 let hbTimeout;
 const heartBtn = document.getElementById('heartBtn');
 heartBtn.addEventListener('touchstart', (e) => {
     e.preventDefault(); heartBtn.style.transform = 'scale(0.8)';
-    if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-    hbTimeout = setTimeout(() => { if(navigator.vibrate) navigator.vibrate(300); showPage('14'); }, 2500);
+    if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+    hbTimeout = setTimeout(() => {
+        const rect = heartBtn.getBoundingClientRect();
+        fireConfetti(rect.left + rect.width/2, rect.top + rect.height/2);
+        if(navigator.vibrate) navigator.vibrate(400);
+        setTimeout(()=>showPage('14'), 1000);
+    }, 2500);
 });
 heartBtn.addEventListener('touchend', () => { heartBtn.style.transform = 'scale(1)'; clearTimeout(hbTimeout); });
 
-// Buttons
 let yesS = 1;
-document.getElementById('noBtn5').onclick = (e) => { e.stopPropagation(); yesS += 0.5; document.getElementById('yesBtn5').style.transform = `scale(${yesS})`; };
 document.getElementById('yesBtn5').onclick = (e) => { e.stopPropagation(); document.getElementById('imageContainer5').innerHTML='<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">'; document.getElementById('next5').style.display='block'; };
+document.getElementById('noBtn5').onclick = (e) => { e.stopPropagation(); yesS += 0.5; document.getElementById('yesBtn5').style.transform = `scale(${yesS})`; };
 document.getElementById('click6').onclick = () => { document.getElementById('videoContainer6').innerHTML='<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay loop muted playsinline></video>'; };
-document.getElementById('yesBtn7').onclick = () => { document.getElementById('videoContainer7').innerHTML='<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay loop muted playsinline></video>'; videoStarted7=true; };
+
+// FIXED PAGE 7 VIDEO LOGIC
+document.getElementById('yesBtn7').onclick = (e) => { 
+    e.stopPropagation();
+    document.getElementById('btnContainer7').style.display = 'none';
+    document.getElementById('videoContainer7').innerHTML='<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay loop muted playsinline></video>'; 
+    videoStarted7=true; 
+};
 
 [document.getElementById('noBtn7'), document.getElementById('noBtn9'), document.getElementById('noBtn10')].forEach(btn => {
     btn.onclick = (e) => { e.stopPropagation(); btn.style.position='absolute'; btn.style.top=Math.random()*70+10+'%'; btn.style.left=Math.random()*70+10+'%'; };
 });
-
 document.getElementById('yesBtn9').onclick = () => showPage('10');
 document.getElementById('yesBtn10').onclick = () => showPage('11');
 
-// Games
 function startStarGame() {
     const canvas = document.getElementById('game-canvas'); const ctx = canvas.getContext('2d');
     let score = 0; let stars = []; let basketX = canvas.width/2 - 35;
@@ -326,7 +390,7 @@ function startStarGame() {
             ctx.fillStyle = "#ff6b81"; ctx.beginPath(); ctx.roundRect(basketX, canvas.height-30, 75, 15, 10); ctx.fill();
             stars.forEach((s, i) => {
                 s.y += (4 + score*0.1); ctx.fillStyle = "#ffcb77"; ctx.beginPath(); ctx.arc(s.x, s.y, 8, 0, Math.PI*2); ctx.fill();
-                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { stars.splice(i,1); score++; if(navigator.vibrate) navigator.vibrate(10); document.getElementById('scoreDisplay').innerText = score + ' / 10'; if(score >= 10) showPage('Puzzle'); }
+                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { stars.splice(i,1); score++; if(navigator.vibrate) navigator.vibrate(20); document.getElementById('scoreDisplay').innerText = score + ' / 10'; if(score >= 10) showPage('Puzzle'); }
                 if(s.y > canvas.height) stars.splice(i,1);
             });
             requestAnimationFrame(update);
@@ -341,15 +405,12 @@ function initPuzzle() {
     if (pieces.length === 0) pieces = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5);
     pieces.forEach((p, i) => {
         const div = document.createElement('div'); div.className = 'puzzle-piece';
+        div.style.width = '90px'; div.style.height = '90px'; div.style.borderRadius = '15px'; div.style.backgroundSize = 'cover';
         div.style.backgroundImage = `url('https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/${p+1}.jpg')`;
         div.onclick = (e) => {
             e.stopPropagation();
             if (sel === null) { sel = i; div.style.boxShadow = '0 0 25px #ff6b81'; }
-            else { 
-                [pieces[sel], pieces[i]] = [pieces[i], pieces[sel]]; sel = null; 
-                initPuzzle(); 
-                if(JSON.stringify(pieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display='block';
-            }
+            else { [pieces[sel], pieces[i]] = [pieces[i], pieces[sel]]; sel = null; initPuzzle(); if(JSON.stringify(pieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display='block'; }
         };
         board.appendChild(div);
     });
@@ -365,9 +426,11 @@ function animateBubbles() {
     requestAnimationFrame(animateBubbles);
 }
 window.onload = () => {
-    bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight;
+    bCanvas.width = cCanvas.width = window.innerWidth;
+    bCanvas.height = cCanvas.height = window.innerHeight;
     for(let i=0; i<15; i++) bubs.push({x:Math.random()*bCanvas.width, y:Math.random()*bCanvas.height, s:Math.random()*1+0.5, img:Math.random()>0.5?hI:kI});
     animateBubbles();
+    animateConfetti();
 };
 </script>
 </body>
