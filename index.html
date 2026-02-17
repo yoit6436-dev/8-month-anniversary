@@ -58,76 +58,39 @@ canvas#explosionCanvas { z-index: 20; }
 
 video, img {max-width:85%; border-radius:30px; box-shadow:0 30px 60px rgba(0,0,0,0.8); border: 1px solid var(--border);}
 
-.scrapbook-memory {
-    background: #fdfdfd;
-    padding: 15px 15px 50px 15px;
-    border-radius: 5px;
-    display: inline-block;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    transform: rotate(-3deg);
-    position: relative;
-}
-.scrapbook-memory::after {
-    content: 'Our Journey';
-    position: absolute; bottom: 10px; left: 0; width: 100%;
-    font-family: 'Dancing Script'; color: #333; font-size: 1.5em;
-}
-
-#hidden-heart {
-    position: fixed; bottom: 80px; right: 20px;
-    width: 30px; height: 30px; opacity: 0.1;
-    z-index: 200; cursor: pointer;
-}
-
-#progress-path {
-    position: fixed; bottom: 30px; left: 10%; width: 80%; height: 2px;
-    background: rgba(255,255,255,0.05); z-index: 100;
-}
-#progress-fill {
-    width: 0%; height: 100%; background: var(--primary);
-    transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
-    box-shadow: 0 0 20px var(--primary);
-}
-
 button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; font-weight: 600; transition: transform 0.2s; letter-spacing: 0.5px; z-index: 100; position: relative;}
 .yes { background: var(--primary); color: white; box-shadow: 0 10px 30px rgba(255, 107, 129, 0.4); }
 .no { background: var(--glass); color: white; backdrop-filter: blur(8px); border: 1px solid var(--border); }
+
+.flip-container { perspective: 1000px; width: 85%; height: 40vh; margin: 20px auto; }
+.flip-card { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
+.flip-card.flipped { transform: rotateY(180deg); }
+.flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--glass); border: 1px solid var(--border); }
+.flip-back { transform: rotateY(180deg); }
+.flip-front img, .flip-back img { width: 100%; height: 100%; object-fit: contain; }
 
 #puzzle-board {
     display: grid; grid-template-columns: repeat(3, 90px); grid-template-rows: repeat(3, 90px);
     grid-gap: 12px; justify-content: center; margin: 20px auto;
     background: var(--glass); padding: 20px; border-radius: 35px;
 }
-.puzzle-piece { width: 90px; height: 90px; border-radius: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.puzzle-piece { width: 90px; height: 90px; border-radius: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); background-size: cover; }
 
-.final-card {
-    background: var(--glass);
+.final-aesthetic-card {
+    background: rgba(15, 15, 19, 0.8);
     backdrop-filter: blur(25px);
     border: 1px solid var(--border);
     border-radius: 40px;
-    padding: 30px; width: 88%; margin: 0 auto;
+    padding: 35px 20px;
+    width: 88%;
+    margin: 0 auto;
     box-shadow: 0 50px 120px rgba(0,0,0,0.7);
     animation: heartbeat 2s infinite ease-in-out;
 }
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-#game-canvas { border-radius: 30px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); margin: 0 auto; display: block; touch-action: none;}
-
-#kiss-zone { width: 80%; height: 200px; margin: 20px auto; border: 2px dashed var(--border); border-radius: 30px; position: relative; overflow: hidden; background: var(--glass); display: flex; align-items: center; justify-content: center; }
-.timeline { position: relative; max-width: 300px; margin: 20px auto; padding: 20px 0; border-left: 2px dashed var(--primary); }
-.timeline-item { margin-bottom: 25px; padding-left: 30px; position: relative; text-align: left; }
-.timeline-item::before { content: '❤️'; position: absolute; left: -12px; top: 0; background: #0f0f13; }
-#scratch-container { position: relative; width: 280px; height: 150px; margin: 0 auto; border-radius: 20px; overflow: hidden; }
-.scratch-prize { position: absolute; width: 100%; height: 100%; background: #1e212b; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka One'; font-size: 1.8em; color: var(--primary); border: 1px solid var(--border); border-radius: 20px; }
-
-.intimate-card { background: var(--glass); border: 1px solid var(--border); backdrop-filter: blur(15px); padding: 25px; width: 85%; margin: 20px auto; border-radius: 30px; text-align: left; }
-.intimate-card p { font-family: 'Poppins'; font-weight: 300; line-height: 1.6; font-size: 0.95em; color: #ffd6e0; }
-#heartbeat-btn { width: 100px; height: 100px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2em; animation: pulse 1.5s infinite; cursor: pointer; border: none; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7); } 70% { box-shadow: 0 0 0 25px rgba(255, 107, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 129, 0); } }
-
-#intimate-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 2s; }
-.star-particle { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: floatStar 5s infinite ease-in-out; }
-@keyframes floatStar { 0%, 100% { transform: translateY(0); opacity: 0.3; } 50% { transform: translateY(-30px); opacity: 0.9; } }
+#progress-path { position: fixed; bottom: 30px; left: 10%; width: 80%; height: 2px; background: rgba(255,255,255,0.05); z-index: 100; }
+#progress-fill { width: 0%; height: 100%; background: var(--primary); transition: width 1s; }
 </style>
 </head>
 <body>
@@ -138,25 +101,23 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 <audio id="bgSong" src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/song.mp3" loop></audio>
 <div id="progress-path"><div id="progress-fill"></div></div>
 
-<div id="hidden-heart" onclick="alert('You found my secret! I am so lucky to have you. ❤️')">❤️</div>
-
 <div class="page active" id="page0">
   <h1 class="title">Our Sanctuary 💖</h1>
   <p>Enter the date we started:</p>
   <input type="date" id="passInput" style="padding:15px; border-radius:20px; background: var(--glass); border:1px solid var(--border); color:white; font-size:1.1em; width: 60%;">
-  <br><button onclick="checkPassword(event)" class="yes" style="margin-top: 25px;">Enter Our World</button>
+  <br><button onclick="checkPassword()" class="yes" style="margin-top: 25px;">Enter Our World</button>
 </div>
 
 <div class="page" id="page1"><div class="title" style="padding:30px;"><span id="typeText1" class="typing"></span></div></div>
 
 <div class="page" id="pageMap">
     <div class="title">8 Months of Us</div>
-    <div class="timeline">
-        <div class="timeline-item"><strong>Month 1:</strong> Where it all began. ✨</div>
-        <div class="timeline-item"><strong>Month 4:</strong> Growing together. 🌙</div>
-        <div class="timeline-item"><strong>Month 8:</strong> My forever choice. ❤️</div>
+    <div style="text-align:left; max-width:280px; margin: 0 auto; border-left: 2px dashed var(--primary); padding-left: 25px;">
+        <p>❤️ <strong>Month 1:</strong> Where it began.</p>
+        <p>❤️ <strong>Month 4:</strong> Growing together.</p>
+        <p>❤️ <strong>Month 8:</strong> My forever choice.</p>
     </div>
-    <button class="yes" onclick="showPage(2)">Continue Journey</button>
+    <button class="yes" style="margin-top:20px;" onclick="showPage(2)">Continue Journey</button>
 </div>
 
 <div class="page" id="page2"><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video1.mp4" autoplay muted playsinline loop></video></div>
@@ -164,301 +125,200 @@ button {padding:14px 35px; font-size:1.1em; border:none; border-radius:50px; cur
 <div class="page" id="pageScratch">
     <div class="title">A Message for You</div>
     <p>Scratch to reveal my heart...</p>
-    <div id="scratch-container">
-        <div class="scratch-prize">I MISS YOU ❤️</div>
+    <div style="position:relative; width:280px; height:150px; margin: 0 auto; border-radius: 20px; overflow: hidden;">
+        <div style="position:absolute; width:100%; height:100%; background:#1e212b; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One'; font-size:1.8em; color:var(--primary);">I MISS YOU ❤️</div>
         <canvas id="scratchCanvas" width="280" height="150" style="position:absolute; left:0; top:0; cursor:crosshair; touch-action:none;"></canvas>
     </div>
     <br><button class="yes" onclick="showPage(3)">Go Next</button>
 </div>
 
-<div class="page" id="page3">
-  <div class="title">First and foremost</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video2.mp4" autoplay muted playsinline loop></video>
-</div>
+<div class="page" id="page3"><div class="title">First and foremost</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video2.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="pageKiss">
     <div class="title">The Kissing Booth</div>
-    <p>Tap inside to send me kisses!</p>
-    <div id="kiss-zone"><span style="opacity:0.3">Tap to Kiss 💋</span></div>
-    <button class="yes" onclick="showPage(4)">That's enough! 🙈</button>
+    <div id="kiss-zone" style="width:80%; height:200px; margin:20px auto; border:2px dashed var(--border); border-radius:30px; position:relative; overflow:hidden; background:var(--glass);"></div>
+    <button class="yes" style="margin-top:15px;" onclick="showPage(4)">That's enough! 🙈</button>
 </div>
 
 <div class="page" id="page4">
   <div class="title">Please press to open</div>
-  <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image1.jpg" onclick="window.open('https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg')">
+  <div class="flip-container">
+      <div class="flip-card" id="mainFlip" onclick="flipMe()">
+          <div class="flip-front"><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image1.jpg"></div>
+          <div class="flip-back"><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image2.jpg"></div>
+      </div>
+  </div>
+  <button id="flipNext" class="yes" style="display:none; margin-top:15px;" onclick="showPage(5)">Keep Going</button>
 </div>
 
 <div class="page" id="page5">
   <div class="title">Do you wanna see something cute?</div>
-  <button class="yes" id="yesBtn5">YES</button>
-  <button class="no" id="noBtn5">NO</button>
+  <div style="margin: 20px 0;">
+    <button class="yes" id="yesBtn5">YES</button>
+    <button class="no" id="noBtn5">NO</button>
+  </div>
   <div id="imageContainer5"></div>
   <button id="next5" style="display:none; margin-top:10px;" class="yes" onclick="showPage(6)">Keep Going</button>
 </div>
 
-<div class="page" id="page6">
-  <div class="title">I have something to say</div>
-  <button id="clickToView6" class="yes">Open My Soul</button>
-  <div id="videoContainer6"></div>
-</div>
+<div class="page" id="page6"><div class="title">I have something to say</div><button id="click6" class="yes">Open My Soul</button><div id="videoContainer6"></div></div>
 
 <div class="page" id="page7">
   <div class="title">You wanna know how you fix my heart?</div>
-  <button class="yes" id="yesBtn7">Tell Me</button>
-  <button class="no" id="noBtn7">No</button>
+  <div style="margin: 20px 0;">
+    <button class="yes" id="yesBtn7">Tell Me</button>
+    <button class="no" id="noBtn7">No</button>
+  </div>
   <div id="videoContainer7"></div>
 </div>
 
-<div class="page" id="page8">
-  <div class="title">This is how I feel when I'm near you</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" autoplay muted playsinline loop></video>
-</div>
+<div class="page" id="page8"><div class="title">Near You</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video5.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="page9">
   <div class="title">Will you hold my hands forever?</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video6.mp4" autoplay muted playsinline loop></video>
-  <div style="margin-top:15px;">
+  <div style="margin: 20px 0;">
     <button class="yes" id="yesBtn9">Always</button>
     <button class="no" id="noBtn9">No</button>
   </div>
+  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video6.mp4" autoplay muted playsinline loop></video>
 </div>
 
 <div class="page" id="page10">
   <div class="title">You wanna know what's in my heart?</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video7.mp4" autoplay muted playsinline loop></video>
-  <div style="margin-top:15px;">
+  <div style="margin: 20px 0;">
     <button class="yes" id="yesBtn10">Yes</button>
     <button class="no" id="noBtn10">No</button>
   </div>
+  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video7.mp4" autoplay muted playsinline loop></video>
 </div>
 
-<div class="page" id="page11">
-  <div class="title">Look inside</div>
-  <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg">
-</div>
-
-<div class="page" id="page12">
-  <div class="title">A lot of kisses for you</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video8.mp4" autoplay muted playsinline loop></video>
-</div>
-
-<div class="page" id="page13">
-  <div class="title">And hugs for you</div>
-  <video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline loop></video>
-</div>
+<div class="page" id="page11"><div class="title">Look inside</div><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image5.jpg"></div>
+<div class="page" id="page12"><div class="title">Kisses</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video8.mp4" autoplay muted playsinline loop></video></div>
+<div class="page" id="page13"><div class="title">Hugs</div><video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video9.mp4" autoplay muted playsinline loop></video></div>
 
 <div class="page" id="pageIntimate">
-    <div id="intimate-stars"></div>
     <div class="title">My Promise</div>
-    <div class="intimate-card">
-        <p>
-            In these 8 months, you've become the home I never knew I was looking for. 
-            Every laugh, every video call, and every shared dream has made my world so much brighter. 
-            Thank you for being my fattu, my best friend, and my love. 
-            <br><br>
-            <strong>Hold the heart to connect our souls...</strong>
-        </p>
+    <div style="background:var(--glass); padding:20px; border-radius:30px; width:85%; margin:0 auto; text-align:left;">
+        <p style="color:#ffd6e0;">In these 8 months, you've become the home I never knew I was looking for. <br><br><strong>Hold the heart to connect...</strong></p>
     </div>
-    <button id="heartbeat-btn">❤️</button>
+    <button id="heartBtn" style="width:90px; height:90px; border-radius:50%; background:var(--primary); font-size:2em; border:none; margin:30px auto; display:block; animation:pulse 1.5s infinite;">❤️</button>
 </div>
 
-<div class="page" id="page14">
-  <div class="title">A sweet memory</div>
-  <div class="scrapbook-memory">
-    <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg" style="border-radius:0; box-shadow:none;">
-  </div>
-  <p style="margin-top:25px; font-weight: 300; opacity: 0.6; font-style: italic;">(Tap to start the finale...)</p>
-</div>
-
-<div class="page" id="pageGame">
-  <div class="title">Catch the Stardust ✨</div>
-  <canvas id="game-canvas" width="300" height="400"></canvas>
-  <h2 id="scoreDisplay" style="color:var(--accent); margin-top:15px; font-weight: 400;">Collected: 0 / 10</h2>
-</div>
-
-<div class="page" id="pagePuzzle">
-  <div class="title">Piece Us Together 🧩</div>
-  <div id="puzzle-board"></div>
-  <button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">The Reveal ✨</button>
-</div>
+<div class="page" id="page14"><div class="title">Memory</div><img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image6.jpg"></div>
+<div class="page" id="pageGame"><div class="title">Stardust</div><canvas id="game-canvas" width="300" height="400"></canvas><h2 id="scoreDisplay">0 / 10</h2></div>
+<div class="page" id="pagePuzzle"><div class="title">Puzzle</div><div id="puzzle-board"></div><button id="puzzleNext" style="display:none;" class="yes" onclick="showPage('Final')">The Reveal ✨</button></div>
 
 <div class="page" id="pageFinal">
-    <div class="final-card">
-        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg" style="max-width:100%; border-radius:25px; margin-bottom:20px;">
-        <h1 id="finalTitle" style="font-family:'Fredoka One';">Happy 8 Months!</h1>
-        <p style="color: #ffd6e0; font-weight: 300; line-height: 1.8; font-size: 1.05em;">
-            Eight months of choosing you, every single day.<br>
-            You're my favorite adventure and my safest port.<br>
-            <span style="font-weight: 600; font-size: 1.3em; letter-spacing: 1px;">Always & Forever</span><br>
-            18.06.2025
-        </p>
+    <div class="final-aesthetic-card">
+        <h1 style="font-family:'Dancing Script'; font-size:2.5em; color:var(--accent);">Happy 8 Months</h1>
+        <img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/10.jpg" style="width:95%; border-radius:20px; margin: 15px 0;">
+        <p style="font-weight:300; opacity:0.8;">Eight months of us, and a lifetime more to go. Always & Forever.</p>
+        <div style="font-size:0.7em; opacity:0.5; margin-top:15px;">18 . 06 . 2025</div>
     </div>
+    <button class="yes" style="margin-top:25px; background:transparent; border:1px solid var(--gold); color:var(--gold);" onclick="location.reload()">Replay Magic 🔥</button>
 </div>
 
 <script>
-// ---------- FIXED NAVIGATION ARRAY ----------
 const pageOrder = ['0', '1', 'Map', '2', 'Scratch', '3', 'Kiss', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', 'Intimate', '14', 'Game', 'Puzzle', 'Final'];
 let currentPage = '0';
-let isUnlocked = false; 
-let videoStartedOnPage7 = false; 
+let isUnlocked = false;
+let videoStarted7 = false;
+
 const bgSong = document.getElementById('bgSong');
 
-// ---------- BUBBLES SYSTEM ----------
-const bCanvas = document.getElementById('bubblesCanvas');
-const bctx = bCanvas.getContext('2d');
-let bubbles = [];
-const heartImg = new Image(); heartImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
-const kissImg = new Image(); kissImg.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
-
-function initBubbles() {
-    bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight;
-    bubbles = [];
-    for(let i=0; i<15; i++) {
-        bubbles.push({
-            x: Math.random() * bCanvas.width, y: Math.random() * bCanvas.height + bCanvas.height,
-            size: Math.random() * 20 + 20, speed: Math.random() * 1 + 0.5,
-            img: Math.random() > 0.5 ? heartImg : kissImg
-        });
-    }
-}
-function animateBubbles() {
-    bctx.clearRect(0, 0, bCanvas.width, bCanvas.height);
-    bubbles.forEach(b => { bctx.drawImage(b.img, b.x, b.y, b.size, b.size); b.y -= b.speed; if(b.y < -50) b.y = bCanvas.height + 50; });
-    requestAnimationFrame(animateBubbles);
-}
-
-// ---------- EXPLOSION SYSTEM ----------
-const eCanvas = document.getElementById('explosionCanvas');
-const ectx = eCanvas.getContext('2d');
-let particles = [];
-class Particle {
-    constructor(x, y) {
-        this.x = x; this.y = y; this.size = Math.random() * 15 + 5;
-        this.speedX = Math.random() * 6 - 3; this.speedY = Math.random() * 6 - 3;
-        this.color = Math.random() > 0.5 ? '#ff6b81' : '#ffcb77'; this.opacity = 1;
-        this.type = Math.random() > 0.3 ? 'heart' : 'star';
-    }
-    update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.015; }
-    draw() { ectx.globalAlpha = this.opacity; ectx.fillStyle = this.color; 
-        ectx.font = `${this.size}px serif`; ectx.fillText(this.type === 'heart' ? '❤️' : '✨', this.x, this.y); 
-    }
-}
-function createExplosion(x, y) { for (let i = 0; i < 50; i++) particles.push(new Particle(x, y)); }
-function animateExplosion() {
-    ectx.clearRect(0, 0, eCanvas.width, eCanvas.height);
-    particles.forEach((p, i) => { p.update(); p.draw(); if (p.opacity <= 0) particles.splice(i, 1); });
-    requestAnimationFrame(animateExplosion);
-}
-
-// ---------- NAVIGATION LOGIC ----------
 function showPage(num) {
-    if (!isUnlocked && num !== '0') return; 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    let target = document.getElementById('page' + num);
-    if(target) target.classList.add('active');
-    
-    let currentIndex = pageOrder.indexOf(num.toString());
-    document.getElementById('progress-fill').style.width = (currentIndex / (pageOrder.length - 1)) * 100 + '%';
-    
+    document.getElementById('page' + num).classList.add('active');
     currentPage = num.toString();
+    let idx = pageOrder.indexOf(currentPage);
+    document.getElementById('progress-fill').style.width = (idx / (pageOrder.length - 1)) * 100 + '%';
     if(num === 'Scratch') initScratch();
     if(num === 'Game') startStarGame();
     if(num === 'Puzzle') initPuzzle();
-    if(num === 'Intimate') { initIntimateStars(); document.getElementById('intimate-stars').style.opacity = '1'; }
-    else if(document.getElementById('intimate-stars')) { document.getElementById('intimate-stars').style.opacity = '0'; }
 }
 
-function checkPassword(e){
-    if(e) e.stopPropagation();
-    if(document.getElementById('passInput').value === "2025-06-18"){
-        isUnlocked = true; bgSong.play().catch(()=>{});
+function checkPassword() {
+    if(document.getElementById('passInput').value === "2025-06-18") {
+        isUnlocked = true; bgSong.play();
         if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
         showPage('1');
-        startTyping("Hi my fattu, this is your cutie and this is something for you that I made with all my love 💖","typeText1",()=>showPage('Map'));
-    } else alert("The code is in our hearts. Try again! ❌");
+        startTyping("Hi my fattu, this is for you with all my love 💖","typeText1",()=>showPage('Map'));
+    } else alert("Try again! ❌");
 }
 
-function startTyping(text,id,callback){
+function startTyping(text,id,callback) {
     let i=0; const el=document.getElementById(id); el.textContent = "";
     const interval=setInterval(()=>{ el.textContent=text.slice(0,i); i++; if(i>text.length){ clearInterval(interval); if(callback) setTimeout(callback, 2000); } }, 50);
 }
 
-// Fixed Global Click Event
 document.addEventListener('click', (e) => {
     if (!isUnlocked) return;
-    if (currentPage === '7' && videoStartedOnPage7) { showPage('8'); return; }
-    const interactivePages = ['0', '5', '7', '9', '10', 'Scratch', 'Kiss', 'Map', 'Game', 'Puzzle', 'Intimate'];
-    if (interactivePages.includes(currentPage)) return;
+    if (currentPage === '7' && videoStarted7) { showPage('8'); return; }
+    const interactive = ['0', 'Map', 'Scratch', 'Kiss', '4', '5', '7', '9', '10', 'Intimate', 'Game', 'Puzzle'];
+    if (interactive.includes(currentPage)) return;
     const ignore = ['VIDEO', 'INPUT', 'BUTTON', 'IMG', 'CANVAS'];
-    if(!ignore.includes(e.target.tagName)){
+    if(!ignore.includes(e.target.tagName)) {
         let idx = pageOrder.indexOf(currentPage);
-        if(idx < pageOrder.length - 1) showPage(pageOrder[idx + 1]);
+        if(idx < pageOrder.length - 1) showPage(pageOrder[idx+1]);
     }
 });
 
-// ---------- INTERACTIONS ----------
+function flipMe() {
+    document.getElementById('mainFlip').classList.toggle('flipped');
+    document.getElementById('flipNext').style.display = 'inline-block';
+    if(navigator.vibrate) navigator.vibrate(50);
+}
+
 function initScratch() {
     const canvas = document.getElementById('scratchCanvas'); const ctx = canvas.getContext('2d');
-    ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#A9A9A9'; for(let i=0; i<80; i++) ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
+    ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.globalCompositeOperation = 'destination-out';
     const scratch = (e) => {
         const rect = canvas.getBoundingClientRect();
         const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
         ctx.beginPath(); ctx.arc(x,y,25,0,Math.PI*2); ctx.fill();
-        if(navigator.vibrate && Math.random() > 0.95) navigator.vibrate(5);
+        if(navigator.vibrate && Math.random() > 0.9) navigator.vibrate(5);
     };
     canvas.ontouchmove = scratch; canvas.onmousemove = scratch;
 }
 
-function initIntimateStars() {
-    const container = document.getElementById('intimate-stars'); container.innerHTML = '';
-    for(let i=0; i<45; i++) {
-        const star = document.createElement('div'); star.className = 'star-particle';
-        const size = Math.random() * 4 + 1; star.style.width = size + 'px'; star.style.height = size + 'px';
-        star.style.left = Math.random() * 100 + '%'; star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 5 + 's'; container.appendChild(star);
-    }
-}
-
-let heartbeatInterval, heartbeatTimeout;
-const hbBtn = document.getElementById('heartbeat-btn');
-function startSync(e) {
-    if(e) e.preventDefault(); hbBtn.style.transform = 'scale(0.85)';
-    if(navigator.vibrate) heartbeatInterval = setInterval(() => { navigator.vibrate([150, 100, 150]); }, 1000);
-    heartbeatTimeout = setTimeout(() => {
-        const rect = hbBtn.getBoundingClientRect(); createExplosion(rect.left + rect.width/2, rect.top + rect.height/2);
-        if(navigator.vibrate) navigator.vibrate(300); setTimeout(() => showPage('14'), 1000);
-    }, 3000);
-}
-function cancelSync() { hbBtn.style.transform = 'scale(1)'; clearInterval(heartbeatInterval); clearTimeout(heartbeatTimeout); }
-hbBtn.addEventListener('mousedown', startSync); hbBtn.addEventListener('touchstart', startSync);
-hbBtn.addEventListener('mouseup', cancelSync); hbBtn.addEventListener('touchend', cancelSync);
-
-document.getElementById('kiss-zone').onclick = function(e) {
-    if(navigator.vibrate) navigator.vibrate(20);
+document.getElementById('kiss-zone').onclick = (e) => {
     const k = document.createElement('div'); k.innerHTML = '💋'; k.style.position = 'absolute';
     k.style.left = (e.offsetX - 10) + 'px'; k.style.top = (e.offsetY - 10) + 'px';
-    k.style.fontSize = '2.5rem'; k.style.pointerEvents = 'none'; this.appendChild(k);
+    k.style.fontSize = '3rem'; document.getElementById('kiss-zone').appendChild(k);
+    if(navigator.vibrate) navigator.vibrate(30);
     setTimeout(() => k.remove(), 800);
 };
 
-let yesSize = 1;
-document.getElementById('noBtn5').onclick = (e) => { e.stopPropagation(); yesSize += 0.45; document.getElementById('yesBtn5').style.transform = `scale(${yesSize})`; };
-document.getElementById('yesBtn5').onclick = (e) => { e.stopPropagation(); document.getElementById('imageContainer5').innerHTML=`<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">`; document.getElementById('next5').style.display='inline-block'; };
-document.getElementById('clickToView6').onclick=(e)=>{ e.stopPropagation(); document.getElementById('videoContainer6').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay muted playsinline loop></video>`; };
-document.getElementById('yesBtn7').onclick=(e)=>{ e.stopPropagation(); document.getElementById('videoContainer7').innerHTML=`<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay muted playsinline loop></video>`; videoStartedOnPage7 = true; };
-document.getElementById('yesBtn9').onclick=(e)=> { e.stopPropagation(); showPage('10'); };
-document.getElementById('yesBtn10').onclick=(e)=> { e.stopPropagation(); showPage('11'); };
+let hbTimeout;
+const heartBtn = document.getElementById('heartBtn');
+heartBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault(); heartBtn.style.transform = 'scale(0.8)';
+    if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
+    hbTimeout = setTimeout(() => { if(navigator.vibrate) navigator.vibrate(300); showPage('14'); }, 2500);
+});
+heartBtn.addEventListener('touchend', () => { heartBtn.style.transform = 'scale(1)'; clearTimeout(hbTimeout); });
+
+// Buttons
+let yesS = 1;
+document.getElementById('noBtn5').onclick = (e) => { e.stopPropagation(); yesS += 0.5; document.getElementById('yesBtn5').style.transform = `scale(${yesS})`; };
+document.getElementById('yesBtn5').onclick = (e) => { e.stopPropagation(); document.getElementById('imageContainer5').innerHTML='<img src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/image3.jpg">'; document.getElementById('next5').style.display='block'; };
+document.getElementById('click6').onclick = () => { document.getElementById('videoContainer6').innerHTML='<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video3.mp4" autoplay loop muted playsinline></video>'; };
+document.getElementById('yesBtn7').onclick = () => { document.getElementById('videoContainer7').innerHTML='<video src="https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/video4.mp4" autoplay loop muted playsinline></video>'; videoStarted7=true; };
+
 [document.getElementById('noBtn7'), document.getElementById('noBtn9'), document.getElementById('noBtn10')].forEach(btn => {
-    btn.onclick = (e) => { e.stopPropagation(); btn.style.position='absolute'; btn.style.top=Math.random()*70 + 10 +'%'; btn.style.left=Math.random()*70 + 10 +'%'; };
+    btn.onclick = (e) => { e.stopPropagation(); btn.style.position='absolute'; btn.style.top=Math.random()*70+10+'%'; btn.style.left=Math.random()*70+10+'%'; };
 });
 
+document.getElementById('yesBtn9').onclick = () => showPage('10');
+document.getElementById('yesBtn10').onclick = () => showPage('11');
+
+// Games
 function startStarGame() {
     const canvas = document.getElementById('game-canvas'); const ctx = canvas.getContext('2d');
     let score = 0; let stars = []; let basketX = canvas.width/2 - 35;
-    canvas.ontouchmove = (e) => { let rect = canvas.getBoundingClientRect(); basketX = e.touches[0].clientX - rect.left - 35; };
+    canvas.ontouchmove = (e) => { basketX = e.touches[0].clientX - canvas.getBoundingClientRect().left - 35; };
     function update() {
         if(currentPage === 'Game') {
             ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -466,11 +326,7 @@ function startStarGame() {
             ctx.fillStyle = "#ff6b81"; ctx.beginPath(); ctx.roundRect(basketX, canvas.height-30, 75, 15, 10); ctx.fill();
             stars.forEach((s, i) => {
                 s.y += (4 + score*0.1); ctx.fillStyle = "#ffcb77"; ctx.beginPath(); ctx.arc(s.x, s.y, 8, 0, Math.PI*2); ctx.fill();
-                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { 
-                    stars.splice(i,1); score++; if(navigator.vibrate) navigator.vibrate(10);
-                    document.getElementById('scoreDisplay').innerText = `Collected: ${score} / 10`; 
-                    if(score >= 10) showPage('Puzzle'); 
-                }
+                if(s.y > canvas.height - 45 && s.x > basketX - 10 && s.x < basketX + 85) { stars.splice(i,1); score++; if(navigator.vibrate) navigator.vibrate(10); document.getElementById('scoreDisplay').innerText = score + ' / 10'; if(score >= 10) showPage('Puzzle'); }
                 if(s.y > canvas.height) stars.splice(i,1);
             });
             requestAnimationFrame(update);
@@ -479,24 +335,40 @@ function startStarGame() {
     update();
 }
 
-let currentPieces = []; let firstSelected = null;
+let pieces = []; let sel = null;
 function initPuzzle() {
     const board = document.getElementById('puzzle-board'); board.innerHTML = '';
-    if (currentPieces.length === 0) currentPieces = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5);
-    currentPieces.forEach((p, i) => {
+    if (pieces.length === 0) pieces = [0,1,2,3,4,5,6,7,8].sort(() => Math.random() - 0.5);
+    pieces.forEach((p, i) => {
         const div = document.createElement('div'); div.className = 'puzzle-piece';
         div.style.backgroundImage = `url('https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/${p+1}.jpg')`;
-        div.style.backgroundSize = 'cover';
-        div.onclick = (e) => { e.stopPropagation(); if (firstSelected === null) { firstSelected = i; div.style.boxShadow = '0 0 25px #ff6b81'; }
-            else { [currentPieces[firstSelected], currentPieces[i]] = [currentPieces[i], currentPieces[firstSelected]]; firstSelected = null; initPuzzle(); checkWin(); }
+        div.onclick = (e) => {
+            e.stopPropagation();
+            if (sel === null) { sel = i; div.style.boxShadow = '0 0 25px #ff6b81'; }
+            else { 
+                [pieces[sel], pieces[i]] = [pieces[i], pieces[sel]]; sel = null; 
+                initPuzzle(); 
+                if(JSON.stringify(pieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) document.getElementById('puzzleNext').style.display='block';
+            }
         };
         board.appendChild(div);
     });
 }
-function checkWin() { if (JSON.stringify(currentPieces) === JSON.stringify([0,1,2,3,4,5,6,7,8])) { if(navigator.vibrate) navigator.vibrate([100, 50, 100]); document.getElementById('puzzleNext').style.display = 'inline-block'; } }
 
-window.onload = () => { eCanvas.width = window.innerWidth; eCanvas.height = window.innerHeight; initBubbles(); animateBubbles(); animateExplosion(); };
-window.onresize = () => { eCanvas.width = window.innerWidth; eCanvas.height = window.innerHeight; initBubbles(); };
+const bCanvas = document.getElementById('bubblesCanvas'); const bctx = bCanvas.getContext('2d');
+let bubs = [];
+const hI = new Image(); hI.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/heart.png';
+const kI = new Image(); kI.src = 'https://raw.githubusercontent.com/yoit6436-dev/8-month-anniversary/main/kiss.png';
+function animateBubbles() {
+    bctx.clearRect(0,0,bCanvas.width,bCanvas.height);
+    bubs.forEach(b => { bctx.drawImage(b.img, b.x, b.y, 45, 45); b.y -= b.s; if(b.y < -50) b.y = bCanvas.height+50; });
+    requestAnimationFrame(animateBubbles);
+}
+window.onload = () => {
+    bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight;
+    for(let i=0; i<15; i++) bubs.push({x:Math.random()*bCanvas.width, y:Math.random()*bCanvas.height, s:Math.random()*1+0.5, img:Math.random()>0.5?hI:kI});
+    animateBubbles();
+};
 </script>
 </body>
 </html>
